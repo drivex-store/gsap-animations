@@ -20,7 +20,7 @@ const ITEM_HEIGHT = Math.round(538 / (1280 / 804));
 const Y_OFFSET = (444 - ITEM_HEIGHT) / 2;
 const CELL_RATIO = 640 / 444;
 const LENS_PARAMS = [0.12, 0.07, 0.035, 0.03];
-const EXPO_OUT = gsap.parseEase("expo.out");
+const EXPO_OUT = gsap.parseEase('expo.out');
 const EMPTY_HOVER = { x: 1e6, y: 1e6, t: 0, on: false, item: -1 };
 
 // --- SHADERS ---
@@ -138,11 +138,11 @@ function getHoveredCell(state, pointerU, pointerV) {
   const r2 = r * r;
   const l2 = l * l;
   const lens = state.lens;
-  const ix = r * (1 + lens[2] * r2) / (1 + lens[1] * l2);
-  const iy = l * (1 + lens[3] * l2) / (1 + lens[0] * r2);
+  const ix = (r * (1 + lens[2] * r2)) / (1 + lens[1] * l2);
+  const iy = (l * (1 + lens[3] * l2)) / (1 + lens[0] * r2);
   return {
     x: Math.floor(ix / state.cell.x - state.panU.x),
-    y: Math.floor(iy / state.cell.y - state.panU.y)
+    y: Math.floor(iy / state.cell.y - state.panU.y),
   };
 }
 
@@ -151,7 +151,7 @@ const checkHoverBounds = (state, pointerV) => {
   return 1 - t * t * (3 - 2 * t);
 };
 
-const moduloHelper = (cell, count) => ((cell.x + 3 * cell.y) % count + count) % count;
+const moduloHelper = (cell, count) => (((cell.x + 3 * cell.y) % count) + count) % count;
 
 // --- SUB-COMPONENT: GridCanvas (WebGL) ---
 function GridCanvas({ items, state, active }) {
@@ -163,14 +163,14 @@ function GridCanvas({ items, state, active }) {
   const sceneObjects = useMemo(() => {
     const computedStyle = getComputedStyle(gl.domElement);
     const getVar = (name, fallback) => computedStyle.getPropertyValue(name).trim() || fallback;
-    const colors = { bg: getVar("--background", "#141314"), fg: getVar("--foreground", "#eeeeee") };
-    
+    const colors = { bg: getVar('--background', '#141314'), fg: getVar('--foreground', '#eeeeee') };
+
     const rt = new THREE.WebGLRenderTarget(1, 1, { depthBuffer: false });
     const quad = new THREE.PlaneGeometry(2, 2);
-    
-    const bgColorHex = parseInt((/^#([0-9a-f]{6})$/i.exec(colors.bg) || [null, "141314"])[1], 16);
-    const bgVec = new THREE.Vector3((bgColorHex >> 16 & 255) / 255, (bgColorHex >> 8 & 255) / 255, (255 & bgColorHex) / 255);
-    
+
+    const bgColorHex = parseInt((/^#([0-9a-f]{6})$/i.exec(colors.bg) || [null, '141314'])[1], 16);
+    const bgVec = new THREE.Vector3(((bgColorHex >> 16) & 255) / 255, ((bgColorHex >> 8) & 255) / 255, (255 & bgColorHex) / 255);
+
     const gridMat = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: gridFragmentShader,
@@ -191,8 +191,8 @@ function GridCanvas({ items, state, active }) {
         uBg: { value: bgVec },
         uSlots: { value: new THREE.Vector2(4, rows) },
         uCount: { value: count },
-        uStride: { value: 3 }
-      }
+        uStride: { value: 3 },
+      },
     });
 
     const postMat = new THREE.ShaderMaterial({
@@ -205,8 +205,8 @@ function GridCanvas({ items, state, active }) {
         uRes: { value: new THREE.Vector2(1, 1) },
         uCopyEnd: { value: 0.5 },
         uFade: { value: 0 },
-        uBg: { value: bgVec }
-      }
+        uBg: { value: bgVec },
+      },
     });
 
     const createMesh = (mat) => {
@@ -217,7 +217,7 @@ function GridCanvas({ items, state, active }) {
 
     const gridScene = new THREE.Scene();
     gridScene.add(createMesh(gridMat));
-    
+
     const postScene = new THREE.Scene();
     postScene.add(createMesh(postMat));
 
@@ -238,11 +238,11 @@ function GridCanvas({ items, state, active }) {
     sceneObjects.rt.setSize(Math.round(size.width * dpr), Math.round(size.height * dpr));
     sceneObjects.grid.uniforms.uRes.value.set(size.width * dpr, size.height * dpr);
     sceneObjects.post.uniforms.uRes.value.set(size.width * dpr, size.height * dpr);
-    
+
     const s = state.current;
     s.w = size.width;
     s.h = size.height;
-    
+
     const ratio = size.width / size.height;
     s.cellPx = size.width * (ratio < 1 ? 0.62 : ratio < 1.3 ? 0.36 : 0.26);
   }, [size, gl, sceneObjects, state]);
@@ -250,28 +250,28 @@ function GridCanvas({ items, state, active }) {
   useEffect(() => {
     let isMounted = true;
     let texture = null;
-    
-    const imagePromises = items.map(item => loadSharedImage(item.image, { maxWidth: 720 }).catch(() => null));
-    
+
+    const imagePromises = items.map((item) => loadSharedImage(item.image, { maxWidth: 720 }).catch(() => null));
+
     Promise.all([document.fonts.ready, ...imagePromises]).then(([, ...loadedImages]) => {
       if (!isMounted) return;
-      
-      const canvas = document.createElement("canvas");
+
+      const canvas = document.createElement('canvas');
       canvas.width = 2560;
       canvas.height = 444 * rows;
-      const ctx = canvas.getContext("2d");
-      
+      const ctx = canvas.getContext('2d');
+
       ctx.fillStyle = sceneObjects.colors.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.font = `500 19px ${getSansFamily()}`;
-      ctx.textBaseline = "middle";
+      ctx.textBaseline = 'middle';
       ctx.fillStyle = sceneObjects.colors.fg;
-      
+
       items.forEach((item, i) => {
         const x = (i % 4) * 640;
         const y = 444 * Math.floor(i / 4);
         const img = loadedImages[i];
-        
+
         if (img) {
           const scaleX = Math.max(538 / img.width, ITEM_HEIGHT / img.height);
           const dw = 538 / scaleX;
@@ -284,12 +284,12 @@ function GridCanvas({ items, state, active }) {
         }
         ctx.fillText(item.title, x + 51, y + Y_OFFSET + ITEM_HEIGHT + Y_OFFSET / 2);
       });
-      
+
       texture = new THREE.CanvasTexture(canvas);
       texture.colorSpace = THREE.NoColorSpace;
       texture.generateMipmaps = false;
       texture.minFilter = THREE.LinearFilter;
-      
+
       sceneObjects.grid.uniforms.uAtlas.value = texture;
       sceneObjects.grid.uniforms.uHasAtlas.value = 1;
     });
@@ -302,10 +302,10 @@ function GridCanvas({ items, state, active }) {
 
   useEffect(() => {
     return () => {
-      videosRef.current.forEach(v => {
+      videosRef.current.forEach((v) => {
         if (v) {
           v.v.pause();
-          v.v.removeAttribute("src");
+          v.v.removeAttribute('src');
           v.v.load();
           v.tex.dispose();
         }
@@ -318,11 +318,11 @@ function GridCanvas({ items, state, active }) {
     const s = state.current;
     const d = Math.min(delta, 0.1);
     const frameRateFactor = 60 * d;
-    
+
     if (!s.reduce) {
       s.pan.x += 0.05 * d;
     }
-    
+
     if (!s.dragging) {
       s.pan.x += s.vel.x * frameRateFactor;
       s.pan.y += s.vel.y * frameRateFactor;
@@ -330,16 +330,19 @@ function GridCanvas({ items, state, active }) {
       s.vel.x *= friction;
       s.vel.y *= friction;
     }
-    
+
     const velocityHypot = Math.hypot(s.vel.x, s.vel.y);
     s.bend += (1 + Math.min(0.6, 6 * velocityHypot) - s.bend) * (1 - Math.pow(0.9, frameRateFactor));
-    
+
     const leanFriction = 1 - Math.pow(0.95, frameRateFactor);
     s.lean.x += (s.leanTo.x - s.lean.x) * leanFriction;
     s.lean.y += (s.leanTo.y - s.lean.y) * leanFriction;
-    
-    let lensFactor = 1, lensX = 0, lensY = 0, fade = 1;
-    
+
+    let lensFactor = 1,
+      lensX = 0,
+      lensY = 0,
+      fade = 1;
+
     if (s.intro) {
       if (s.introT == null) {
         fade = 0;
@@ -353,19 +356,19 @@ function GridCanvas({ items, state, active }) {
         if (s.introT >= 1.6) s.intro = false;
       }
     }
-    
+
     const scrollFactor = s.reduce ? 1 : 1 - s.scrollP;
     fade *= 1 - 0.5 * Math.min(1, s.scrollP / 0.35);
-    
+
     for (let i = 0; i < 4; i++) {
       s.lens[i] = LENS_PARAMS[i] * (s.bend + lensX) * scrollFactor;
     }
-    
-    s.cell.x = s.cellPx * lensFactor / (s.h / 2);
+
+    s.cell.x = (s.cellPx * lensFactor) / (s.h / 2);
     s.cell.y = s.cell.x / CELL_RATIO;
     s.panU.x = s.pan.x + s.lean.x;
     s.panU.y = s.pan.y + s.lean.y + lensY;
-    
+
     let hoveredCell = null;
     if (!s.dragging && !s.intro) {
       if (s.touch) {
@@ -376,70 +379,72 @@ function GridCanvas({ items, state, active }) {
         hoveredCell = getHoveredCell(s, s.pointer.u, s.pointer.v);
       }
     }
-    
+
     const currentHoverA = s.hoverA;
-    if (hoveredCell ? (!currentHoverA.on || hoveredCell.x !== currentHoverA.x || hoveredCell.y !== currentHoverA.y) : currentHoverA.on) {
+    if (hoveredCell ? !currentHoverA.on || hoveredCell.x !== currentHoverA.x || hoveredCell.y !== currentHoverA.y : currentHoverA.on) {
       s.hoverB = currentHoverA;
-      s.hoverA = hoveredCell ? { x: hoveredCell.x, y: hoveredCell.y, t: 0, on: true, item: moduloHelper(hoveredCell, count) } : { ...EMPTY_HOVER };
+      s.hoverA = hoveredCell
+        ? { x: hoveredCell.x, y: hoveredCell.y, t: 0, on: true, item: moduloHelper(hoveredCell, count) }
+        : { ...EMPTY_HOVER };
       if (s.setCursor) s.setCursor(!!hoveredCell && !s.touch);
     }
-    
+
     const hoverFriction = 1 - Math.pow(0.82, frameRateFactor);
     s.hoverA.t += (!!s.hoverA.on - s.hoverA.t) * hoverFriction;
     s.hoverB.t -= s.hoverB.t * hoverFriction;
-    
-    const activeItem = (s.hoverA.on && active && !s.reduce) ? s.hoverA.item : -1;
-    
+
+    const activeItem = s.hoverA.on && active && !s.reduce ? s.hoverA.item : -1;
+
     if (activeItem !== s.playing) {
       if (s.playing >= 0 && videosRef.current[s.playing]) {
         videosRef.current[s.playing].v.pause();
       }
       s.playing = -1;
-      
+
       let newVideo = null;
       if (activeItem >= 0) {
         let vObj = videosRef.current[activeItem];
         if (!vObj && items[activeItem]?.video) {
-          const vid = document.createElement("video");
-          vid.crossOrigin = "anonymous";
+          const vid = document.createElement('video');
+          vid.crossOrigin = 'anonymous';
           vid.muted = true;
           vid.loop = true;
           vid.playsInline = true;
-          vid.preload = "auto";
+          vid.preload = 'auto';
           vid.src = items[activeItem].video;
           const tex = new THREE.VideoTexture(vid);
           tex.colorSpace = THREE.NoColorSpace;
           vObj = { v: vid, tex, ready: false };
-          vid.addEventListener("loadeddata", () => vObj.ready = true, { once: true });
+          vid.addEventListener('loadeddata', () => (vObj.ready = true), { once: true });
           videosRef.current[activeItem] = vObj;
         }
         newVideo = vObj;
       }
-      
+
       if (newVideo) {
         newVideo.v.currentTime = 0;
         newVideo.v.play().catch(() => {});
         s.playing = activeItem;
       }
     }
-    
+
     const activeVideoObj = s.playing >= 0 ? videosRef.current[s.playing] : null;
     const gridUniforms = sceneObjects.grid.uniforms;
     gridUniforms.uVideoOn.value = activeVideoObj?.ready ? 1 : 0;
     if (activeVideoObj?.ready) {
       gridUniforms.uVideo.value = activeVideoObj.tex;
     }
-    
+
     gridUniforms.uLens.value.fromArray(s.lens);
     gridUniforms.uCell.value.set(s.cell.x, s.cell.y);
     gridUniforms.uPan.value.set(s.panU.x, s.panU.y);
     gridUniforms.uHoverA.value.set(s.hoverA.x, s.hoverA.y, s.hoverA.t, 0);
     gridUniforms.uHoverB.value.set(s.hoverB.x, s.hoverB.y, s.hoverB.t, 0);
-    
+
     const postUniforms = sceneObjects.post.uniforms;
     postUniforms.uCopyEnd.value = s.copyEnd;
     postUniforms.uFade.value = fade;
-    
+
     gl.setRenderTarget(sceneObjects.rt);
     gl.render(sceneObjects.gridScene, sceneObjects.cam);
     gl.setRenderTarget(null);
@@ -454,13 +459,13 @@ function GridFallback({ items, copyEnd }) {
   return (
     <>
       <div className="absolute inset-0 grid grid-cols-2 content-center gap-px overflow-hidden lg:grid-cols-4">
-        {items.map(item => (
+        {items.map((item) => (
           <img
             key={item.slug}
             src={item.image}
             alt=""
             className="block aspect-[1280/804] object-cover"
-            style={{ width: "100%", height: "100%" }}
+            style={{ width: '100%', height: '100%' }}
           />
         ))}
       </div>
@@ -473,14 +478,14 @@ function GridFallback({ items, copyEnd }) {
 }
 
 // --- MAIN COMPONENT: HeroGrid ---
-export default function HeroGrid({ items = [], onIntro, glassRef, className = "" }) {
+export default function HeroGrid({ items = [], onIntro, glassRef, className = '' }) {
   const containerRef = useRef(null);
   const router = useContext(RouterContext);
-  
+
   const [hasWebGL, setHasWebGL] = useState(true);
   const [isActive, setIsActive] = useState(true);
   const [copyEndMargin, setCopyEndMargin] = useState(0.45);
-  
+
   const stateRef = useRef({
     pan: { x: -0.5, y: -0.5 },
     panU: { x: -0.5, y: -0.5 },
@@ -503,24 +508,24 @@ export default function HeroGrid({ items = [], onIntro, glassRef, className = ""
     introT: null,
     hoverA: { ...EMPTY_HOVER },
     hoverB: { ...EMPTY_HOVER },
-    playing: -1
+    playing: -1,
   });
 
   stateRef.current.copyEnd = copyEndMargin;
 
   useEffect(() => {
     try {
-      if (!document.createElement("canvas").getContext("webgl2")) {
+      if (!document.createElement('canvas').getContext('webgl2')) {
         setHasWebGL(false);
       }
     } catch {
       setHasWebGL(false);
     }
-    stateRef.current.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    stateRef.current.touch = window.matchMedia("(hover: none)").matches;
+    stateRef.current.reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    stateRef.current.touch = window.matchMedia('(hover: none)').matches;
     stateRef.current.setCursor = (cursor) => {
       if (containerRef.current) {
-        containerRef.current.style.cursor = cursor ? "pointer" : "";
+        containerRef.current.style.cursor = cursor ? 'pointer' : '';
       }
     };
   }, []);
@@ -538,12 +543,12 @@ export default function HeroGrid({ items = [], onIntro, glassRef, className = ""
     const container = containerRef.current;
     const glassEl = glassRef?.current;
     if (!container || !glassEl) return;
-    
+
     const observer = new ResizeObserver(() => {
       const h = container.offsetHeight || 1;
       setCopyEndMargin(Math.min(0.8, (glassEl.offsetTop + glassEl.offsetHeight) / h));
     });
-    
+
     observer.observe(container);
     observer.observe(glassEl);
     return () => observer.disconnect();
@@ -552,22 +557,28 @@ export default function HeroGrid({ items = [], onIntro, glassRef, className = ""
   useEffect(() => {
     const el = containerRef.current;
     if (!el || !hasWebGL) return;
-    
+
     const s = stateRef.current;
-    let startX = 0, startY = 0, lastTime = 0, lastX = 0, lastY = 0, elLeft = 0, elTop = 0;
-    
+    let startX = 0,
+      startY = 0,
+      lastTime = 0,
+      lastX = 0,
+      lastY = 0,
+      elLeft = 0,
+      elTop = 0;
+
     const updateBounds = () => {
       const rect = el.getBoundingClientRect();
       elLeft = rect.left;
       elTop = rect.top + window.scrollY;
     };
     updateBounds();
-    
+
     const getPointerUV = (e) => ({
       u: (e.clientX - elLeft) / s.w,
-      v: 1 - (e.clientY - (elTop - window.scrollY)) / s.h
+      v: 1 - (e.clientY - (elTop - window.scrollY)) / s.h,
     });
-    
+
     const onPointerDown = (e) => {
       s.dragging = true;
       s.vel.x = 0;
@@ -576,84 +587,84 @@ export default function HeroGrid({ items = [], onIntro, glassRef, className = ""
       startY = lastY = e.clientY;
       lastTime = performance.now();
     };
-    
+
     const onPointerMove = (e) => {
       if (!s.dragging) {
-        if (e.pointerType === "mouse" && el.contains(e.target)) {
+        if (e.pointerType === 'mouse' && el.contains(e.target)) {
           s.pointer = getPointerUV(e);
           s.leanTo.x = -0.06 * (2 * (s.pointer.u - 0.5));
           s.leanTo.y = -0.06 * (2 * (s.pointer.v - 0.5));
         }
         return;
       }
-      
+
       const now = performance.now();
       const dx = (e.clientX - startX) / s.cellPx;
       const dy = s.touch ? 0 : -(e.clientY - startY) / (s.cellPx / CELL_RATIO);
-      
+
       s.pan.x += dx;
       s.pan.y += dy;
-      
-      const frameRateFactor = (1000 / 60) / Math.max(1, now - lastTime);
+
+      const frameRateFactor = 1000 / 60 / Math.max(1, now - lastTime);
       s.vel.x = dx * frameRateFactor;
       s.vel.y = dy * frameRateFactor;
-      
+
       startX = e.clientX;
       startY = e.clientY;
       lastTime = now;
     };
-    
-    const onPointerUp = () => s.dragging = false;
+
+    const onPointerUp = () => (s.dragging = false);
     const onPointerLeave = () => {
       s.pointer = null;
       s.leanTo.x = 0;
       s.leanTo.y = 0;
     };
-    
+
     const onClick = (e) => {
       if (Math.hypot(e.clientX - lastX, e.clientY - lastY) > 6) return;
       const uv = getPointerUV(e);
       if (checkHoverBounds(s, uv.v) >= 0.3 || !items.length) return;
-      
+
       const clickedItem = items[moduloHelper(getHoveredCell(s, uv.u, uv.v), items.length)];
       const url = `/animations/${clickedItem.slug}`;
       router?.push ? router.push(url) : window.location.assign(url);
     };
-    
+
     let lastScrollY = window.scrollY;
     const onScroll = () => {
       const sy = window.scrollY;
-      s.pan.y -= (sy - lastScrollY) / (s.cellPx / CELL_RATIO) * 0.4;
+      s.pan.y -= ((sy - lastScrollY) / (s.cellPx / CELL_RATIO)) * 0.4;
       s.scrollP = Math.min(1, Math.max(0, (sy - elTop) / s.h));
       lastScrollY = sy;
     };
-    
+
     s.scrollP = Math.min(1, Math.max(0, (lastScrollY - elTop) / el.offsetHeight));
-    
+
     const resizeObserver = new ResizeObserver(updateBounds);
     resizeObserver.observe(el);
-    
-    const io = new IntersectionObserver(([entry]) => setIsActive(entry.isIntersecting), { rootMargin: "200px 0px" });
+
+    const io = new IntersectionObserver(([entry]) => setIsActive(entry.isIntersecting), { rootMargin: '200px 0px' });
     io.observe(el);
-    
-    el.addEventListener("pointerdown", onPointerDown);
-    el.addEventListener("pointerleave", onPointerLeave);
-    el.addEventListener("click", onClick);
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
-    window.addEventListener("pointercancel", onPointerUp);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    
+
+    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointerleave', onPointerLeave);
+    el.addEventListener('click', onClick);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
+    window.addEventListener('scroll', onScroll, { passive: true });
+
     return () => {
       resizeObserver.disconnect();
       io.disconnect();
-      el.removeEventListener("pointerdown", onPointerDown);
-      el.removeEventListener("pointerleave", onPointerLeave);
-      el.removeEventListener("click", onClick);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("pointercancel", onPointerUp);
-      window.removeEventListener("scroll", onScroll);
+      el.removeEventListener('pointerdown', onPointerDown);
+      el.removeEventListener('pointerleave', onPointerLeave);
+      el.removeEventListener('click', onClick);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
+      window.removeEventListener('scroll', onScroll);
     };
   }, [hasWebGL, items, router]);
 
@@ -661,18 +672,17 @@ export default function HeroGrid({ items = [], onIntro, glassRef, className = ""
     <div ref={containerRef} className={`absolute inset-0 cursor-grab touch-pan-y select-none active:cursor-grabbing ${className}`}>
       {hasWebGL ? (
         <Canvas
-          frameloop={isActive ? "always" : "never"}
+          frameloop={isActive ? 'always' : 'never'}
           dpr={[1, 1.5]}
-          gl={{ alpha: false, antialias: false, powerPreference: "low-power" }}
-          onCreated={({ gl }) => gl.domElement.addEventListener("webglcontextlost", e => e.preventDefault())}
-        >
+          gl={{ alpha: false, antialias: false, powerPreference: 'low-power' }}
+          onCreated={({ gl }) => gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault())}>
           <GridCanvas items={items} state={stateRef} active={isActive} />
         </Canvas>
       ) : (
         <GridFallback items={items} copyEnd={copyEndMargin} />
       )}
       <ul className="sr-only">
-        {items.map(item => (
+        {items.map((item) => (
           <li key={item.slug}>
             <a href={`/animations/${item.slug}`}>{item.title}</a>
           </li>

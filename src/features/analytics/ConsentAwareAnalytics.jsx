@@ -20,10 +20,7 @@ export function ConsentAwareAnalytics() {
     window.addEventListener('annnimate:consent-changed', handleConsentChange);
 
     return () => {
-      window.removeEventListener(
-        'annnimate:consent-changed',
-        handleConsentChange,
-      );
+      window.removeEventListener('annnimate:consent-changed', handleConsentChange);
     };
   }, []);
 

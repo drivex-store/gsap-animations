@@ -25,7 +25,7 @@ const VISIBLE_ANGLE = 86 * (Math.PI / 180);
 const BEND_REACH = 115 * (Math.PI / 180);
 const CYLINDER_RADIUS = 2.28;
 const CAMERA_Z = 3.72;
-const BRAND_COLOR = new THREE.Color("#fb460d");
+const BRAND_COLOR = new THREE.Color('#fb460d');
 
 // Helper to calculate slide density and positioning
 let layoutCache = [];
@@ -34,7 +34,7 @@ function generateLayout(gapFunc) {
   let currentAngle = 0;
   let currentX = 0;
   let currentZ = -CYLINDER_RADIUS;
-  
+
   const stepFactor = VISIBLE_ANGLE / Math.pow(2.28 * VISIBLE_ANGLE, 1);
   const getModPsi = (a) => stepFactor * Math.pow(Math.abs(a), 1);
   const getScale = (a) => 1 + 0.35 * Math.min(1, Math.abs(a) / VISIBLE_ANGLE);
@@ -45,7 +45,7 @@ function generateLayout(gapFunc) {
   };
 
   for (let i = 1; i <= 512; i++) {
-    let delta = getDelta(currentAngle + 0.5 * getDelta(currentAngle) / 64) / 64;
+    let delta = getDelta(currentAngle + (0.5 * getDelta(currentAngle)) / 64) / 64;
     let psi = getModPsi(currentAngle + delta / 2);
     currentX += Math.cos(psi) * delta;
     currentZ += Math.sin(psi) * delta;
@@ -64,7 +64,7 @@ function getPositionAt(index) {
   const p1 = layoutCache[floorIdx];
   const p2 = layoutCache[floorIdx + 1];
   const sign = index < 0 ? -1 : 1;
-  
+
   tempPos.x = sign * (p1.x + (p2.x - p1.x) * remainder);
   tempPos.z = p1.z + (p2.z - p1.z) * remainder;
   tempPos.psi = sign * (p1.psi + (p2.psi - p1.psi) * remainder);
@@ -194,13 +194,13 @@ const postFragmentShader = `
 const PLANE_GEO = new THREE.PlaneGeometry(1, 1 / ASPECT_RATIO, 48, 1);
 
 export function getSansFamily() {
-  if (typeof document === 'undefined') return "system-ui, sans-serif";
-  const el = document.createElement("span");
-  el.style.fontFamily = "var(--font-sans)";
+  if (typeof document === 'undefined') return 'system-ui, sans-serif';
+  const el = document.createElement('span');
+  el.style.fontFamily = 'var(--font-sans)';
   document.body.appendChild(el);
   const ff = getComputedStyle(el).fontFamily;
   document.body.removeChild(el);
-  return ff || "system-ui, sans-serif";
+  return ff || 'system-ui, sans-serif';
 }
 
 // --- SUB COMPONENT: CarouselRing ---
@@ -208,30 +208,35 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
   const { gl, camera, size } = useThree();
   const meshesRef = useRef([]);
   const activeSlidesRef = useRef([]);
-  
-  const materials = useMemo(() => 
-    ring.map(() => new THREE.ShaderMaterial({
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
-      transparent: true,
-      uniforms: {
-        uMap: { value: null },
-        uOverlay: { value: null },
-        uHasMap: { value: 0 },
-        uHasOverlay: { value: 0 },
-        uAlpha: { value: 1 },
-        uAspect: { value: ASPECT_RATIO },
-        uPsi: { value: 0 },
-        uScale: { value: 1 },
-        uR: { value: CYLINDER_RADIUS },
-        uEdgeScale: { value: 0.35 },
-        uVisible: { value: VISIBLE_ANGLE },
-        uBendReach: { value: 0.45614 }, // approx 1/CYLINDER_RADIUS
-        uRadius: { value: 0 },
-        uBrand: { value: BRAND_COLOR }
-      }
-    })
-  ), [ring]);
+
+  const materials = useMemo(
+    () =>
+      ring.map(
+        () =>
+          new THREE.ShaderMaterial({
+            vertexShader: vertexShader,
+            fragmentShader: fragmentShader,
+            transparent: true,
+            uniforms: {
+              uMap: { value: null },
+              uOverlay: { value: null },
+              uHasMap: { value: 0 },
+              uHasOverlay: { value: 0 },
+              uAlpha: { value: 1 },
+              uAspect: { value: ASPECT_RATIO },
+              uPsi: { value: 0 },
+              uScale: { value: 1 },
+              uR: { value: CYLINDER_RADIUS },
+              uEdgeScale: { value: 0.35 },
+              uVisible: { value: VISIBLE_ANGLE },
+              uBendReach: { value: 0.45614 }, // approx 1/CYLINDER_RADIUS
+              uRadius: { value: 0 },
+              uBrand: { value: BRAND_COLOR },
+            },
+          }),
+      ),
+    [ring],
+  );
 
   const texturesRef = useRef([]);
   const videosRef = useRef([]);
@@ -248,8 +253,8 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
       uniforms: {
         tScene: { value: rt.texture },
         uRes: { value: new THREE.Vector2(1, 1) },
-        uGlass: { value: 1 }
-      }
+        uGlass: { value: 1 },
+      },
     });
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
     const scene = new THREE.Scene();
@@ -259,31 +264,31 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
 
   // Update layout and camera based on window size
   useEffect(() => {
-    const calcZ = (a, b) => b * (CAMERA_Z * Math.cos(a) + CYLINDER_RADIUS) / Math.pow(CAMERA_Z + CYLINDER_RADIUS * Math.cos(a), 2);
+    const calcZ = (a, b) => (b * (CAMERA_Z * Math.cos(a) + CYLINDER_RADIUS)) / Math.pow(CAMERA_Z + CYLINDER_RADIUS * Math.cos(a), 2);
     let gapFunc = () => 0.04;
     let fov = 1;
     let edgePsi = 0;
-    
+
     for (let i = 0; i < 4; i++) {
       generateLayout(gapFunc);
       const psi = getPositionAt(2).psi;
       edgePsi = psi - gapFunc(psi) / 2 / CYLINDER_RADIUS;
-      fov = CYLINDER_RADIUS * Math.sin(edgePsi) / (CAMERA_Z - -CYLINDER_RADIUS * Math.cos(edgePsi)) / 1.33;
+      fov = (CYLINDER_RADIUS * Math.sin(edgePsi)) / (CAMERA_Z - -CYLINDER_RADIUS * Math.cos(edgePsi)) / 1.33;
       const hw = size.width / 2 / fov;
       gapFunc = (t) => 8 / calcZ(t, hw);
     }
     generateLayout(gapFunc);
-    
+
     state.current.edgePsi = edgePsi;
     state.current.gap0 = gapFunc(0);
     state.current.gapAt = gapFunc;
-    
-    camera.fov = 2 * Math.atan(fov / (size.width / size.height)) * 180 / Math.PI;
+
+    camera.fov = (2 * Math.atan(fov / (size.width / size.height)) * 180) / Math.PI;
     camera.position.set(0, 0, CAMERA_Z);
     camera.updateProjectionMatrix();
-    
-    state.current.wpx = size.width / 2 * (0.16666666666666666 / fov);
-    
+
+    state.current.wpx = (size.width / 2) * (0.16666666666666666 / fov);
+
     const dpr = gl.getPixelRatio();
     postProcess.rt.setSize(Math.round(size.width * dpr), Math.round(size.height * dpr));
     postProcess.mat.uniforms.uRes.value.set(size.width * dpr, size.height * dpr);
@@ -297,20 +302,20 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
       const font = getSansFamily();
       ring.forEach((item, i) => {
         const height = Math.round(640 / ASPECT_RATIO);
-        const canvas = document.createElement("canvas");
+        const canvas = document.createElement('canvas');
         canvas.width = 640;
         canvas.height = height;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0.62 * height, 0, height);
-        gradient.addColorStop(0, "rgba(0,0,0,0)");
-        gradient.addColorStop(1, "rgba(0,0,0,0.55)");
+        gradient.addColorStop(0, 'rgba(0,0,0,0)');
+        gradient.addColorStop(1, 'rgba(0,0,0,0.55)');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0.62 * height, 640, 0.38 * height);
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = '#ffffff';
         ctx.font = `500 22px ${font}`;
-        ctx.textBaseline = "alphabetic";
+        ctx.textBaseline = 'alphabetic';
         ctx.fillText(item.title, 22, height - 20);
-        
+
         const tex = new THREE.CanvasTexture(canvas);
         tex.colorSpace = THREE.NoColorSpace;
         materials[i].uniforms.uOverlay.value = tex;
@@ -319,8 +324,9 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
     });
 
     ring.forEach((item, i) => {
-      if(item.image) {
-          loadSharedImage(item.image, { maxWidth: 720 }).then(img => {
+      if (item.image) {
+        loadSharedImage(item.image, { maxWidth: 720 })
+          .then((img) => {
             if (!isMounted) return;
             const tex = new THREE.Texture(img);
             tex.flipY = false;
@@ -331,44 +337,51 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
               materials[i].uniforms.uMap.value = tex;
               materials[i].uniforms.uHasMap.value = 1;
             }
-          }).catch(() => {});
+          })
+          .catch(() => {});
       }
     });
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [ring, materials]);
 
   // Load Videos
   useEffect(() => {
     const vids = ring.map((item, i) => {
       if (!item.video) return null;
-      const vid = document.createElement("video");
-      vid.crossOrigin = "anonymous";
+      const vid = document.createElement('video');
+      vid.crossOrigin = 'anonymous';
       vid.muted = true;
       vid.loop = true;
       vid.playsInline = true;
-      vid.preload = "none";
+      vid.preload = 'none';
       vid.src = item.video;
-      
+
       const tex = new THREE.VideoTexture(vid);
       tex.colorSpace = THREE.NoColorSpace;
-      
-      vid.addEventListener("loadeddata", () => {
-        hasVideoLoaded.current[i] = true;
-        materials[i].uniforms.uMap.value = tex;
-        materials[i].uniforms.uHasMap.value = 1;
-      }, { once: true });
-      
+
+      vid.addEventListener(
+        'loadeddata',
+        () => {
+          hasVideoLoaded.current[i] = true;
+          materials[i].uniforms.uMap.value = tex;
+          materials[i].uniforms.uHasMap.value = 1;
+        },
+        { once: true },
+      );
+
       return { v: vid, tex };
     });
-    
+
     videosRef.current = vids;
-    
+
     return () => {
-      vids.forEach(v => {
+      vids.forEach((v) => {
         if (v) {
           v.v.pause();
-          v.v.removeAttribute("src");
+          v.v.removeAttribute('src');
           v.v.load();
           v.tex.dispose();
         }
@@ -381,7 +394,7 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
   // Handle active state
   useEffect(() => {
     if (!active) {
-      videosRef.current.forEach(v => v?.v.pause());
+      videosRef.current.forEach((v) => v?.v.pause());
     }
   }, [active]);
 
@@ -389,18 +402,18 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
   useFrame((stateObj, delta) => {
     const s = state.current;
     const d = 60 * Math.min(delta, 0.1);
-    
+
     if (s.autoplay && !s.reduce) {
-      s.offset += s.speed * d / 60;
+      s.offset += (s.speed * d) / 60;
     }
-    
+
     if (s.intro && s.introT != null) {
       s.introT += Math.min(delta, 0.1);
       if (s.introT > 7 + 2 * 3 * 0.08) {
         s.intro = false;
       }
     }
-    
+
     if (!s.dragging && Math.abs(s.velocity) > 0.00002) {
       s.offset += s.velocity * d;
       s.velocity *= Math.pow(0.94, d);
@@ -411,37 +424,38 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
       if (!mesh) return;
       const pos = THREE.MathUtils.euclideanModulo(i + s.offset + count / 2, count) - count / 2;
       let introOffset = 0;
-      
+
       if (s.intro) {
-        introOffset = s.introT == null ? 7 : 7 * (1 - gsap.parseEase("expo.out")(THREE.MathUtils.clamp((s.introT - (3 - pos) * 0.08) / 1.6, 0, 1)));
+        introOffset =
+          s.introT == null ? 7 : 7 * (1 - gsap.parseEase('expo.out')(THREE.MathUtils.clamp((s.introT - (3 - pos) * 0.08) / 1.6, 0, 1)));
       }
-      
+
       const adjPos = pos - introOffset;
       const p1 = getPositionAt(adjPos - 0.5).psi;
       const p2 = getPositionAt(adjPos + 0.5).psi;
       const psi = (p1 + p2) / 2;
       const absPsi = Math.abs(psi);
-      
+
       let isVis = true;
       if (s.intro) {
         const p1Vis = Math.abs(getPositionAt(pos - 0.5).psi);
         const p2Vis = Math.abs(getPositionAt(pos + 0.5).psi);
         isVis = pos * (pos + 1) <= 0 || Math.min(p1Vis, p2Vis) < (s.edgePsi || 1.2);
       }
-      
+
       const alpha = absPsi > BEND_REACH || adjPos < -count / 2 || !isVis ? 0 : 1;
       mesh.visible = alpha > 0;
-      
+
       const scale = Math.max(0.2, CYLINDER_RADIUS * (p2 - p1) - (s.gapAt ? s.gapAt(psi) : 0.04));
-      const half = 0.5 * scale / CYLINDER_RADIUS;
-      
+      const half = (0.5 * scale) / CYLINDER_RADIUS;
+
       activeSlidesRef.current[i] = { psi, half, on: alpha > 0 };
-      
+
       const uni = materials[i].uniforms;
       uni.uAlpha.value = alpha;
       uni.uPsi.value = psi;
       uni.uScale.value = scale;
-      
+
       const vid = videosRef.current[i];
       if (vid) {
         const shouldPlay = alpha > 0 && absPsi - half < (s.edgePsi || 1.2) + 0.15 && !s.reduce;
@@ -454,11 +468,11 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
     });
 
     postProcess.mat.uniforms.uGlass.value = glass ? 1 : 0;
-    
+
     gl.setRenderTarget(postProcess.rt);
     gl.clear();
     gl.render(stateObj.scene, camera);
-    
+
     gl.setRenderTarget(null);
     gl.clear();
     gl.render(postProcess.scene, postProcess.cam);
@@ -468,37 +482,39 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
   useEffect(() => {
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
-    
+
     pickRef.current = (clientX, clientY) => {
       const rect = gl.domElement.getBoundingClientRect();
-      pointer.set((clientX - rect.left) / rect.width * 2 - 1, -(2 * ((clientY - rect.top) / rect.height)) + 1);
+      pointer.set(((clientX - rect.left) / rect.width) * 2 - 1, -(2 * ((clientY - rect.top) / rect.height)) + 1);
       raycaster.setFromCamera(pointer, camera);
-      
+
       const origin = raycaster.ray.origin;
       const dir = raycaster.ray.direction;
       const a = dir.x * dir.x + dir.z * dir.z;
       const b = 2 * (origin.x * dir.x + origin.z * dir.z);
       const c = origin.x * origin.x + origin.z * origin.z - CYLINDER_RADIUS * CYLINDER_RADIUS;
       const discriminant = b * b - 4 * a * c;
-      
+
       if (discriminant < 0 || a === 0) return null;
-      
+
       for (const t of [(-b - Math.sqrt(discriminant)) / (2 * a), (-b + Math.sqrt(discriminant)) / (2 * a)]) {
         if (t <= 0) continue;
         const ix = origin.x + dir.x * t;
         const iy = origin.y + dir.y * t;
         const iz = origin.z + dir.z * t;
         const angle = Math.atan2(ix, -iz);
-        
-        if (Math.abs(iy) > 0.5 * (1 + 0.35 * Math.min(1, Math.abs(angle) / VISIBLE_ANGLE)) / ASPECT_RATIO) continue;
-        
-        const hitIdx = activeSlidesRef.current.findIndex(s => s?.on && Math.abs(angle - s.psi) <= s.half);
+
+        if (Math.abs(iy) > (0.5 * (1 + 0.35 * Math.min(1, Math.abs(angle) / VISIBLE_ANGLE))) / ASPECT_RATIO) continue;
+
+        const hitIdx = activeSlidesRef.current.findIndex((s) => s?.on && Math.abs(angle - s.psi) <= s.half);
         if (hitIdx >= 0) return ring[hitIdx].slug;
       }
       return null;
     };
-    
-    return () => { pickRef.current = null; };
+
+    return () => {
+      pickRef.current = null;
+    };
   }, [gl, camera, ring, pickRef]);
 
   return (
@@ -506,7 +522,7 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
       {ring.map((item, i) => (
         <mesh
           key={`${item.slug}-${i}`}
-          ref={el => meshesRef.current[i] = el}
+          ref={(el) => (meshesRef.current[i] = el)}
           geometry={PLANE_GEO}
           material={materials[i]}
           frustumCulled={false}
@@ -517,15 +533,15 @@ function CarouselRing({ ring, state, glass, pickRef, active }) {
 }
 
 // --- MAIN COMPONENT ---
-export default function GlassCarousel({ items = [], autoplay = true, speed = 0.22, className = "", onIntro }) {
+export default function GlassCarousel({ items = [], autoplay = true, speed = 0.22, className = '', onIntro }) {
   const containerRef = useRef(null);
   const router = useContext(RouterContext);
-  const isLg = useBreakpoint("lg"); // Glass effect only on desktop
-  
+  const isLg = useBreakpoint('lg'); // Glass effect only on desktop
+
   const [hasWebGL, setHasWebGL] = useState(true);
   const [isActive, setIsActive] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const pickRef = useRef(null);
   const stateRef = useRef({
     offset: 0,
@@ -535,9 +551,9 @@ export default function GlassCarousel({ items = [], autoplay = true, speed = 0.2
     speed: speed,
     reduce: false,
     intro: !!onIntro,
-    introT: null
+    introT: null,
   });
-  
+
   stateRef.current.autoplay = autoplay;
   stateRef.current.speed = speed;
 
@@ -551,32 +567,34 @@ export default function GlassCarousel({ items = [], autoplay = true, speed = 0.2
 
   useEffect(() => {
     try {
-      const canvas = document.createElement("canvas");
-      if (!canvas.getContext("webgl2") && !canvas.getContext("webgl")) {
+      const canvas = document.createElement('canvas');
+      if (!canvas.getContext('webgl2') && !canvas.getContext('webgl')) {
         setHasWebGL(false);
       }
     } catch {
       setHasWebGL(false);
     }
-    stateRef.current.reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    stateRef.current.reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }, []);
 
   useEffect(() => {
     if (!onIntro) return;
     const s = stateRef.current;
     onIntro(() => {
-      s.reduce ? s.intro = false : s.introT = 0;
+      s.reduce ? (s.intro = false) : (s.introT = 0);
     });
   }, [onIntro]);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    
-    let startX = 0, lastX = 0, lastTime = 0;
-    
+
+    let startX = 0,
+      lastX = 0,
+      lastTime = 0;
+
     const getDelta = (dx) => dx / (stateRef.current.wpx || 300) / (1 + (stateRef.current.gap0 ?? 0.04));
-    
+
     const onPointerDown = (e) => {
       const s = stateRef.current;
       s.dragging = true;
@@ -585,7 +603,7 @@ export default function GlassCarousel({ items = [], autoplay = true, speed = 0.2
       lastX = e.clientX;
       lastTime = performance.now();
     };
-    
+
     const onPointerMove = (e) => {
       const s = stateRef.current;
       if (!s.dragging) {
@@ -597,21 +615,21 @@ export default function GlassCarousel({ items = [], autoplay = true, speed = 0.2
       const now = performance.now();
       const dx = getDelta(e.clientX - startX);
       s.offset += dx;
-      s.velocity = dx / Math.max(1, now - lastTime) * (1000 / 60);
+      s.velocity = (dx / Math.max(1, now - lastTime)) * (1000 / 60);
       startX = e.clientX;
       lastTime = now;
     };
-    
-    const onPointerUp = () => stateRef.current.dragging = false;
-    
+
+    const onPointerUp = () => (stateRef.current.dragging = false);
+
     const onClick = (e) => {
       if (Math.abs(e.clientX - lastX) > 6) return;
       const slug = pickRef.current?.(e.clientX, e.clientY);
       if (slug) navigateRef.current(slug);
     };
-    
+
     const onPointerLeave = () => setIsHovered(false);
-    
+
     let lastScroll = window.scrollY;
     const onScroll = () => {
       const sy = window.scrollY;
@@ -619,23 +637,23 @@ export default function GlassCarousel({ items = [], autoplay = true, speed = 0.2
       lastScroll = sy;
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    el.addEventListener("click", onClick);
-    el.addEventListener("pointerleave", onPointerLeave);
-    el.addEventListener("pointerdown", onPointerDown);
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
-    
-    const observer = new IntersectionObserver(([entry]) => setIsActive(entry.isIntersecting), { rootMargin: "200px 0px" });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    el.addEventListener('click', onClick);
+    el.addEventListener('pointerleave', onPointerLeave);
+    el.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointermove', onPointerMove);
+    window.addEventListener('pointerup', onPointerUp);
+
+    const observer = new IntersectionObserver(([entry]) => setIsActive(entry.isIntersecting), { rootMargin: '200px 0px' });
     observer.observe(el);
-    
+
     return () => {
-      el.removeEventListener("pointerdown", onPointerDown);
-      el.removeEventListener("click", onClick);
-      el.removeEventListener("pointerleave", onPointerLeave);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
+      el.removeEventListener('pointerdown', onPointerDown);
+      el.removeEventListener('click', onClick);
+      el.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('pointerup', onPointerUp);
       observer.disconnect();
     };
   }, [hasWebGL]);
@@ -653,30 +671,28 @@ export default function GlassCarousel({ items = [], autoplay = true, speed = 0.2
   return (
     <div
       ref={containerRef}
-      className={`relative h-full min-h-[320px] w-full touch-pan-y select-none ${isHovered ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"} ${className}`}
-    >
+      className={`relative h-full min-h-[320px] w-full touch-pan-y select-none ${isHovered ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'} ${className}`}>
       <Canvas
         style={{
-          position: "absolute",
+          position: 'absolute',
           left: 0,
-          top: "-35%",
-          width: "100%",
-          height: "170%",
-          pointerEvents: "none"
+          top: '-35%',
+          width: '100%',
+          height: '170%',
+          pointerEvents: 'none',
         }}
-        frameloop={isActive ? "always" : "never"}
+        frameloop={isActive ? 'always' : 'never'}
         dpr={[1, 1.5]}
         camera={{ fov: 40, near: 0.01, far: 20, position: [0, 0, CAMERA_Z] }}
-        gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
+        gl={{ alpha: true, antialias: true, powerPreference: 'low-power' }}
         onCreated={({ gl }) => {
           gl.setClearColor(0, 0);
-          gl.domElement.addEventListener("webglcontextlost", (e) => e.preventDefault());
-        }}
-      >
+          gl.domElement.addEventListener('webglcontextlost', (e) => e.preventDefault());
+        }}>
         <CarouselRing ring={ringItems} state={stateRef} glass={isLg} pickRef={pickRef} active={isActive} />
       </Canvas>
       <ul className="sr-only">
-        {items.map(item => (
+        {items.map((item) => (
           <li key={item.slug}>
             <Link href={`/animations/${item.slug}`}>{item.title}</Link>
           </li>

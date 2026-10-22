@@ -34,7 +34,7 @@ export default function StaggerContainer({
             targets,
             {
               autoAlpha: 0,
-              y: y
+              y: y,
             },
             {
               autoAlpha: 1,
@@ -42,13 +42,13 @@ export default function StaggerContainer({
               duration: duration,
               ease: ease,
               delay: delay,
-              stagger: stagger
-            }
+              stagger: stagger,
+            },
           );
         }
       : null,
     start: start,
-    deps: [enabled, y, duration, ease, delay, stagger]
+    deps: [enabled, y, duration, ease, delay, stagger],
   });
 
   useEffect(() => {

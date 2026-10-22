@@ -15,12 +15,7 @@ import FooterAskAi from '@/components/layout/Footer/FooterAskAi';
 import FooterMobileAccordion from '@/components/layout/Footer/FooterMobileAccordion';
 import StudioClock from '@/components/layout/Footer/StudioClock';
 import FooterStatus from '@/components/layout/Footer/FooterStatus';
-import {
-  PLATFORM_COLUMN,
-  KITS_COLUMN,
-  SOCIAL_LINKS,
-  LEGAL_LINKS,
-} from '@/libs/configs/footerConfig';
+import { PLATFORM_COLUMN, KITS_COLUMN, SOCIAL_LINKS, LEGAL_LINKS } from '@/libs/configs/footerConfig';
 
 // NOTE: module id: 297428
 export default function Footer({ latestAnimation }) {
@@ -48,18 +43,12 @@ export default function Footer({ latestAnimation }) {
       },
       KITS_COLUMN,
     ],
-    [categories]
+    [categories],
   );
 
   return (
-    <footer
-      data-theme="dark"
-      className="annnimate-footer relative bg-background px-8 pb-8 lg:px-32 lg:pb-32"
-    >
-      <div
-        data-theme="light"
-        className="relative z-[20] px-16 py-24 lg:p-48 overflow-hidden bg-background text-foreground"
-      >
+    <footer data-theme="dark" className="annnimate-footer relative bg-background px-8 pb-8 lg:px-32 lg:pb-32">
+      <div data-theme="light" className="relative z-[20] px-16 py-24 lg:p-48 overflow-hidden bg-background text-foreground">
         <div className="w-full max-w-[calc(var(--v2-max,1920px)-64px)] mx-auto py-24">
           <div className="grid grid-cols-12 items-center gap-16">
             <div className="col-span-12 md:col-span-7">
@@ -81,20 +70,11 @@ export default function Footer({ latestAnimation }) {
         <div className="w-full max-w-[calc(var(--v2-max,1920px)-64px)] mx-auto py-32 lg:py-64">
           <div className="grid grid-cols-12 gap-16 gap-y-64">
             <div className="col-span-12 flex flex-col gap-32 lg:col-span-5">
-              <TransitionLink
-                href="/"
-                aria-label="Annnimate home"
-                className="inline-block w-fit"
-              >
+              <TransitionLink href="/" aria-label="Annnimate home" className="inline-block w-fit">
                 <LogoGraphic height={20} className="text-foreground" />
               </TransitionLink>
 
-              <NewsletterForm
-                source="footer"
-                idPrefix="footer"
-                eyebrow={<NewsletterEyebrow />}
-                inputSize="lg"
-              />
+              <NewsletterForm source="footer" idPrefix="footer" eyebrow={<NewsletterEyebrow />} inputSize="lg" />
 
               <div className="flex flex-wrap items-center gap-x-12 gap-y-16">
                 {SOCIAL_LINKS.map(({ label, href, Icon }) => (
@@ -104,36 +84,21 @@ export default function Footer({ latestAnimation }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex size-40 items-center justify-center text-foreground transition-colors lg:size-32 duration-(--duration-fast) ease-(--ease-expo-out) hover:text-foreground-muted"
-                  >
+                    className="flex size-40 items-center justify-center text-foreground transition-colors lg:size-32 duration-(--duration-fast) ease-(--ease-expo-out) hover:text-foreground-muted">
                     <Icon className="size-20" aria-hidden="true" />
                   </a>
                 ))}
-                <NavLink
-                  href="/contact"
-                  variant="nav"
-                  className="text-mono-sm text-foreground"
-                >
+                <NavLink href="/contact" variant="nav" className="text-mono-sm text-foreground">
                   {t('common.footer.contact')}
                 </NavLink>
               </div>
 
-              <AnimatedWordmark
-                fit="width"
-                tone="muted"
-                playOnView={true}
-                aria-hidden="true"
-                className="mt-auto w-1/2 pt-32 lg:w-full"
-              />
+              <AnimatedWordmark fit="width" tone="muted" playOnView={true} aria-hidden="true" className="mt-auto w-1/2 pt-32 lg:w-full" />
             </div>
 
             <div className="col-span-12 flex flex-col lg:hidden">
               {columns.map((column) => (
-                <FooterMobileAccordion
-                  key={column.label}
-                  label={column.label}
-                  links={column.links}
-                />
+                <FooterMobileAccordion key={column.label} label={column.label} links={column.links} />
               ))}
             </div>
 
@@ -141,13 +106,8 @@ export default function Footer({ latestAnimation }) {
               <nav
                 key={column.label}
                 aria-label={column.label}
-                className={`hidden lg:col-span-2 lg:block ${
-                  colIndex === 0 ? 'lg:col-start-7' : ''
-                }`}
-              >
-                <p className="text-mono-sm mb-24 text-foreground-muted">
-                  {column.label}
-                </p>
+                className={`hidden lg:col-span-2 lg:block ${colIndex === 0 ? 'lg:col-start-7' : ''}`}>
+                <p className="text-mono-sm mb-24 text-foreground-muted">{column.label}</p>
                 <ul className="flex flex-col">
                   {column.links.map((link) => (
                     <li key={link.label}>
@@ -156,8 +116,7 @@ export default function Footer({ latestAnimation }) {
                         variant="nav"
                         target={link.external ? '_blank' : undefined}
                         rel={link.external ? 'noopener noreferrer' : undefined}
-                        className="text-body-sm -mx-12 text-foreground"
-                      >
+                        className="text-body-sm -mx-12 text-foreground">
                         {link.label}
                       </NavLink>
                     </li>
@@ -185,32 +144,21 @@ export default function Footer({ latestAnimation }) {
                 variant="nav"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-mono-sm -mx-12 -my-6 text-foreground"
-              >
+                className="text-mono-sm -mx-12 -my-6 text-foreground">
                 {t('common.footer.builtByName')}
               </NavLink>
             </div>
 
             <div className="flex flex-wrap items-center gap-x-32 gap-y-12">
               {LEGAL_LINKS.map((link) => (
-                <NavLink
-                  key={link.href}
-                  href={link.href}
-                  variant="nav"
-                  className="text-mono-sm -mx-12 -my-6 text-foreground"
-                >
+                <NavLink key={link.href} href={link.href} variant="nav" className="text-mono-sm -mx-12 -my-6 text-foreground">
                   {link.label}
                 </NavLink>
               ))}
               <button
                 type="button"
-                onClick={() =>
-                  window.dispatchEvent(
-                    new CustomEvent('annnimate:open-cookie-preferences')
-                  )
-                }
-                className="text-mono-sm inline-flex items-center text-foreground-muted transition-colors duration-300 ease-out hover:text-foreground"
-              >
+                onClick={() => window.dispatchEvent(new CustomEvent('annnimate:open-cookie-preferences'))}
+                className="text-mono-sm inline-flex items-center text-foreground-muted transition-colors duration-300 ease-out hover:text-foreground">
                 {t('common.footer.cookiePreferences')}
               </button>
             </div>

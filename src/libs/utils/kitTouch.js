@@ -8,10 +8,7 @@ export const KIT_TOUCH_COOKIE = 'anm_kit';
 // NOTE: module id: 660219
 export function buildKitTouch({ getParam, at = null }) {
   const sidParam = getParam('sid');
-  const subscriberId =
-    sidParam && /^[0-9a-f]{16}$/.test(sidParam)
-      ? sidParam
-      : getParam('ck_subscriber_id');
+  const subscriberId = sidParam && /^[0-9a-f]{16}$/.test(sidParam) ? sidParam : getParam('ck_subscriber_id');
 
   return subscriberId && /^(\d{1,20}|[0-9a-f]{16})$/.test(subscriberId)
     ? {
@@ -30,11 +27,7 @@ export function parseFirstTouch(rawCookieValue) {
 
   try {
     const parsedData = JSON.parse(decodeURIComponent(rawCookieValue));
-    if (
-      !parsedData ||
-      typeof parsedData !== 'object' ||
-      Array.isArray(parsedData)
-    ) {
+    if (!parsedData || typeof parsedData !== 'object' || Array.isArray(parsedData)) {
       return null;
     }
     return parsedData;

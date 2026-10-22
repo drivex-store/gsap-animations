@@ -1,16 +1,6 @@
 'use client';
 
-
-import {
-  createContext,
-  forwardRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { createContext, forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import Lenis from 'lenis';
 import gsap from 'gsap';
@@ -44,9 +34,7 @@ class LenisStore {
     this.listeners = [...this.listeners, listener];
 
     return () => {
-      this.listeners = this.listeners.filter(
-        (item) => item !== listener,
-      );
+      this.listeners = this.listeners.filter((item) => item !== listener);
     };
   }
 
@@ -71,11 +59,7 @@ export function useLenis(callback, dependencies = [], priority = 0) {
   const context = useContext(LenisContext);
   const storeState = useStore(lenisStore);
 
-  const {
-    lenis,
-    addCallback,
-    removeCallback,
-  } = context ?? storeState ?? {};
+  const { lenis, addCallback, removeCallback } = context ?? storeState ?? {};
 
   useEffect(() => {
     if (!callback || !addCallback || !removeCallback || !lenis) {
@@ -88,13 +72,7 @@ export function useLenis(callback, dependencies = [], priority = 0) {
     return () => {
       removeCallback(callback);
     };
-  }, [
-    lenis,
-    addCallback,
-    removeCallback,
-    priority,
-    ...dependencies,
-  ]);
+  }, [lenis, addCallback, removeCallback, priority, ...dependencies]);
 
   return lenis;
 }
@@ -126,16 +104,7 @@ function LenisGSAP() {
 }
 
 // Original module ID: 776017
-const LenisProvider = forwardRef(function LenisProvider(
-  {
-    children,
-    root = false,
-    options = {},
-    autoRaf = true,
-    ...props
-  },
-  forwardedRef,
-) {
+const LenisProvider = forwardRef(function LenisProvider({ children, root = false, options = {}, autoRaf = true, ...props }, forwardedRef) {
   const wrapperRef = useRef(null);
   const contentRef = useRef(null);
   const [lenis, setLenis] = useState(undefined);
@@ -182,15 +151,11 @@ const LenisProvider = forwardRef(function LenisProvider(
   const addCallback = useCallback((callback, priority) => {
     callbacks.current.push({ callback, priority });
 
-    callbacks.current.sort(
-      (a, b) => a.priority - b.priority,
-    );
+    callbacks.current.sort((a, b) => a.priority - b.priority);
   }, []);
 
   const removeCallback = useCallback((callback) => {
-    callbacks.current = callbacks.current.filter(
-      (item) => item.callback !== callback,
-    );
+    callbacks.current = callbacks.current.filter((item) => item.callback !== callback);
   }, []);
 
   useEffect(() => {
@@ -231,8 +196,7 @@ const LenisProvider = forwardRef(function LenisProvider(
         lenis,
         addCallback,
         removeCallback,
-      }}
-    >
+      }}>
       {root && root !== 'asChild' ? (
         <>
           <LenisGSAP />
@@ -248,4 +212,3 @@ const LenisProvider = forwardRef(function LenisProvider(
 });
 
 export default LenisProvider;
-

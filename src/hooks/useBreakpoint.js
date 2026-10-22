@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { useSyncExternalStore } from 'react';
 
 const BREAKPOINTS = {
@@ -6,14 +6,16 @@ const BREAKPOINTS = {
   md: 768,
   lg: 1024,
   xl: 1280,
-  '2xl': 1536
+  '2xl': 1536,
 };
 
 export function useBreakpoint(breakpoint) {
   let width = typeof breakpoint === 'number' ? breakpoint : BREAKPOINTS[breakpoint];
-  
+
   if (width == null) {
-    throw new Error(`useBreakpoint: unknown breakpoint "${breakpoint}". Use one of: ${Object.keys(BREAKPOINTS).join(', ')} or a raw px number.`);
+    throw new Error(
+      `useBreakpoint: unknown breakpoint "${breakpoint}". Use one of: ${Object.keys(BREAKPOINTS).join(', ')} or a raw px number.`,
+    );
   }
 
   let query = `(min-width: ${width}px)`;
@@ -25,6 +27,6 @@ export function useBreakpoint(breakpoint) {
       return () => mediaQueryList.removeEventListener('change', callback);
     },
     () => window.matchMedia(query).matches,
-    () => false
+    () => false,
   );
 }

@@ -21,7 +21,7 @@ const LandingDivider = forwardRef(function LandingDivider(
     skip = false,
     className = '',
   },
-  ref
+  ref,
 ) {
   const dividerRef = useRef(null);
   const isHorizontal = orientation === 'horizontal';
@@ -33,21 +33,19 @@ const LandingDivider = forwardRef(function LandingDivider(
     build: skip
       ? null
       : (el) =>
-          gsap
-            .timeline({ paused: true })
-            .fromTo(
-              el,
-              {
-                [scaleProp]: 0,
-                transformOrigin: origin,
-              },
-              {
-                [scaleProp]: 1,
-                duration,
-                delay,
-                ease,
-              }
-            ),
+          gsap.timeline({ paused: true }).fromTo(
+            el,
+            {
+              [scaleProp]: 0,
+              transformOrigin: origin,
+            },
+            {
+              [scaleProp]: 1,
+              duration,
+              delay,
+              ease,
+            },
+          ),
     start,
     deps: [isHorizontal, duration, delay, ease, skip],
   });
@@ -78,13 +76,7 @@ const LandingDivider = forwardRef(function LandingDivider(
     : dimensionStyle;
 
   return (
-    <div
-      ref={dividerRef}
-      role="separator"
-      aria-orientation={orientation}
-      className={`landing-divider ${className}`.trim()}
-      style={style}
-    />
+    <div ref={dividerRef} role="separator" aria-orientation={orientation} className={`landing-divider ${className}`.trim()} style={style} />
   );
 });
 

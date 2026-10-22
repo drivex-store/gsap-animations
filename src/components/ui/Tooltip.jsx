@@ -1,21 +1,12 @@
 'use client';
 
-import React, {
-  createContext,
-  forwardRef,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import gsap from 'gsap';
 
 import { cn } from '@/libs/utils/className';
 
-const TOOLTIP_CONTENT_CLASSES =
-  'z-50 overflow-hidden border border-foreground/10 bg-surface px-10 py-6 text-accent-xs text-foreground';
+const TOOLTIP_CONTENT_CLASSES = 'z-50 overflow-hidden border border-foreground/10 bg-surface px-10 py-6 text-accent-xs text-foreground';
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
@@ -41,9 +32,7 @@ const SmartTooltipContext = createContext(null);
 
 export function SmartTooltip({ children, content, id }) {
   const groupContext = useContext(SmartTooltipContext);
-  const tooltipIdRef = useRef(
-    id || `tooltip-${Math.random().toString(36).substr(2, 9)}`,
-  );
+  const tooltipIdRef = useRef(id || `tooltip-${Math.random().toString(36).substr(2, 9)}`);
   const [triggerElement, setTriggerElement] = useState(null);
 
   const handleTriggerRef = useCallback((node) => {
@@ -65,8 +54,7 @@ export function SmartTooltip({ children, content, id }) {
         ref={handleTriggerRef}
         onMouseEnter={() => groupContext.handleMouseEnter(tooltipIdRef.current, content)}
         onMouseLeave={() => groupContext.handleMouseLeave()}
-        className="flex flex-1 min-w-0"
-      >
+        className="flex flex-1 min-w-0">
         {children}
       </div>
     );
@@ -162,14 +150,8 @@ export function SmartTooltipGroup({
           left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
       }
 
-      left = Math.max(
-        sideOffset,
-        Math.min(left, viewportWidth - tooltipRect.width - sideOffset),
-      );
-      top = Math.max(
-        sideOffset,
-        Math.min(top, viewportHeight - tooltipRect.height - sideOffset),
-      );
+      left = Math.max(sideOffset, Math.min(left, viewportWidth - tooltipRect.width - sideOffset));
+      top = Math.max(sideOffset, Math.min(top, viewportHeight - tooltipRect.height - sideOffset));
 
       return {
         top,
@@ -196,12 +178,7 @@ export function SmartTooltipGroup({
         hideTimeoutRef.current = null;
       }
 
-      if (
-        isVisible &&
-        activeTooltip !== id &&
-        timeSinceLastHover < flipThreshold &&
-        tooltipRef.current
-      ) {
+      if (isVisible && activeTooltip !== id && timeSinceLastHover < flipThreshold && tooltipRef.current) {
         setTooltipContent(content);
         setActiveTooltip(id);
 
@@ -235,8 +212,7 @@ export function SmartTooltipGroup({
             {
               opacity: 0,
               scale: 0.9,
-              yPercent:
-                resolvedSide === 'top' ? 5 : resolvedSide === 'bottom' ? -5 : 0,
+              yPercent: resolvedSide === 'top' ? 5 : resolvedSide === 'bottom' ? -5 : 0,
             },
             {
               opacity: 1,
@@ -249,16 +225,7 @@ export function SmartTooltipGroup({
         });
       }
     },
-    [
-      isVisible,
-      activeTooltip,
-      flipThreshold,
-      flipDuration,
-      flipEase,
-      enterDuration,
-      enterEase,
-      calculatePosition,
-    ],
+    [isVisible, activeTooltip, flipThreshold, flipDuration, flipEase, enterDuration, enterEase, calculatePosition],
   );
 
   const hideTooltip = useCallback(() => {
@@ -340,15 +307,10 @@ export function SmartTooltipGroup({
         handleMouseEnter,
         handleMouseLeave,
         activeTooltip,
-      }}
-    >
+      }}>
       {children}
       {isVisible && (
-        <div
-          ref={tooltipRef}
-          className={cn('pointer-events-none fixed', TOOLTIP_CONTENT_CLASSES)}
-          style={{ top: 0, left: 0, opacity: 0 }}
-        >
+        <div ref={tooltipRef} className={cn('pointer-events-none fixed', TOOLTIP_CONTENT_CLASSES)} style={{ top: 0, left: 0, opacity: 0 }}>
           {tooltipContent}
         </div>
       )}

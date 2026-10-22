@@ -20,12 +20,7 @@ export default function Select({
   const containerRef = useRef(null);
 
   const selectedOption = options.find((option) => option.value === value);
-  const textSizeClass =
-    size === 'lg'
-      ? 'text-body'
-      : labelSize === 'xs'
-        ? 'text-[13px] font-sans'
-        : 'text-body-sm';
+  const textSizeClass = size === 'lg' ? 'text-body' : labelSize === 'xs' ? 'text-[13px] font-sans' : 'text-body-sm';
   const SelectedIcon = selectedOption?.icon || null;
 
   useEffect(() => {
@@ -69,26 +64,11 @@ export default function Select({
           'disabled:pointer-events-none disabled:opacity-40',
           textSizeClass,
           size === 'lg' ? 'h-48' : size === 'md' ? 'h-32' : 'h-28',
-          size === 'lg' &&
-            'border-foreground/15 bg-surface px-16 hover:border-foreground/30 hover:bg-surface',
-        )}
-      >
-        <span
-          className={cn(
-            'flex min-w-0 items-center gap-8',
-            !selectedOption && size === 'lg' && 'text-foreground/35',
-          )}
-        >
-          {SelectedIcon ? (
-            <SelectedIcon
-              size={12}
-              aria-hidden="true"
-              className="shrink-0 text-foreground-muted"
-            />
-          ) : null}
-          <span className="truncate">
-            {selectedOption ? selectedOption.label : placeholder}
-          </span>
+          size === 'lg' && 'border-foreground/15 bg-surface px-16 hover:border-foreground/30 hover:bg-surface',
+        )}>
+        <span className={cn('flex min-w-0 items-center gap-8', !selectedOption && size === 'lg' && 'text-foreground/35')}>
+          {SelectedIcon ? <SelectedIcon size={12} aria-hidden="true" className="shrink-0 text-foreground-muted" /> : null}
+          <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
         </span>
         <CaretDown
           aria-hidden="true"
@@ -107,18 +87,13 @@ export default function Select({
             'absolute top-[calc(100%+4px)] z-30 min-w-full overflow-hidden',
             'border border-foreground/10 bg-surface py-4',
             align === 'right' ? 'right-0' : 'left-0',
-          )}
-        >
+          )}>
           {options.map((option) => {
             const isSelected = option.value === value;
             const OptionIcon = option.icon || null;
 
             return (
-              <li
-                key={option.value}
-                role="option"
-                aria-selected={isSelected}
-              >
+              <li key={option.value} role="option" aria-selected={isSelected}>
                 <button
                   type="button"
                   onClick={() => {
@@ -129,25 +104,10 @@ export default function Select({
                     'flex w-full items-center gap-8 whitespace-nowrap text-left transition-colors',
                     size === 'lg' ? 'px-16 py-10' : 'px-10 py-6',
                     textSizeClass,
-                    isSelected
-                      ? 'text-foreground'
-                      : 'text-foreground-muted hover:bg-foreground/[0.04] hover:text-foreground',
-                  )}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      'size-6 shrink-0',
-                      isSelected ? 'bg-brand' : 'bg-transparent',
-                    )}
-                  />
-                  {OptionIcon ? (
-                    <OptionIcon
-                      size={12}
-                      aria-hidden="true"
-                      className="shrink-0"
-                    />
-                  ) : null}
+                    isSelected ? 'text-foreground' : 'text-foreground-muted hover:bg-foreground/[0.04] hover:text-foreground',
+                  )}>
+                  <span aria-hidden="true" className={cn('size-6 shrink-0', isSelected ? 'bg-brand' : 'bg-transparent')} />
+                  {OptionIcon ? <OptionIcon size={12} aria-hidden="true" className="shrink-0" /> : null}
                   {option.label}
                 </button>
               </li>

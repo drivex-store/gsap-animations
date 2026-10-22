@@ -13,7 +13,7 @@ import { createContext, useContext, useRef, useState, useCallback } from 'react'
 const ScrollLockContext = createContext({
   lockScroll: () => {},
   unlockScroll: () => {},
-  isLocked: false
+  isLocked: false,
 });
 
 // NOTE: module id: 441409
@@ -44,9 +44,8 @@ export function ScrollLockProvider({ children }) {
       value={{
         lockScroll,
         unlockScroll,
-        isLocked
-      }}
-    >
+        isLocked,
+      }}>
       {children}
     </ScrollLockContext.Provider>
   );

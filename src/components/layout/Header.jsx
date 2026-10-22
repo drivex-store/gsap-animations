@@ -2,14 +2,7 @@
 
 // Variable Mapping: N -> isPathActive, e -> latestAnimation, c -> pathname, h -> isStarterPackPage, u -> isV3Page, p -> hasAccess, b -> isAuthenticated, w -> loading, E -> headerRef, L -> barRef, T -> barContainerRef, R -> navRef, z -> dropdownRef, C -> dropdownInnerRef, A -> scrimRef, M -> groupRefs, _ -> intentTimeoutRef, O -> closeTimeoutRef, q -> lastScrollYRef, H -> activeMegaKey, I -> setActiveMegaKey, W -> activeMegaKeyRef, V -> isMobileMenuOpen, F -> setIsMobileMenuOpen, P -> expandedMobileKey, D -> setExpandedMobileKey, $ -> isDropdownOpen, B -> setIsDropdownOpen, U -> dropdownHeight, Y -> setDropdownHeight, X -> headerTheme, K -> scrollState, G -> padState, J -> hasSolidSurface, Q -> categories, Z -> navItems, ee -> megaNavItems, et -> prevMegaKeyRef, er -> clearTimers, ei -> scheduleClose, en -> pointerStateRef, es -> runWhenPointerSlows, eo -> handleNavItemEnter, el -> hasOpenedMega, ea -> setHasOpenedMega, ec -> alignMegaColumns
 
-import {
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useCallback,
-} from 'react'; // NOTE: module id: 271645
+import { useState, useRef, useEffect, useLayoutEffect, useMemo, useCallback } from 'react'; // NOTE: module id: 271645
 import { usePathname } from 'next/navigation'; // NOTE: module id: 618566
 import { gsap } from 'gsap'; // NOTE: module id: 989970
 import { cn } from '@/libs/utils/className'; // NOTE: module id: 103746
@@ -31,16 +24,13 @@ function isPathActive(pathname, targetHref) {
   if (!pathname || !targetHref) return false;
   const basePath = targetHref.split(/[?#]/)[0];
   if (!basePath.startsWith('/')) return false;
-  return basePath === '/'
-    ? pathname === '/'
-    : pathname === basePath || pathname.startsWith(`${basePath}/`);
+  return basePath === '/' ? pathname === '/' : pathname === basePath || pathname.startsWith(`${basePath}/`);
 }
 
 // NOTE: module id: 76624
 export default function Header({ latestAnimation }) {
   const pathname = usePathname();
-  const isStarterPackPage =
-    pathname === '/starter-pack' || pathname === '/v3/starter-pack';
+  const isStarterPackPage = pathname === '/starter-pack' || pathname === '/v3/starter-pack';
   const isV3Page = pathname === '/v3';
 
   const { hasAccess, isAuthenticated, loading } = useUser();
@@ -68,15 +58,9 @@ export default function Header({ latestAnimation }) {
 
   const { headerTheme, scrollState } = useHeaderState(barRef);
 
-  const padState =
-    isDropdownOpen || isMobileMenuOpen
-      ? 'open'
-      : scrollState === 'scrolled'
-        ? 'scrolled'
-        : 'top';
+  const padState = isDropdownOpen || isMobileMenuOpen ? 'open' : scrollState === 'scrolled' ? 'scrolled' : 'top';
 
-  const hasSolidSurface =
-    scrollState === 'scrolled' || isMobileMenuOpen || isDropdownOpen;
+  const hasSolidSurface = scrollState === 'scrolled' || isMobileMenuOpen || isDropdownOpen;
 
   const categories = useCategories();
 
@@ -93,30 +77,22 @@ export default function Header({ latestAnimation }) {
             mega: {
               ...item.mega,
               columns: item.mega.columns.map((column) => {
-                const resolvedColumn =
-                  column.dynamic === 'categories'
-                    ? { ...column, links: categoryLinks }
-                    : column;
+                const resolvedColumn = column.dynamic === 'categories' ? { ...column, links: categoryLinks } : column;
 
                 return isAuthenticated
                   ? resolvedColumn
                   : {
                       ...resolvedColumn,
-                      links: resolvedColumn.links.filter(
-                        (link) => link.href !== '/animations/saved'
-                      ),
+                      links: resolvedColumn.links.filter((link) => link.href !== '/animations/saved'),
                     };
               }),
             },
           }
-        : item
+        : item,
     );
   }, [categories, isAuthenticated]);
 
-  const megaNavItems = useMemo(
-    () => navItems.filter((item) => item.mega),
-    [navItems]
-  );
+  const megaNavItems = useMemo(() => navItems.filter((item) => item.mega), [navItems]);
 
   const prevMegaKeyRef = useRef(null);
 
@@ -199,10 +175,7 @@ export default function Header({ latestAnimation }) {
     const isInitialOpen = prevKey === null;
     const prevGroup = isInitialOpen ? null : groupRefs.current[prevKey];
     const direction =
-      megaNavItems.findIndex((item) => item.key === activeMegaKey) >=
-      megaNavItems.findIndex((item) => item.key === prevKey)
-        ? 1
-        : -1;
+      megaNavItems.findIndex((item) => item.key === activeMegaKey) >= megaNavItems.findIndex((item) => item.key === prevKey) ? 1 : -1;
 
     setIsDropdownOpen(true);
 
@@ -248,7 +221,7 @@ export default function Header({ latestAnimation }) {
           ease: 'expo.out',
           stagger: 0.04,
           delay: 0.04,
-        }
+        },
       );
     } else {
       if (prevGroup) {
@@ -271,7 +244,7 @@ export default function Header({ latestAnimation }) {
           ease: 'expo.out',
           stagger: 0.03,
           delay: 0.06,
-        }
+        },
       );
     }
   }, [activeMegaKey, megaNavItems]);
@@ -312,10 +285,7 @@ export default function Header({ latestAnimation }) {
       const state = pointerStateRef.current;
       const now = performance.now();
       const dt = now - state.t;
-      const instantaneousVelocity =
-        dt > 0 && dt < 100
-          ? Math.hypot(event.clientX - state.x, event.clientY - state.y) / dt
-          : 0;
+      const instantaneousVelocity = dt > 0 && dt < 100 ? Math.hypot(event.clientX - state.x, event.clientY - state.y) / dt : 0;
 
       state.v = 0.5 * state.v + 0.5 * instantaneousVelocity;
       state.x = event.clientX;
@@ -334,10 +304,7 @@ export default function Header({ latestAnimation }) {
     if (now - state.t >= 45 || state.v < 0.35 || now - startTime >= 150) {
       callback();
     } else {
-      intentTimeoutRef.current = setTimeout(
-        () => runWhenPointerSlows(callback, startTime),
-        45
-      );
+      intentTimeoutRef.current = setTimeout(() => runWhenPointerSlows(callback, startTime), 45);
     }
   };
 
@@ -431,14 +398,10 @@ export default function Header({ latestAnimation }) {
     const navEl = navRef.current;
     if (!navEl) return;
 
-    const navChildren = Array.from(navEl.children).filter(
-      (child) => child.tagName !== 'SPAN'
-    );
+    const navChildren = Array.from(navEl.children).filter((child) => child.tagName !== 'SPAN');
 
     Object.values(groupRefs.current).forEach((groupEl) => {
-      const columns = groupEl
-        ? Array.from(groupEl.querySelectorAll('[data-mm-col]'))
-        : [];
+      const columns = groupEl ? Array.from(groupEl.querySelectorAll('[data-mm-col]')) : [];
       if (!columns.length) return;
 
       const targetNavIndices = columns.length === 2 ? [0, 3] : [0, 2, 4];
@@ -454,10 +417,7 @@ export default function Header({ latestAnimation }) {
           ? ((element) => {
               const textNode = document
                 .createTreeWalker(element, NodeFilter.SHOW_TEXT, {
-                  acceptNode: (node) =>
-                    node.textContent.trim()
-                      ? NodeFilter.FILTER_ACCEPT
-                      : NodeFilter.FILTER_SKIP,
+                  acceptNode: (node) => (node.textContent.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP),
                 })
                 .nextNode();
 
@@ -519,23 +479,14 @@ export default function Header({ latestAnimation }) {
         data-theme={headerTheme}
         data-pad-state={isStarterPackPage ? 'top' : padState}
         style={{ top: 'var(--anm-ppp-offset, 0px)' }}
-        className={cn(
-          'v2-header inset-x-0 top-0 z-[300] pt-[var(--v2-header-gap)]',
-          isStarterPackPage ? 'absolute' : 'fixed'
-        )}
-      >
+        className={cn('v2-header inset-x-0 top-0 z-[300] pt-[var(--v2-header-gap)]', isStarterPackPage ? 'absolute' : 'fixed')}>
         <div ref={barRef} className="v2-mm-bar">
           <div
             ref={barContainerRef}
             className={cn(
               'v2-bar-padx v2-container flex h-full items-center justify-between transition-colors duration-300 ease-power3-out lg:grid lg:grid-cols-12 lg:gap-16',
-              hasSolidSurface
-                ? !isV3Page || isMobileMenuOpen || isDropdownOpen
-                  ? 'bg-surface'
-                  : 'bg-background-muted'
-                : 'bg-transparent'
-            )}
-          >
+              hasSolidSurface ? (!isV3Page || isMobileMenuOpen || isDropdownOpen ? 'bg-surface' : 'bg-background-muted') : 'bg-transparent',
+            )}>
             <Logo className="lg:col-span-3" />
 
             {isStarterPackPage ? null : (
@@ -546,8 +497,7 @@ export default function Header({ latestAnimation }) {
                   setHasOpenedMega(true);
                 }}
                 onMouseLeave={scheduleClose}
-                className="relative hidden h-full items-center justify-center lg:col-span-4 lg:col-start-5 lg:flex"
-              >
+                className="relative hidden h-full items-center justify-center lg:col-span-4 lg:col-start-5 lg:flex">
                 {navItems.map((item) =>
                   item.mega ? (
                     <HeaderNavTrigger
@@ -555,11 +505,7 @@ export default function Header({ latestAnimation }) {
                       item={item}
                       href={item.triggerHref}
                       badge={item.badge}
-                      active={
-                        activeMegaKey === item.key ||
-                        (item.triggerHref &&
-                          isPathActive(pathname, item.triggerHref))
-                      }
+                      active={activeMegaKey === item.key || (item.triggerHref && isPathActive(pathname, item.triggerHref))}
                       expanded={activeMegaKey === item.key}
                       onMouseEnter={() => handleNavItemEnter(item)}
                       onClick={() => {
@@ -575,14 +521,11 @@ export default function Header({ latestAnimation }) {
                       onMouseEnter={() => handleNavItemEnter(item)}
                       className={cn(
                         'text-mono h-full',
-                        isPathActive(pathname, item.href)
-                          ? 'text-foreground'
-                          : 'text-foreground-muted hover:text-foreground'
-                      )}
-                    >
+                        isPathActive(pathname, item.href) ? 'text-foreground' : 'text-foreground-muted hover:text-foreground',
+                      )}>
                       {item.label}
                     </NavLink>
-                  )
+                  ),
                 )}
               </nav>
             )}
@@ -593,18 +536,11 @@ export default function Header({ latestAnimation }) {
                   <NavLink
                     href={hasAccess ? '/animations' : '/login'}
                     variant="nav"
-                    className="text-mono text-foreground-muted hover:text-foreground"
-                  >
-                    {hasAccess
-                      ? t('common.header.actions.account')
-                      : t('common.header.actions.login')}
+                    className="text-mono text-foreground-muted hover:text-foreground">
+                    {hasAccess ? t('common.header.actions.account') : t('common.header.actions.login')}
                   </NavLink>
                 )}
-                <AnimatedButton
-                  href="/checkout?plan=solo&cycle=quarterly"
-                  size="sm"
-                  theme="brand"
-                >
+                <AnimatedButton href="/checkout?plan=solo&cycle=quarterly" size="sm" theme="brand">
                   {t('common.header.actions.getAccess')}
                 </AnimatedButton>
               </div>
@@ -616,22 +552,17 @@ export default function Header({ latestAnimation }) {
                 aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={isMobileMenuOpen}
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-                className="relative -mr-6 size-44 lg:hidden"
-              >
+                className="relative -mr-6 size-44 lg:hidden">
                 <span
                   className={cn(
                     'absolute left-1/2 h-[1.5px] w-20 -translate-x-1/2 bg-foreground transition-transform duration-300',
-                    isMobileMenuOpen
-                      ? 'top-1/2 -translate-y-1/2 rotate-45'
-                      : 'top-[calc(50%-4px)]'
+                    isMobileMenuOpen ? 'top-1/2 -translate-y-1/2 rotate-45' : 'top-[calc(50%-4px)]',
                   )}
                 />
                 <span
                   className={cn(
                     'absolute left-1/2 h-[1.5px] w-20 -translate-x-1/2 bg-foreground transition-transform duration-300',
-                    isMobileMenuOpen
-                      ? 'top-1/2 -translate-y-1/2 -rotate-45'
-                      : 'top-[calc(50%+4px)]'
+                    isMobileMenuOpen ? 'top-1/2 -translate-y-1/2 -rotate-45' : 'top-[calc(50%+4px)]',
                   )}
                 />
               </button>
@@ -639,12 +570,7 @@ export default function Header({ latestAnimation }) {
           </div>
         </div>
 
-        <div
-          ref={dropdownRef}
-          className="v2-mm-dropdown"
-          onMouseEnter={() => clearTimers()}
-          onMouseLeave={scheduleClose}
-        >
+        <div ref={dropdownRef} className="v2-mm-dropdown" onMouseEnter={() => clearTimers()} onMouseLeave={scheduleClose}>
           <div ref={dropdownInnerRef} className="v2-mm-dropdown-inner">
             {megaNavItems.map((item) => (
               <div
@@ -652,47 +578,26 @@ export default function Header({ latestAnimation }) {
                 ref={(el) => {
                   groupRefs.current[item.key] = el;
                 }}
-                className="v2-mm-group"
-              >
+                className="v2-mm-group">
                 <div className="grid grid-cols-12 gap-16 py-32">
-                  <div
-                    data-mm-reveal={true}
-                    className="col-span-3 col-start-1 flex flex-col gap-16"
-                  >
-                    <p className="text-h4 text-foreground">
-                      {item.mega.intro.heading}
-                    </p>
-                    <p className="text-body-sm text-foreground-muted">
-                      {item.mega.intro.text}
-                    </p>
+                  <div data-mm-reveal={true} className="col-span-3 col-start-1 flex flex-col gap-16">
+                    <p className="text-h4 text-foreground">{item.mega.intro.heading}</p>
+                    <p className="text-body-sm text-foreground-muted">{item.mega.intro.text}</p>
                     <NavLink
                       href={item.mega.intro.cta.href}
                       onClick={() => setActiveMegaKey(null)}
                       variant="nav"
-                      className="text-mono-sm -mx-12 text-foreground"
-                    >
+                      className="text-mono-sm -mx-12 text-foreground">
                       {item.mega.intro.cta.label}
                     </NavLink>
                   </div>
 
                   <div className="col-span-5 col-start-4 flex">
                     {item.mega.columns.map((column) => (
-                      <div
-                        key={column.label}
-                        data-mm-reveal={true}
-                        data-mm-col={true}
-                        className="flex shrink-0 flex-col"
-                      >
-                        <span className="text-mono-sm mb-8 text-foreground-muted">
-                          {column.label}
-                        </span>
+                      <div key={column.label} data-mm-reveal={true} data-mm-col={true} className="flex shrink-0 flex-col">
+                        <span className="text-mono-sm mb-8 text-foreground-muted">{column.label}</span>
                         {column.links.map((link) => (
-                          <NavLink
-                            key={link.label}
-                            href={link.href}
-                            variant="nav"
-                            className="text-body-sm -mx-12 text-foreground"
-                          >
+                          <NavLink key={link.label} href={link.href} variant="nav" className="text-body-sm -mx-12 text-foreground">
                             {link.label}
                             {link.badge ? (
                               <span className="text-accent-2xs ml-8 inline-block bg-brand px-6 py-2 align-middle text-black">
@@ -710,17 +615,11 @@ export default function Header({ latestAnimation }) {
                       <TransitionLink
                         href={item.mega.featured.href}
                         onClick={() => setActiveMegaKey(null)}
-                        className="group flex flex-col gap-12"
-                      >
+                        className="group flex flex-col gap-12">
                         <div className="aspect-[16/10] w-full overflow-hidden bg-background-muted">
                           {hasOpenedMega ? (
                             <picture>
-                              {item.mega.featured.image.avif ? (
-                                <source
-                                  srcSet={item.mega.featured.image.avif}
-                                  type="image/avif"
-                                />
-                              ) : null}
+                              {item.mega.featured.image.avif ? <source srcSet={item.mega.featured.image.avif} type="image/avif" /> : null}
                               <img
                                 src={item.mega.featured.image.jpg}
                                 alt={item.mega.featured.image.alt}
@@ -742,8 +641,7 @@ export default function Header({ latestAnimation }) {
                       <TransitionLink
                         href={`/animations/${latestAnimation.slug}`}
                         onClick={() => setActiveMegaKey(null)}
-                        className="group flex flex-col gap-12"
-                      >
+                        className="group flex flex-col gap-12">
                         <div className="aspect-[16/10] w-full overflow-hidden bg-background-muted">
                           {hasOpenedMega ? (
                             latestAnimation.preview_video_url ? (
@@ -757,10 +655,7 @@ export default function Header({ latestAnimation }) {
                               />
                             ) : latestAnimation.preview_image_url ? (
                               <img
-                                src={bunnyImageUrl(
-                                  latestAnimation.preview_image_url,
-                                  { width: 480 }
-                                )}
+                                src={bunnyImageUrl(latestAnimation.preview_image_url, { width: 480 })}
                                 alt=""
                                 className="h-full w-full object-cover transition-transform duration-300 ease-(--ease-expo-out) group-hover:scale-[1.04] motion-reduce:transition-none"
                               />
@@ -768,9 +663,7 @@ export default function Header({ latestAnimation }) {
                           ) : null}
                         </div>
                         <div className="flex flex-col gap-4">
-                          <p className="text-mono-sm text-foreground-muted">
-                            {t('common.header.latestComponentLabel')}
-                          </p>
+                          <p className="text-mono-sm text-foreground-muted">{t('common.header.latestComponentLabel')}</p>
                           <p className="text-body-sm text-foreground underline decoration-transparent underline-offset-4 transition-colors duration-200 ease-(--ease-expo-out) group-hover:decoration-foreground/40">
                             {latestAnimation.title}
                           </p>
@@ -784,45 +677,30 @@ export default function Header({ latestAnimation }) {
           </div>
         </div>
 
-        {isStarterPackPage || isV3Page ? null : (
-          <HeaderMarquee
-            scrolled={scrollState === 'scrolled'}
-            shiftY={dropdownHeight}
-          />
-        )}
+        {isStarterPackPage || isV3Page ? null : <HeaderMarquee scrolled={scrollState === 'scrolled'} shiftY={dropdownHeight} />}
 
         <div
           className="v2-mm-collapse group/panel v2-container absolute inset-x-0 top-full lg:hidden"
           data-open={isMobileMenuOpen}
-          inert={!isMobileMenuOpen}
-        >
+          inert={!isMobileMenuOpen}>
           <div>
             <div
               data-lenis-prevent={true}
-              className="h-[calc(100svh-var(--v2-header-h)-2*var(--v2-header-gap))] overflow-y-auto bg-surface"
-            >
+              className="h-[calc(100svh-var(--v2-header-h)-2*var(--v2-header-gap))] overflow-y-auto bg-surface">
               <div className="flex min-h-full flex-col px-16 pb-24 pt-8">
                 {navItems.map((item, index) => (
                   <div
                     key={item.key}
                     style={{ '--i': index }}
-                    className="translate-y-8 opacity-0 transition-[opacity,translate] duration-300 ease-(--ease-expo-out) group-data-[open=true]/panel:translate-y-0 group-data-[open=true]/panel:opacity-100 group-data-[open=true]/panel:delay-[calc(120ms+var(--i)*30ms)] motion-reduce:translate-y-0 motion-reduce:transition-none"
-                  >
+                    className="translate-y-8 opacity-0 transition-[opacity,translate] duration-300 ease-(--ease-expo-out) group-data-[open=true]/panel:translate-y-0 group-data-[open=true]/panel:opacity-100 group-data-[open=true]/panel:delay-[calc(120ms+var(--i)*30ms)] motion-reduce:translate-y-0 motion-reduce:transition-none">
                     {item.mega ? (
                       <MobileNavAccordion
                         item={item}
                         expanded={expandedMobileKey === item.key}
-                        onToggle={() =>
-                          setExpandedMobileKey((prev) =>
-                            prev === item.key ? null : item.key
-                          )
-                        }
+                        onToggle={() => setExpandedMobileKey((prev) => (prev === item.key ? null : item.key))}
                       />
                     ) : (
-                      <TransitionLink
-                        href={item.href}
-                        className="text-h4 block border-b border-border-muted py-16 text-foreground"
-                      >
+                      <TransitionLink href={item.href} className="text-h4 block border-b border-border-muted py-16 text-foreground">
                         {item.label}
                       </TransitionLink>
                     )}
@@ -831,20 +709,11 @@ export default function Header({ latestAnimation }) {
 
                 <div className="mt-auto flex items-center justify-between gap-20 pt-32">
                   {!loading && (
-                    <TransitionLink
-                      href={hasAccess ? '/animations' : '/login'}
-                      className="text-body py-12 text-foreground-muted"
-                    >
-                      {hasAccess
-                        ? t('common.header.actions.account')
-                        : t('common.header.actions.login')}
+                    <TransitionLink href={hasAccess ? '/animations' : '/login'} className="text-body py-12 text-foreground-muted">
+                      {hasAccess ? t('common.header.actions.account') : t('common.header.actions.login')}
                     </TransitionLink>
                   )}
-                  <AnimatedButton
-                    href="/checkout?plan=solo&cycle=quarterly"
-                    size="sm"
-                    theme="brand"
-                  >
+                  <AnimatedButton href="/checkout?plan=solo&cycle=quarterly" size="sm" theme="brand">
                     {t('common.header.actions.getAccess')}
                   </AnimatedButton>
                 </div>
@@ -854,12 +723,7 @@ export default function Header({ latestAnimation }) {
         </div>
       </header>
 
-      <div
-        ref={scrimRef}
-        className="v2-mm-scrim"
-        onClick={() => setActiveMegaKey(null)}
-        aria-hidden="true"
-      />
+      <div ref={scrimRef} className="v2-mm-scrim" onClick={() => setActiveMegaKey(null)} aria-hidden="true" />
 
       <div
         data-open={isMobileMenuOpen}

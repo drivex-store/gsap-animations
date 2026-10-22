@@ -17,7 +17,8 @@ import ImageCarousel from '@/components/ui/ImageCarousel'; // NOTE: module id: 7
 import { usePageEnterAnimation } from '@/providers/AnimationProvider'; // NOTE: module id: 488463
 
 function SecondaryActionButton({ as = 'button', icon, children, ...restProps }) {
-  const className = "text-mono-sm flex h-48 w-full items-center justify-center gap-10 border border-foreground/15 bg-surface text-foreground transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-foreground/5 disabled:opacity-50";
+  const className =
+    'text-mono-sm flex h-48 w-full items-center justify-center gap-10 border border-foreground/15 bg-surface text-foreground transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-foreground/5 disabled:opacity-50';
 
   if (as === 'a') {
     return (
@@ -41,30 +42,22 @@ const GRID_LAYOUT = { rowCount: 9, cols: 9 };
 function BackgroundGrid({ images }) {
   const gridRef = useRef(null);
 
-  usePageEnterAnimation(() => gridRef.current?.reveal(), [], "AuthStatusGrid");
+  usePageEnterAnimation(() => gridRef.current?.reveal(), [], 'AuthStatusGrid');
 
   if (!images.length) return null;
 
   return (
     <div className="absolute inset-0 hidden overflow-hidden lg:block" aria-hidden="true">
-      <ImageCarousel
-        ref={gridRef}
-        images={images}
-        entrance="center-out"
-        layout={GRID_LAYOUT}
-        className="h-full"
-      />
+      <ImageCarousel ref={gridRef} images={images} entrance="center-out" layout={GRID_LAYOUT} className="h-full" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--background)_0%,color-mix(in_srgb,var(--background)_82%,transparent)_45%,color-mix(in_srgb,var(--background)_55%,transparent)_100%)]" />
     </div>
   );
 }
 
-export function SentToDetail({ to, subject, from = "julian@annnimate.com" }) {
+export function SentToDetail({ to, subject, from = 'julian@annnimate.com' }) {
   return (
     <div className="flex flex-col gap-8 border border-foreground/15 bg-surface p-16">
-      <p className="text-mono-sm text-foreground">
-        Sent to {to || "your inbox"}
-      </p>
+      <p className="text-mono-sm text-foreground">Sent to {to || 'your inbox'}</p>
       <p className="text-body-sm text-foreground-reading">
         Subject <span className="text-foreground">“{subject}”</span> from {from}. Not there in a minute? Check spam or promotions.
       </p>
@@ -99,7 +92,7 @@ export default function AuthStatusLayout({
   primary = null,
   secondary = null,
   footer = null,
-  children = null
+  children = null,
 }) {
   return (
     <div className="relative min-h-screen bg-background">
@@ -108,58 +101,42 @@ export default function AuthStatusLayout({
         <div className="flex items-center">
           <Logo />
         </div>
-        
+
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-[26rem] border border-foreground/15 bg-background p-32">
-            {icon && (
-              <div className="mb-24 flex justify-center text-foreground-muted">
-                {icon}
-              </div>
-            )}
-            
+            {icon && <div className="mb-24 flex justify-center text-foreground-muted">{icon}</div>}
+
             <header className="mb-24 text-center">
               <h1 className="text-h3 m-0 text-foreground">{heading}</h1>
-              {body && (
-                <p className="text-body-sm mt-12 text-foreground-reading">{body}</p>
-              )}
+              {body && <p className="text-body-sm mt-12 text-foreground-reading">{body}</p>}
             </header>
-            
+
             {detail && <div className="mb-24">{detail}</div>}
-            
+
             {children}
-            
+
             {(primary || secondary) && (
               <div className="flex flex-col gap-12">
                 {primary && (
                   <AnimatedButton
                     href={primary.href}
                     onClick={primary.onClick}
-                    type={primary.href ? undefined : "button"}
+                    type={primary.href ? undefined : 'button'}
                     theme="brand"
                     size="sm"
                     className="w-full"
                     loading={primary.loading}
-                    disabled={primary.disabled}
-                  >
+                    disabled={primary.disabled}>
                     {primary.label}
                   </AnimatedButton>
                 )}
-                
+
                 {secondary && secondary.href ? (
-                  <SecondaryActionButton
-                    as="a"
-                    href={secondary.href}
-                    target={secondary.target}
-                    rel={secondary.rel}
-                    icon={secondary.icon}
-                  >
+                  <SecondaryActionButton as="a" href={secondary.href} target={secondary.target} rel={secondary.rel} icon={secondary.icon}>
                     {secondary.label}
                   </SecondaryActionButton>
                 ) : secondary ? (
-                  <SecondaryActionButton
-                    onClick={secondary.onClick}
-                    icon={secondary.icon}
-                  >
+                  <SecondaryActionButton onClick={secondary.onClick} icon={secondary.icon}>
                     {secondary.label}
                   </SecondaryActionButton>
                 ) : null}

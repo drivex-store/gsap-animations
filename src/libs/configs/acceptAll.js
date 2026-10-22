@@ -22,7 +22,7 @@ export const defaultConsent = {
   analytics: false,
   functional: false,
   marketing: false,
-  method: null
+  method: null,
 };
 
 export function setConsent(consentData) {
@@ -33,8 +33,8 @@ export function setConsent(consentData) {
       ...consentData,
       version: 1,
       timestamp: new Date().toISOString(),
-      essential: true
-    })
+      essential: true,
+    }),
   );
 
   const expires = new Date();
@@ -59,7 +59,7 @@ export function acceptAll() {
     analytics: true,
     functional: true,
     marketing: false,
-    method: 'explicit'
+    method: 'explicit',
   });
   dispatchConsentChanged();
 }
@@ -67,9 +67,7 @@ export function acceptAll() {
 export function getConsent() {
   if (typeof document === 'undefined') return null;
 
-  const cookieMatch = document.cookie
-    .split('; ')
-    .find(c => c.startsWith(`${CONSENT_COOKIE_NAME}=`));
+  const cookieMatch = document.cookie.split('; ').find((c) => c.startsWith(`${CONSENT_COOKIE_NAME}=`));
 
   if (!cookieMatch) return null;
 

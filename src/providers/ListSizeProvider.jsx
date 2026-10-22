@@ -8,11 +8,7 @@ import { createContext, useContext } from 'react'; // NOTE: module id: 271645
 const ListSizeContext = createContext(null);
 
 export function ListSizeProvider({ value, children }) {
-  return (
-    <ListSizeContext.Provider value={value}>
-      {children}
-    </ListSizeContext.Provider>
-  );
+  return <ListSizeContext.Provider value={value}>{children}</ListSizeContext.Provider>;
 }
 
 export function useListSize() {

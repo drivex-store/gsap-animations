@@ -24,9 +24,5 @@ export default function StudioClock() {
     return () => clearInterval(intervalId);
   }, []);
 
-  return (
-    <span className="text-mono-sm text-foreground-muted">
-      {time ? t('common.footer.studioClock', { time }) : ''}
-    </span>
-  );
+  return <span className="text-mono-sm text-foreground-muted">{time ? t('common.footer.studioClock', { time }) : ''}</span>;
 }

@@ -26,9 +26,7 @@ function fetchPppGeo() {
   let endpoint = '/api/geo/ppp';
 
   try {
-    const overrideCountry = new URLSearchParams(window.location.search).get(
-      'pppcountry',
-    );
+    const overrideCountry = new URLSearchParams(window.location.search).get('pppcountry');
     if (overrideCountry) {
       endpoint += `?country=${encodeURIComponent(overrideCountry)}`;
     }
@@ -50,10 +48,7 @@ function fetchPppGeo() {
     })
     .then((data) => {
       logDebug('parsed', data);
-      cachedGeo =
-        data?.tier === 'T2' || data?.tier === 'T3'
-          ? { tier: data.tier, country: data.country || null }
-          : null;
+      cachedGeo = data?.tier === 'T2' || data?.tier === 'T3' ? { tier: data.tier, country: data.country || null } : null;
       logDebug('decided', cachedGeo);
       return cachedGeo;
     })

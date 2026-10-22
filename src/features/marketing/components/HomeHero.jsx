@@ -15,20 +15,20 @@ import AnimatedButton from '@/components/animations/AnimatedButton';
 import ClientLogos from '@/components/ui/ClientLogos';
 import GlassCarousel from '@/features/webgl/GlassCarousel';
 
-import HeroGrid from '@/features/webgl/HeroGrid'; 
+import HeroGrid from '@/features/webgl/HeroGrid';
 
 const ANIMATED_TEXT_PROPS = {
-  type: "lines",
-  mask: "lines",
+  type: 'lines',
+  mask: 'lines',
   duration: 0.6,
   stagger: 0.03,
-  ease: "power2.out",
+  ease: 'power2.out',
   animationProps: { yPercent: 100 },
-  triggerMode: "pageEnter"
+  triggerMode: 'pageEnter',
 };
 
-export default function HomeHero({ items = [], freeCount = 0, variant = "slider", headline = "award" }) {
-  const isGridVariant = variant === "grid";
+export default function HomeHero({ items = [], freeCount = 0, variant = 'slider', headline = 'award' }) {
+  const isGridVariant = variant === 'grid';
 
   useEffect(() => {
     const exposureData = { hero: variant, headline: headline };
@@ -38,13 +38,13 @@ export default function HomeHero({ items = [], freeCount = 0, variant = "slider"
       // ignore
     }
     analytics.register(exposureProps(exposureData));
-    analytics.track("homepage_experiment_viewed", exposureProps(exposureData));
+    analytics.track('homepage_experiment_viewed', exposureProps(exposureData));
   }, [variant, headline]);
 
   const handleCtaClick = (ctaName) => () => {
-    analytics.track("hero_cta_clicked", {
+    analytics.track('hero_cta_clicked', {
       cta: ctaName,
-      ...exposureProps({ hero: variant, headline: headline })
+      ...exposureProps({ hero: variant, headline: headline }),
     });
   };
 
@@ -59,35 +59,35 @@ export default function HomeHero({ items = [], freeCount = 0, variant = "slider"
   }, []);
 
   useReveal(sectionRef, {
-    mode: "hero",
+    mode: 'hero',
     build: () => {
       const contentEl = contentWrapperRef.current;
-      
+
       const setInitialPosition = () => {
         const sectionRect = sectionRef.current.getBoundingClientRect();
         const textRect = textContainerRef.current.getBoundingClientRect();
-        const currentY = Number(gsap.getProperty(contentEl, "y")) || 0;
+        const currentY = Number(gsap.getProperty(contentEl, 'y')) || 0;
         gsap.set(contentEl, {
-          y: sectionRect.top + sectionRect.height / 2 - (textRect.top - currentY + textRect.height / 2)
+          y: sectionRect.top + sectionRect.height / 2 - (textRect.top - currentY + textRect.height / 2),
         });
       };
 
       setInitialPosition();
 
-      return gsap.timeline({ paused: true })
+      return gsap
+        .timeline({ paused: true })
         .call(setInitialPosition, null, 0)
-        .to(contentEl, { y: 0, duration: 1.1, ease: 'expo.out' }, 0.4) 
-        .fromTo(backgroundWrapperRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power2.out" }, 0.4 + 0.55)
+        .to(contentEl, { y: 0, duration: 1.1, ease: 'expo.out' }, 0.4)
+        .fromTo(backgroundWrapperRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: 'power2.out' }, 0.4 + 0.55)
         .call(() => onIntroCompleteRef.current?.(), null, 0.4 + 0.55);
-    }
+    },
   });
 
   return (
     <section
       ref={sectionRef}
       data-theme="dark"
-      className="relative flex h-svh min-h-[680px] flex-col overflow-hidden bg-background pt-112 text-foreground lg:pt-136"
-    >
+      className="relative flex h-svh min-h-[680px] flex-col overflow-hidden bg-background pt-112 text-foreground lg:pt-136">
       {/* GRID VARIANT BACKGROUND */}
       {isGridVariant && (
         <div ref={backgroundWrapperRef} className="invisible absolute inset-0">
@@ -98,45 +98,44 @@ export default function HomeHero({ items = [], freeCount = 0, variant = "slider"
       {/* FOREGROUND CONTENT */}
       <div
         ref={contentWrapperRef}
-        className={`v2-container relative z-10 shrink-0 text-center ${isGridVariant ? "pointer-events-none" : ""}`}
-      >
+        className={`v2-container relative z-10 shrink-0 text-center ${isGridVariant ? 'pointer-events-none' : ''}`}>
         <div ref={textContainerRef}>
           <AnimatedHeading
             as="h1"
             sizeClass="text-h1"
             className="hero-headline mx-auto max-w-[22ch] font-medium text-balance"
-            trigger="pageEnter"
-          >
-            {t(headline === "client" ? "home-v3.hero.headlineClient" : "home-v3.hero.headline")}
+            trigger="pageEnter">
+            {t(headline === 'client' ? 'home-v3.hero.headlineClient' : 'home-v3.hero.headline')}
           </AnimatedHeading>
-          
+
           <AnimatedText
             tag="p"
-            className={`text-body-lg mx-auto mt-24 max-w-[46rem] ${isGridVariant ? "text-foreground-reading" : "text-foreground-muted"}`}
+            className={`text-body-lg mx-auto mt-24 max-w-[46rem] ${isGridVariant ? 'text-foreground-reading' : 'text-foreground-muted'}`}
             {...ANIMATED_TEXT_PROPS}
-            delay={0.4}
-          >
-            {t("home-v3.hero.sub")}
+            delay={0.4}>
+            {t('home-v3.hero.sub')}
           </AnimatedText>
 
           <StaggerContainer
-            className={`mt-32 flex flex-wrap items-center justify-center gap-12 ${isGridVariant ? "pointer-events-auto" : ""}`}
-            delay={0.55}
-          >
-            <AnimatedButton href="/checkout?plan=solo&cycle=quarterly" theme="brand" onClick={handleCtaClick("get_access")}>
-              {t("home-v3.hero.cta")}
+            className={`mt-32 flex flex-wrap items-center justify-center gap-12 ${isGridVariant ? 'pointer-events-auto' : ''}`}
+            delay={0.55}>
+            <AnimatedButton href="/checkout?plan=solo&cycle=quarterly" theme="brand" onClick={handleCtaClick('get_access')}>
+              {t('home-v3.hero.cta')}
             </AnimatedButton>
-            <AnimatedButton href="/starter-pack" theme="surface" onClick={handleCtaClick("free_components")}>
-              {t("home-v3.hero.ctaFree", { count: freeCount })}
+            <AnimatedButton href="/starter-pack" theme="surface" onClick={handleCtaClick('free_components')}>
+              {t('home-v3.hero.ctaFree', { count: freeCount })}
             </AnimatedButton>
           </StaggerContainer>
         </div>
 
         <div className="mt-32 flex flex-wrap items-center justify-center gap-x-24 gap-y-12 lg:mt-40">
-          <StaggerContainer as="p" className={`text-body-sm ${isGridVariant ? "text-foreground-reading" : "text-foreground-muted"}`} delay={0.7}>
-            {t("home-v3.hero.logosLabel")}
+          <StaggerContainer
+            as="p"
+            className={`text-body-sm ${isGridVariant ? 'text-foreground-reading' : 'text-foreground-muted'}`}
+            delay={0.7}>
+            {t('home-v3.hero.logosLabel')}
           </StaggerContainer>
-          <ClientLogos className="justify-center" trigger="pageEnter" delay={0.73} tone={isGridVariant ? "light" : "muted"} />
+          <ClientLogos className="justify-center" trigger="pageEnter" delay={0.73} tone={isGridVariant ? 'light' : 'muted'} />
         </div>
       </div>
 

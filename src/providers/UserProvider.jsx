@@ -13,9 +13,7 @@ function buildPersonProperties(profile, authUser = null) {
   const safeProfile = profile || {};
 
   return {
-    created_at: nullIfUndefined(
-      safeProfile.created_at || authUser?.created_at,
-    ),
+    created_at: nullIfUndefined(safeProfile.created_at || authUser?.created_at),
     has_access: !!safeProfile.has_access,
     is_paying: !!safeProfile.has_access,
     plan_name: nullIfUndefined(safeProfile.plan_name),
@@ -44,10 +42,7 @@ function syncPostHogUser(userId, profile, authUser) {
 
   const properties = buildPersonProperties(profile, authUser);
 
-  if (
-    typeof posthog.get_distinct_id === 'function' &&
-    posthog.get_distinct_id() === userId
-  ) {
+  if (typeof posthog.get_distinct_id === 'function' && posthog.get_distinct_id() === userId) {
     if (typeof posthog.setPersonProperties === 'function') {
       posthog.setPersonProperties(properties);
     }
@@ -80,11 +75,7 @@ const UserContext = createContext({
   refreshProfile: async () => {},
 });
 
-export function UserProvider({
-  children,
-  initialUser = null,
-  initialProfile = null,
-}) {
+export function UserProvider({ children, initialUser = null, initialProfile = null }) {
   const [user, setUser] = useState(initialUser);
   const [profile, setProfile] = useState(initialProfile);
   const [loading, setLoading] = useState(false);
@@ -106,11 +97,7 @@ export function UserProvider({
 
       setUser(authUser);
 
-      const { data: userProfile } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', authUser.id)
-        .single();
+      const { data: userProfile } = await supabase.from('users').select('*').eq('id', authUser.id).single();
 
       if (userProfile) {
         setProfile(userProfile);
@@ -157,9 +144,7 @@ export function UserProvider({
       }
 
       if (window.posthog?.setPersonProperties) {
-        window.posthog.setPersonProperties(
-          buildPersonProperties(updatedProfile, user),
-        );
+        window.posthog.setPersonProperties(buildPersonProperties(updatedProfile, user));
       }
 
       return { data: updatedProfile, error: null };
@@ -176,11 +161,7 @@ export function UserProvider({
     }
 
     try {
-      const { data: refreshedProfile } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+      const { data: refreshedProfile } = await supabase.from('users').select('*').eq('id', user.id).single();
 
       if (refreshedProfile) {
         setProfile(refreshedProfile);
@@ -198,8 +179,7 @@ export function UserProvider({
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN') {
         const rawProvider = session?.user?.app_metadata?.provider;
-        const provider =
-          rawProvider && rawProvider !== 'email' ? rawProvider : 'magic_link';
+        const provider = rawProvider && rawProvider !== 'email' ? rawProvider : 'magic_link';
         trackSignInOnce(session?.user?.id, provider);
         fetchUserData();
       } else if (event === 'TOKEN_REFRESHED') {
@@ -265,8 +245,7 @@ export function UserProvider({
         isAuthenticated,
         updateProfile,
         refreshProfile,
-      }}
-    >
+      }}>
       {children}
     </UserContext.Provider>
   );

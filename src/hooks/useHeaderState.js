@@ -110,10 +110,7 @@ export function useHeaderState(barRef) {
     };
   }, [pathname, detectThemeAtY, barRef]);
 
-  const headerState = useMemo(
-    () => (isMenuOpen ? 'menuOpen' : scrollState),
-    [isMenuOpen, scrollState]
-  );
+  const headerState = useMemo(() => (isMenuOpen ? 'menuOpen' : scrollState), [isMenuOpen, scrollState]);
 
   const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), []);
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);

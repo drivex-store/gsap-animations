@@ -18,15 +18,11 @@ function formatRelativeTime(publishedAt) {
 
   if (days < 30) {
     const weeks = Math.floor(days / 7);
-    return weeks === 1
-      ? t('common.footer.relativeTime.weekAgo')
-      : t('common.footer.relativeTime.weeksAgo', { n: weeks });
+    return weeks === 1 ? t('common.footer.relativeTime.weekAgo') : t('common.footer.relativeTime.weeksAgo', { n: weeks });
   }
 
   const months = Math.floor(days / 30);
-  return months === 1
-    ? t('common.footer.relativeTime.monthAgo')
-    : t('common.footer.relativeTime.monthsAgo', { n: months });
+  return months === 1 ? t('common.footer.relativeTime.monthAgo') : t('common.footer.relativeTime.monthsAgo', { n: months });
 }
 
 // NOTE: module id: 297428
@@ -41,11 +37,7 @@ export default function FooterStatus({ latest }) {
       {title && slug ? (
         <>
           <span>{t('common.footer.status.justShipped')}</span>
-          <NavLink
-            href={`/animations/${slug}`}
-            variant="nav"
-            className="text-mono-sm -mx-12 -my-6 text-foreground"
-          >
+          <NavLink href={`/animations/${slug}`} variant="nav" className="text-mono-sm -mx-12 -my-6 text-foreground">
             {title}
           </NavLink>
           {relativeTime ? (

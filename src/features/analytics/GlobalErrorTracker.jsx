@@ -22,38 +22,27 @@ export default function GlobalErrorTracker() {
         seenSignatures.add(signature);
         errorCount += 1;
         try {
-          analytics.error.exception(
-            errorObj instanceof Error ? errorObj : new Error(message),
-            {
-              source,
-              ...metadata,
-            },
-          );
+          analytics.error.exception(errorObj instanceof Error ? errorObj : new Error(message), {
+            source,
+            ...metadata,
+          });
         } catch {}
       }
     };
 
     const handleWindowError = (event) => {
-      reportError(
-        'uncaught_error',
-        event?.error || new Error(event?.message || ''),
-        {
-          file: event?.filename,
-          line: event?.lineno,
-          path: window.location?.pathname,
-        },
-      );
+      reportError('uncaught_error', event?.error || new Error(event?.message || ''), {
+        file: event?.filename,
+        line: event?.lineno,
+        path: window.location?.pathname,
+      });
     };
 
     const handleUnhandledRejection = (event) => {
       const reason = event?.reason;
-      reportError(
-        'unhandled_rejection',
-        reason instanceof Error ? reason : new Error(String(reason ?? '')),
-        {
-          path: window.location?.pathname,
-        },
-      );
+      reportError('unhandled_rejection', reason instanceof Error ? reason : new Error(String(reason ?? '')), {
+        path: window.location?.pathname,
+      });
     };
 
     window.addEventListener('error', handleWindowError);
@@ -61,10 +50,7 @@ export default function GlobalErrorTracker() {
 
     return () => {
       window.removeEventListener('error', handleWindowError);
-      window.removeEventListener(
-        'unhandledrejection',
-        handleUnhandledRejection,
-      );
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
     };
   }, []);
 

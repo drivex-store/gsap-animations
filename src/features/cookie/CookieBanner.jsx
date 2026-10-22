@@ -30,19 +30,18 @@ export default function CookieBanner({ onOpenPreferences }) {
 
   useEffect(() => {
     const handleConsentChanged = () => closeBanner();
-    window.addEventListener("annnimate:consent-changed", handleConsentChanged);
-    return () => window.removeEventListener("annnimate:consent-changed", handleConsentChanged);
+    window.addEventListener('annnimate:consent-changed', handleConsentChanged);
+    return () => window.removeEventListener('annnimate:consent-changed', handleConsentChanged);
   }, []);
 
-  useGSAP(() => {
-    if (isVisible && bannerRef.current) {
-      gsap.fromTo(
-        bannerRef.current,
-        { y: 32, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.6, ease: "expo.out" }
-      );
-    }
-  }, { dependencies: [isVisible] });
+  useGSAP(
+    () => {
+      if (isVisible && bannerRef.current) {
+        gsap.fromTo(bannerRef.current, { y: 32, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: 'expo.out' });
+      }
+    },
+    { dependencies: [isVisible] },
+  );
 
   const closeBanner = (callback) => {
     if (!bannerRef.current) {
@@ -50,16 +49,16 @@ export default function CookieBanner({ onOpenPreferences }) {
       callback?.();
       return;
     }
-    
+
     gsap.to(bannerRef.current, {
       y: 32,
       autoAlpha: 0,
       duration: 0.4,
-      ease: "expo.in",
+      ease: 'expo.in',
       onComplete: () => {
         setIsVisible(false);
         callback?.();
-      }
+      },
     });
   };
 
@@ -70,35 +69,21 @@ export default function CookieBanner({ onOpenPreferences }) {
       aria-label="Cookie preferences"
       aria-describedby="cookie-banner-body"
       className="fixed bottom-16 left-16 z-40 w-[calc(100vw-32px)] max-w-[320px] opacity-0"
-      data-theme="dark"
-    >
+      data-theme="dark">
       <div className="flex flex-col gap-16 border border-foreground/15 bg-background p-16 text-foreground lg:p-20">
         <p id="cookie-banner-body" className="text-body-sm text-foreground-muted">
-          Anonymous pageviews by default. Accept all for session recording and live chat.{" "}
+          Anonymous pageviews by default. Accept all for session recording and live chat.{' '}
           <Link
             href="/cookies"
-            className="text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:decoration-foreground"
-          >
+            className="text-foreground underline decoration-foreground/30 underline-offset-4 transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:decoration-foreground">
             Learn more
           </Link>
         </p>
         <div className="flex gap-8">
-          <AnimatedButton
-            type="button"
-            theme="light"
-            size="xs"
-            onClick={() => closeBanner(acceptAll)}
-            className="flex-1"
-          >
+          <AnimatedButton type="button" theme="light" size="xs" onClick={() => closeBanner(acceptAll)} className="flex-1">
             Accept all
           </AnimatedButton>
-          <AnimatedButton
-            type="button"
-            theme="surface"
-            size="xs"
-            onClick={() => closeBanner(onOpenPreferences)}
-            className="flex-1"
-          >
+          <AnimatedButton type="button" theme="surface" size="xs" onClick={() => closeBanner(onOpenPreferences)} className="flex-1">
             Preferences
           </AnimatedButton>
         </div>

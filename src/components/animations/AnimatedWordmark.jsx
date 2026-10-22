@@ -16,8 +16,7 @@ function LogoSvg({ width, height, strokeWidth = 26, ...restProps }) {
       strokeWidth={strokeWidth}
       strokeLinecap="butt"
       strokeLinejoin="miter"
-      {...restProps}
-    >
+      {...restProps}>
       <path d="M13 129C13 105.252 32.0279 86 55.5 86C78.9721 86 98 105.252 98 129" />
       <path d="M13 129C13 89.7878 44.3401 58 83 58C121.66 58 153 89.7878 153 129" />
       <path d="M13 129C13 64.935 64.2634 13 127.5 13C190.737 13 242 64.935 242 129" />
@@ -26,15 +25,8 @@ function LogoSvg({ width, height, strokeWidth = 26, ...restProps }) {
 }
 
 const AnimatedWordmark = forwardRef(function AnimatedWordmark(
-  {
-    className,
-    strokeWidth = 26,
-    fit = 'height',
-    tone = 'default',
-    playOnView = false,
-    ...restProps
-  },
-  ref
+  { className, strokeWidth = 26, fit = 'height', tone = 'default', playOnView = false, ...restProps },
+  ref,
 ) {
   const containerRef = useRef(null);
   const timelineRef = useRef(null);
@@ -43,7 +35,7 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
     const container = containerRef.current;
     return {
       brand: Array.from(container?.querySelectorAll('[data-pass="brand"] path') || []),
-      fg: Array.from(container?.querySelectorAll('[data-pass="fg"] path') || [])
+      fg: Array.from(container?.querySelectorAll('[data-pass="fg"] path') || []),
     };
   };
 
@@ -52,7 +44,7 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
       const length = path.getTotalLength();
       gsap.set(path, {
         strokeDasharray: length,
-        strokeDashoffset: length
+        strokeDashoffset: length,
       });
     });
   };
@@ -75,9 +67,9 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
         strokeDashoffset: 0,
         duration: 0.9,
         ease: 'expo.inOut',
-        stagger: staggerConfig
+        stagger: staggerConfig,
       },
-      0
+      0,
     );
 
     timeline.to(
@@ -86,9 +78,9 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
         strokeDashoffset: 0,
         duration: 0.9,
         ease: 'expo.inOut',
-        stagger: staggerConfig
+        stagger: staggerConfig,
       },
-      0.12
+      0.12,
     );
 
     timelineRef.current = timeline;
@@ -103,13 +95,13 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
         const length = path.getTotalLength();
         gsap.set(path, {
           strokeDasharray: length,
-          strokeDashoffset: 0
+          strokeDashoffset: 0,
         });
       });
 
       return () => timelineRef.current?.kill();
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   useEffect(() => {
@@ -134,7 +126,7 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
           isPrimed = true;
         }
       },
-      { rootMargin: '0px 0px -20% 0px' }
+      { rootMargin: '0px 0px -20% 0px' },
     );
 
     if (containerRef.current) {
@@ -144,32 +136,16 @@ const AnimatedWordmark = forwardRef(function AnimatedWordmark(
     return () => observer.disconnect();
   }, [playOnView]);
 
-  const svgClassName = cn(
-    'col-start-1 row-start-1',
-    fit === 'width' ? 'h-auto w-full' : 'h-full w-auto'
-  );
+  const svgClassName = cn('col-start-1 row-start-1', fit === 'width' ? 'h-auto w-full' : 'h-full w-auto');
   const isMutedTone = tone === 'muted';
 
   return (
-    <span
-      ref={containerRef}
-      className={cn('grid place-items-center', className)}
-      {...restProps}
-    >
-      <LogoSvg
-        data-pass="brand"
-        strokeWidth={strokeWidth}
-        className={cn(svgClassName, isMutedTone ? 'text-foreground' : 'text-brand')}
-      />
+    <span ref={containerRef} className={cn('grid place-items-center', className)} {...restProps}>
+      <LogoSvg data-pass="brand" strokeWidth={strokeWidth} className={cn(svgClassName, isMutedTone ? 'text-foreground' : 'text-brand')} />
       <LogoSvg
         data-pass="fg"
         strokeWidth={strokeWidth}
-        className={cn(
-          svgClassName,
-          isMutedTone
-            ? 'text-[color-mix(in_srgb,var(--foreground)_10%,var(--background))]'
-            : 'text-foreground'
-        )}
+        className={cn(svgClassName, isMutedTone ? 'text-[color-mix(in_srgb,var(--foreground)_10%,var(--background))]' : 'text-foreground')}
       />
     </span>
   );

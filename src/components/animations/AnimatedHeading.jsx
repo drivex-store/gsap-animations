@@ -4,15 +4,10 @@ import { forwardRef, useState, useRef, useLayoutEffect, useImperativeHandle, Fra
 import gsap from 'gsap'; // NOTE: module id: 989970
 import { useReveal } from '@/hooks/useReveal'; // NOTE: module id: 228414
 
-const AnimatedHeading = forwardRef(function AnimatedHeading({
-  children,
-  as: Component = 'h2',
-  sizeClass = 'text-h2',
-  className = '',
-  trigger = 'scroll',
-  start = 'top 80%',
-  skip = false
-}, ref) {
+const AnimatedHeading = forwardRef(function AnimatedHeading(
+  { children, as: Component = 'h2', sizeClass = 'text-h2', className = '', trigger = 'scroll', start = 'top 80%', skip = false },
+  ref,
+) {
   const containerRef = useRef(null);
   const [lines, setLines] = useState(null);
 
@@ -29,7 +24,7 @@ const AnimatedHeading = forwardRef(function AnimatedHeading({
   // Measure and split text into lines based on visual rendering (top bounds)
   useLayoutEffect(() => {
     if (!containerRef.current) return;
-    
+
     const wordNodes = containerRef.current.querySelectorAll('[data-rh-word]');
     if (wordNodes.length === 0) return;
 
@@ -48,64 +43,76 @@ const AnimatedHeading = forwardRef(function AnimatedHeading({
         measuredLines.push(currentLine.join(' '));
         currentLine = [];
       }
-      
+
       currentLine.push(node.textContent || '');
       lastTop = top;
       lastExplicitLine = explicitLine;
     }
-    
+
     if (currentLine.length > 0) {
       measuredLines.push(currentLine.join(' '));
     }
-    
+
     setLines(measuredLines);
   }, [plainText]);
 
   const { reveal } = useReveal(containerRef, {
     mode: trigger === 'pageEnter' ? 'hero' : trigger === 'manual' ? 'manual' : 'scroll',
-    build: skip || !lines ? null : (element) => {
-      const tl = gsap.timeline({ paused: true });
-      const lineNodes = element.querySelectorAll('[data-rh-line]');
+    build:
+      skip || !lines
+        ? null
+        : (element) => {
+            const tl = gsap.timeline({ paused: true });
+            const lineNodes = element.querySelectorAll('[data-rh-line]');
 
-      for (let i = 0; i < lineNodes.length; i++) {
-        const brandBlock = lineNodes[i].querySelector('[data-rh-brand]');
-        const fgBlock = lineNodes[i].querySelector('[data-rh-fg]');
+            for (let i = 0; i < lineNodes.length; i++) {
+              const brandBlock = lineNodes[i].querySelector('[data-rh-brand]');
+              const fgBlock = lineNodes[i].querySelector('[data-rh-fg]');
 
-        if (!brandBlock || !fgBlock) continue;
+              if (!brandBlock || !fgBlock) continue;
 
-        gsap.set([brandBlock, fgBlock], { scaleX: 1, transformOrigin: 'right' });
+              gsap.set([brandBlock, fgBlock], { scaleX: 1, transformOrigin: 'right' });
 
-        const delay = 0.12 * i;
-        tl.to(fgBlock, { scaleX: 0, duration: 0.5, ease: 'power3.inOut' }, delay);
-        tl.to(brandBlock, { scaleX: 0, duration: 0.5, ease: 'power3.inOut' }, delay + 0.1);
-      }
-      return tl;
-    },
+              const delay = 0.12 * i;
+              tl.to(fgBlock, { scaleX: 0, duration: 0.5, ease: 'power3.inOut' }, delay);
+              tl.to(brandBlock, { scaleX: 0, duration: 0.5, ease: 'power3.inOut' }, delay + 0.1);
+            }
+            return tl;
+          },
     start: start,
-    deps: [lines, skip]
+    deps: [lines, skip],
   });
 
-  useImperativeHandle(ref, () => ({
-    reveal: reveal
-  }), [reveal]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      reveal: reveal,
+    }),
+    [reveal],
+  );
 
   const combinedClassName = `${sizeClass} ${className}`.trim();
 
   // Initial render (measuring phase)
   if (!lines) {
     const splitLines = plainText.split('\n');
-    
+
     return (
       <Component ref={containerRef} className={combinedClassName} style={{ visibility: 'hidden' }}>
         {splitLines.map((line, i) => (
           <Fragment key={i}>
             {i > 0 && <br />}
-            {line.split(/\s+/).filter(Boolean).map((word, w) => (
-              <Fragment key={w}>
-                {w > 0 && ' '}
-                <span data-rh-word={true} data-rh-explicit={i}>{word}</span>
-              </Fragment>
-            ))}
+            {line
+              .split(/\s+/)
+              .filter(Boolean)
+              .map((word, w) => (
+                <Fragment key={w}>
+                  {w > 0 && ' '}
+                  <span data-rh-word={true} data-rh-explicit={i}>
+                    {word}
+                  </span>
+                </Fragment>
+              ))}
           </Fragment>
         ))}
       </Component>
@@ -122,16 +129,8 @@ const AnimatedHeading = forwardRef(function AnimatedHeading({
             <span className="block whitespace-nowrap">{line}</span>
             {!skip && (
               <Fragment>
-                <span
-                  data-rh-brand={true}
-                  aria-hidden="true"
-                  className="absolute -inset-x-[0.1em] -inset-y-[0.1em] block bg-brand"
-                />
-                <span
-                  data-rh-fg={true}
-                  aria-hidden="true"
-                  className="absolute -inset-x-[0.1em] -inset-y-[0.1em] block bg-foreground"
-                />
+                <span data-rh-brand={true} aria-hidden="true" className="absolute -inset-x-[0.1em] -inset-y-[0.1em] block bg-brand" />
+                <span data-rh-fg={true} aria-hidden="true" className="absolute -inset-x-[0.1em] -inset-y-[0.1em] block bg-foreground" />
               </Fragment>
             )}
           </span>

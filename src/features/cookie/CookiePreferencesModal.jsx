@@ -4,29 +4,17 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
 
-import {
-  defaultConsent,
-  dispatchConsentChanged,
-  getConsent,
-  setConsent,
-} from '@/libs/configs/acceptAll';
+import { defaultConsent, dispatchConsentChanged, getConsent, setConsent } from '@/libs/configs/acceptAll';
 
 import AnimatedButton from '@/components/animations/AnimatedButton'; // module id: 687989
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogTitle,
-} from '@/components/ui/Dialog'; // module id: 753145
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/Dialog'; // module id: 753145
 import Switch from '@/components/ui/Switch'; // module id: 870777
 
 const COOKIE_CATEGORIES = [
   {
     id: 'essential',
     name: 'Essential',
-    description:
-      'Authentication, payments, and your own preferences. Always on.',
+    description: 'Authentication, payments, and your own preferences. Always on.',
     cookies: 'Supabase Auth · Stripe · annnimate_consent',
     required: true,
   },
@@ -41,17 +29,14 @@ const COOKIE_CATEGORIES = [
   {
     id: 'functional',
     name: 'Functional',
-    description:
-      'Live chat support so you can ask a question without leaving the page.',
+    description: 'Live chat support so you can ask a question without leaving the page.',
     cookies: 'Crisp',
     required: false,
   },
 ];
 
 export function CookiePreferencesModal({ open, onOpenChange }) {
-  const [preferences, setPreferences] = useState(
-    () => getConsent() || defaultConsent,
-  );
+  const [preferences, setPreferences] = useState(() => getConsent() || defaultConsent);
 
   useEffect(() => {
     if (open) {
@@ -73,27 +58,21 @@ export function CookiePreferencesModal({ open, onOpenChange }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseAnimatedButton={false}
-        className="!rounded-none !border-foreground/15 !bg-background !p-32 sm:!max-w-[560px] lg:!p-40"
-      >
+        className="!rounded-none !border-foreground/15 !bg-background !p-32 sm:!max-w-[560px] lg:!p-40">
         <DialogClose
           aria-label="Close"
-          className="group/close absolute right-16 top-16 inline-flex size-40 items-center justify-center border border-foreground/15 text-foreground/70 transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:border-foreground/40 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
-        >
+          className="group/close absolute right-16 top-16 inline-flex size-40 items-center justify-center border border-foreground/15 text-foreground/70 transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:border-foreground/40 hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50">
           <X className="size-18 transition-transform duration-(--duration-quick) ease-(--ease-back-out) group-hover/close:rotate-90" />
         </DialogClose>
 
         <div className="flex flex-col gap-12">
           <p className="text-mono-sm text-foreground/55">Cookie preferences</p>
-          <DialogTitle className="text-h3 font-medium leading-tight text-foreground">
-            What you let us store.
-          </DialogTitle>
+          <DialogTitle className="text-h3 font-medium leading-tight text-foreground">What you let us store.</DialogTitle>
           <DialogDescription className="text-body text-foreground-muted">
-            Nothing non-essential is stored on your device until you toggle it
-            on here. Read the{' '}
+            Nothing non-essential is stored on your device until you toggle it on here. Read the{' '}
             <Link
               href="/cookies"
-              className="underline decoration-foreground/30 underline-offset-4 transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:decoration-foreground hover:text-foreground"
-            >
+              className="underline decoration-foreground/30 underline-offset-4 transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:decoration-foreground hover:text-foreground">
               cookie policy
             </Link>{' '}
             for the full breakdown.
@@ -105,21 +84,11 @@ export function CookiePreferencesModal({ open, onOpenChange }) {
             <li key={category.id} className="flex items-start gap-24 py-20">
               <div className="flex flex-1 flex-col gap-6">
                 <div className="flex items-baseline gap-12">
-                  <span className="text-accent-xs text-foreground">
-                    {category.name}
-                  </span>
-                  {category.required && (
-                    <span className="text-accent-xs text-foreground/45">
-                      Required
-                    </span>
-                  )}
+                  <span className="text-accent-xs text-foreground">{category.name}</span>
+                  {category.required && <span className="text-accent-xs text-foreground/45">Required</span>}
                 </div>
-                <p className="text-body-sm text-foreground-muted">
-                  {category.description}
-                </p>
-                <p className="text-accent-xs text-foreground/45">
-                  {category.cookies}
-                </p>
+                <p className="text-body-sm text-foreground-muted">{category.description}</p>
+                <p className="text-accent-xs text-foreground/45">{category.cookies}</p>
               </div>
               <Switch
                 checked={!!preferences[category.id]}
@@ -151,8 +120,7 @@ export function CookiePreferencesModal({ open, onOpenChange }) {
                   marketing: false,
                 })
               }
-              className="flex-1"
-            >
+              className="flex-1">
               Accept all
             </AnimatedButton>
             <AnimatedButton
@@ -167,18 +135,11 @@ export function CookiePreferencesModal({ open, onOpenChange }) {
                   marketing: false,
                 })
               }
-              className="flex-1"
-            >
+              className="flex-1">
               Decline all
             </AnimatedButton>
           </div>
-          <AnimatedButton
-            type="button"
-            theme="brand"
-            size="xs"
-            onClick={() => handleSave(preferences)}
-            className="w-full"
-          >
+          <AnimatedButton type="button" theme="brand" size="xs" onClick={() => handleSave(preferences)} className="w-full">
             Save preferences
           </AnimatedButton>
         </div>

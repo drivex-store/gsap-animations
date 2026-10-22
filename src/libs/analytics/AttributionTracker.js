@@ -17,19 +17,11 @@ export function AttributionTracker() {
   }, []);
 
   useEffect(() => {
-    if (
-      !user ||
-      !profile ||
-      hasBackfilledRef.current ||
-      profile.ft_at ||
-      profile.ft_channel
-    ) {
+    if (!user || !profile || hasBackfilledRef.current || profile.ft_at || profile.ft_channel) {
       return;
     }
 
-    const createdAtMs = profile.created_at
-      ? new Date(profile.created_at).getTime()
-      : 0;
+    const createdAtMs = profile.created_at ? new Date(profile.created_at).getTime() : 0;
 
     if (!createdAtMs || Date.now() - createdAtMs > SEVEN_DAYS_MS) {
       return;

@@ -24,29 +24,29 @@ const TRANSITION_CONFIGS = {
   app: {
     mechanism: 'fade',
     leave: { duration: 0.3, ease: 'power4.out' },
-    enter: { duration: 0.4, ease: 'power4.out' }
+    enter: { duration: 0.4, ease: 'power4.out' },
   },
   sectionFade: {
     mechanism: 'fade',
     leave: { duration: 0.35, ease: 'power2.out' },
-    enter: { duration: 0.5, ease: 'power2.out' }
+    enter: { duration: 0.5, ease: 'power2.out' },
   },
   marketing: {
     mechanism: 'ground',
     in: { duration: 0.3, ease: 'expo.out' },
-    out: { duration: 0.4, ease: 'expo.out' }
+    out: { duration: 0.4, ease: 'expo.out' },
   },
   auth: null,
   admin: {
     mechanism: 'fade',
     leave: { duration: 0.3, ease: 'power4.out' },
-    enter: { duration: 0.5, ease: 'power4.out' }
+    enter: { duration: 0.5, ease: 'power4.out' },
   },
   standalone: {
     mechanism: 'ground',
     in: { duration: 0.3, ease: 'expo.out' },
-    out: { duration: 0.4, ease: 'expo.out' }
-  }
+    out: { duration: 0.4, ease: 'expo.out' },
+  },
 };
 
 const DEFAULT_MARKETING_CONFIG = TRANSITION_CONFIGS.marketing;
@@ -103,7 +103,7 @@ export default function TransitionLayout({ children }) {
   const activeTransitionConfigRef = useRef(null);
   const fadedElementsRef = useRef([]);
   const renderedPathnameRef = useRef(pathname);
-  
+
   renderedPathnameRef.current = pathname;
   debugLog('TransitionLayout render, pathname:', pathname);
 
@@ -117,7 +117,7 @@ export default function TransitionLayout({ children }) {
 
   useEffect(() => {
     debugLog('Setting up Navigation API listener');
-    
+
     if (!('navigation' in window)) {
       debugLog('Navigation API not supported, using popstate fallback');
       const handlePopState = () => {
@@ -134,13 +134,13 @@ export default function TransitionLayout({ children }) {
     }
 
     debugLog('Navigation API supported, setting up intercept');
-    
+
     const handleNavigate = (event) => {
       debugLog('navigate event:', {
         type: event.navigationType,
         destination: event.destination?.url,
         canIntercept: event.canIntercept,
-        hashChange: event.hashChange
+        hashChange: event.hashChange,
       });
 
       if (event.navigationType !== 'traverse') {
@@ -162,18 +162,18 @@ export default function TransitionLayout({ children }) {
         isInterceptedRef.current = true;
         isBackForwardNavRef.current = true;
         setTransitionTarget(targetUrl.pathname);
-        
+
         event.intercept({
           handler: async () => {
             debugLog('Intercept handler: running leave animation');
             await leaveAnimationRef.current();
             debugLog('Intercept handler: leave animation complete');
-          }
+          },
         });
       } else {
         debugLog('Cannot intercept:', {
           canIntercept: event.canIntercept,
-          hasLeaveRef: !!leaveAnimationRef.current
+          hasLeaveRef: !!leaveAnimationRef.current,
         });
       }
     };
@@ -198,24 +198,34 @@ export default function TransitionLayout({ children }) {
 
   const leave = useCallback(async () => {
     debugLog('leave() called');
-    
+
     const currentLayout = currentLayoutTypeRef.current;
     const targetPath = getTransitionTarget();
     const targetLayout = targetPath ? resolveLayoutType(targetPath) : currentLayout;
     const currentPath = window.location.pathname;
 
-    let config = currentLayout === targetLayout 
-      ? getConfigForLayout(currentLayout) 
-      : (currentLayout === 'marketing' || targetLayout === 'marketing' 
-          ? getConfigForLayout('marketing') 
-          : getConfigForLayout(currentLayout));
+    let config =
+      currentLayout === targetLayout
+        ? getConfigForLayout(currentLayout)
+        : currentLayout === 'marketing' || targetLayout === 'marketing'
+          ? getConfigForLayout('marketing')
+          : getConfigForLayout(currentLayout);
 
     if (config && document.querySelector('[data-anon-sidebar-chrome]') && isSameSection(currentPath, targetPath)) {
       config = getConfigForLayout('sectionFade');
     }
 
     activeTransitionConfigRef.current = config;
-    debugLog('leave() - from:', currentLayout, 'to:', targetLayout, 'sameSection:', isSameSection(currentPath, targetPath), 'config:', config);
+    debugLog(
+      'leave() - from:',
+      currentLayout,
+      'to:',
+      targetLayout,
+      'sameSection:',
+      isSameSection(currentPath, targetPath),
+      'config:',
+      config,
+    );
 
     if (!config) {
       debugLog('leave() - skipping (no config)');
@@ -223,11 +233,13 @@ export default function TransitionLayout({ children }) {
     }
 
     const theme = config.mechanism === 'ground' ? getThemeFromPath(targetPath) : null;
-    
+
     queueMicrotask(() => {
-      window.dispatchEvent(new CustomEvent('anm:transition', {
-        detail: { theme }
-      }));
+      window.dispatchEvent(
+        new CustomEvent('anm:transition', {
+          detail: { theme },
+        }),
+      );
     });
 
     if (config.mechanism === 'ground') {
@@ -241,7 +253,7 @@ export default function TransitionLayout({ children }) {
 
       gsap.set(overlay, {
         backgroundColor: getThemeFromPath(targetPath) === 'light' ? '#eeeeee' : '#141314',
-        pointerEvents: 'auto'
+        pointerEvents: 'auto',
       });
 
       return new Promise((resolve) => {
@@ -252,7 +264,7 @@ export default function TransitionLayout({ children }) {
           onComplete: () => {
             scrollToTop();
             resolve();
-          }
+          },
         });
       });
     }
@@ -275,7 +287,7 @@ export default function TransitionLayout({ children }) {
     if (footer) {
       elementsToAnimate.push(footer);
     }
-    
+
     fadedElementsRef.current = elementsToAnimate;
 
     return new Promise((resolve) => {
@@ -284,7 +296,7 @@ export default function TransitionLayout({ children }) {
           debugLog('leave() - animation complete');
           scrollToTop();
           resolve();
-        }
+        },
       });
       tl.to(contentElements, { opacity: 0, duration, ease }, 0);
       if (footer) {
@@ -295,7 +307,7 @@ export default function TransitionLayout({ children }) {
 
   const enter = useCallback(async () => {
     debugLog('enter() called');
-    
+
     const config = activeTransitionConfigRef.current || getConfigForLayout(resolveLayoutType(pathname));
     debugLog('enter() - config:', config);
 
@@ -315,9 +327,9 @@ export default function TransitionLayout({ children }) {
 
     if (config.mechanism === 'ground') {
       for (let i = 0; i < 60 && renderedPathnameRef.current !== window.location.pathname; i++) {
-        await new Promise(r => setTimeout(r, 16));
+        await new Promise((r) => setTimeout(r, 16));
       }
-      
+
       scrollToTop();
 
       await new Promise((resolve) => {
@@ -332,9 +344,9 @@ export default function TransitionLayout({ children }) {
         const timeout = setTimeout(resolve, 1000);
         let lastTime = performance.now();
         let fastFrames = 0;
-        
+
         const checkFrames = (time) => {
-          fastFrames = (time - lastTime < 40) ? fastFrames + 1 : 0;
+          fastFrames = time - lastTime < 40 ? fastFrames + 1 : 0;
           lastTime = time;
           if (fastFrames >= 2) {
             clearTimeout(timeout);
@@ -359,7 +371,7 @@ export default function TransitionLayout({ children }) {
           onComplete: () => {
             gsap.set(overlay, { pointerEvents: 'none' });
             resolve();
-          }
+          },
         });
       });
       return;
@@ -372,8 +384,8 @@ export default function TransitionLayout({ children }) {
     debugLog('enter() - found content elements:', contentElements.length, 'footer:', !!footer);
 
     const elementsSet = new Set(contentElements);
-    const leftoverElements = fadedElementsRef.current.filter(el => el && !elementsSet.has(el));
-    
+    const leftoverElements = fadedElementsRef.current.filter((el) => el && !elementsSet.has(el));
+
     if (leftoverElements.length) {
       gsap.set(leftoverElements, { opacity: 1 });
     }
@@ -409,11 +421,7 @@ export default function TransitionLayout({ children }) {
     <RouterTransition leave={leave} enter={enter}>
       <TransitionRouterProvider>
         {children}
-        <div
-          ref={groundOverlayRef}
-          aria-hidden="true"
-          className="pointer-events-none invisible fixed inset-0 z-[299] opacity-0"
-        />
+        <div ref={groundOverlayRef} aria-hidden="true" className="pointer-events-none invisible fixed inset-0 z-[299] opacity-0" />
       </TransitionRouterProvider>
     </RouterTransition>
   );

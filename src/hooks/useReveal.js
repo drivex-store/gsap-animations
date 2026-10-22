@@ -19,25 +19,25 @@ let isRefreshing = false;
 
 export function useReveal(ref, { mode = 'scroll', build, start = 'top 85%', inView, deps = [] } = {}) {
   const { whenRevealed } = useAnimation();
-  
+
   const timelineRef = useRef(null);
   const hasRevealedRef = useRef(false);
-  
+
   const buildRef = useRef(build);
   buildRef.current = build;
-  
+
   const inViewRef = useRef(inView);
   inViewRef.current = inView;
 
   const checkInView = useCallback(() => {
     if (inViewRef.current) return inViewRef.current();
-    
+
     const element = ref.current;
     if (!element) return false;
-    
+
     const rect = element.getBoundingClientRect();
     const viewportHeight = window.innerHeight || 0;
-    
+
     return rect.top < 0.9 * viewportHeight && rect.bottom > 0;
   }, [ref]);
 
@@ -50,29 +50,32 @@ export function useReveal(ref, { mode = 'scroll', build, start = 'top 85%', inVi
     }
   }, [ref]);
 
-  useGSAP(() => {
-    const element = ref.current;
-    if (!element || !buildRef.current) return;
-    
-    const timeline = buildRef.current(element);
-    timelineRef.current = timeline;
-    
-    if (hasRevealedRef.current) {
-      timeline.restart(true);
-    }
-    
-    return () => {
-      timeline?.kill();
-      timelineRef.current = null;
-    };
-  }, { scope: ref, dependencies: [mode, start, ...deps] });
+  useGSAP(
+    () => {
+      const element = ref.current;
+      if (!element || !buildRef.current) return;
+
+      const timeline = buildRef.current(element);
+      timelineRef.current = timeline;
+
+      if (hasRevealedRef.current) {
+        timeline.restart(true);
+      }
+
+      return () => {
+        timeline?.kill();
+        timelineRef.current = null;
+      };
+    },
+    { scope: ref, dependencies: [mode, start, ...deps] },
+  );
 
   useEffect(() => {
     if (mode === 'manual') return;
-    
+
     let scrollTriggerInstance = null;
     let rafId = 0;
-    
+
     const cleanupWhenRevealed = whenRevealed(() => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         hasRevealedRef.current = true;
@@ -81,7 +84,7 @@ export function useReveal(ref, { mode = 'scroll', build, start = 'top 85%', inVi
         }
         return;
       }
-      
+
       if (mode === 'hero' || checkInView()) {
         playReveal();
       } else {
@@ -91,29 +94,26 @@ export function useReveal(ref, { mode = 'scroll', build, start = 'top 85%', inVi
               playReveal();
               return;
             }
-            
+
             scrollTriggerInstance = ScrollTrigger.create({
               trigger: ref.current,
               start: start,
               once: true,
-              onEnter: playReveal
+              onEnter: playReveal,
             });
-            
+
             if (!isRefreshing) {
               isRefreshing = true;
               requestAnimationFrame(() => {
                 isRefreshing = false;
-                perfMeasure(
-                  `ScrollTrigger.refresh (${ScrollTrigger.getAll().length} triggers)`,
-                  () => ScrollTrigger.refresh()
-                );
+                perfMeasure(`ScrollTrigger.refresh (${ScrollTrigger.getAll().length} triggers)`, () => ScrollTrigger.refresh());
               });
             }
           }
         });
       }
     });
-    
+
     return () => {
       cleanupWhenRevealed();
       if (rafId) {

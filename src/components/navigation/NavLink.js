@@ -36,10 +36,9 @@ export default function NavLink({
         onMouseEnter={onMouseEnter}
         className={cn(
           'text-foreground underline decoration-foreground/30 underline-offset-[3px] transition-[text-decoration-color] duration-200 hover:decoration-foreground',
-          className
+          className,
         )}
-        {...props}
-      >
+        {...props}>
         {children}
       </Component>
     );
@@ -55,17 +54,13 @@ export default function NavLink({
           'group relative inline-flex w-fit items-center',
           'transition-transform duration-(--duration-quick) ease-(--ease-back-out)',
           'hover:scale-[0.95] data-[active=true]:scale-[0.95]',
-          className
+          className,
         )}
-        {...props}
-      >
+        {...props}>
         <span className={NAV_SURFACE}>
           <SlideText>{children}</SlideText>
           {icon ? (
-            <span
-              aria-hidden="true"
-              className="ml-[0.5em] inline-flex shrink-0 items-center"
-            >
+            <span aria-hidden="true" className="ml-[0.5em] inline-flex shrink-0 items-center">
               {icon}
             </span>
           ) : null}
@@ -80,7 +75,7 @@ export default function NavLink({
         'transition-[padding-left,color] duration-500 ease-power3-out',
         showIndicator ? 'pl-[1.4em]' : 'pl-0',
         'hover:pl-[1.4em] data-[active=true]:pl-[1.4em]',
-        className
+        className,
       )
     : cn('group relative inline-flex w-fit items-center', className);
 
@@ -90,7 +85,7 @@ export default function NavLink({
         'pointer-events-none inline-flex items-center transition-transform duration-500 ease-power3-out',
         showIndicator && 'translate-x-[1.5em]',
         'group-hover:translate-x-[1.5em]',
-        'group-data-[active=true]:translate-x-[1.5em]'
+        'group-data-[active=true]:translate-x-[1.5em]',
       );
 
   return (
@@ -99,8 +94,7 @@ export default function NavLink({
       onMouseEnter={onMouseEnter}
       data-active={active ? 'true' : undefined}
       className={wrapperClassName}
-      {...props}
-    >
+      {...props}>
       <span
         aria-hidden="true"
         className={cn(
@@ -109,16 +103,13 @@ export default function NavLink({
           showIndicator ? 'rotate-0 scale-100' : '-rotate-90 scale-0',
           'transition-transform duration-500 ease-out-back',
           'group-hover:rotate-0 group-hover:scale-100',
-          'group-data-[active=true]:rotate-0 group-data-[active=true]:scale-100'
+          'group-data-[active=true]:rotate-0 group-data-[active=true]:scale-100',
         )}
       />
       <span className={contentClassName}>
         <span>{children}</span>
         {icon ? (
-          <span
-            aria-hidden="true"
-            className="ml-[0.5em] inline-flex shrink-0 items-center"
-          >
+          <span aria-hidden="true" className="ml-[0.5em] inline-flex shrink-0 items-center">
             {icon}
           </span>
         ) : null}

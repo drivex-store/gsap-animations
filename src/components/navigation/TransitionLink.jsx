@@ -7,10 +7,7 @@ import { forwardRef } from 'react'; // NOTE: module id: 271645
 import Link from 'next/link'; // NOTE: module id: 522016
 import { useTransitionClick } from '@/hooks/useTransitionClick'; // NOTE: module id: 995289
 
-const TransitionLink = forwardRef(function TransitionLink(
-  { href, onClick, children, ...restProps },
-  ref
-) {
+const TransitionLink = forwardRef(function TransitionLink({ href, onClick, children, ...restProps }, ref) {
   const handleClick = useTransitionClick(href, { onClick });
 
   return (

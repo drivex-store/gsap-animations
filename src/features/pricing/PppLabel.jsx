@@ -7,12 +7,7 @@ import { Info } from 'lucide-react';
 import { t } from '@/libs/utils/i18n';
 import { getPppDiscountPercent } from '@/features/pricing/utils/pppKitPricing';
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/Tooltip'; // module id: 672706
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'; // module id: 672706
 
 import { usePppGeo } from '@/hooks/usePppGeo'; // module id: 12895
 
@@ -29,8 +24,7 @@ function getCountryName(countryCode) {
 }
 
 function CountryFlag({ code, size = 20, className = '' }) {
-  const normalizedCode =
-    typeof code === 'string' && /^[A-Za-z]{2}$/.test(code) ? code.toLowerCase() : null;
+  const normalizedCode = typeof code === 'string' && /^[A-Za-z]{2}$/.test(code) ? code.toLowerCase() : null;
 
   if (!normalizedCode) {
     return null;
@@ -63,26 +57,17 @@ function usePppNotice() {
 
   const countryName = getCountryName(geo.country);
 
-  return countryName
-    ? t('pricing.tiers.pppNotice', { country: countryName })
-    : t('pricing.tiers.pppNoticeGeneric');
+  return countryName ? t('pricing.tiers.pppNotice', { country: countryName }) : t('pricing.tiers.pppNoticeGeneric');
 }
 
 function scrollToPricing(pathname) {
-  const targetElement = document.querySelector(
-    pathname === '/pricing' ? '#pricing-tiers' : '#pricing',
-  );
+  const targetElement = document.querySelector(pathname === '/pricing' ? '#pricing-tiers' : '#pricing');
 
   if (!targetElement) {
     return;
   }
 
-  const scrollOffset =
-    -(
-      parseInt(
-        getComputedStyle(document.documentElement).getPropertyValue('--v2-header-h'),
-      ) || 72
-    ) - 24;
+  const scrollOffset = -(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--v2-header-h')) || 72) - 24;
 
   if (window.lenis?.scrollTo) {
     window.lenis.scrollTo(targetElement, { offset: scrollOffset });
@@ -106,10 +91,7 @@ export function PppLabel({ className = '', tone = 'dark' }) {
     <TooltipProvider delayDuration={150}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <button
-            type="button"
-            className={`text-mono-sm inline-flex items-center gap-6 text-brand ${className}`}
-          >
+          <button type="button" className={`text-mono-sm inline-flex items-center gap-6 text-brand ${className}`}>
             <CountryFlag code={geo?.country} size={16} />
             {t('pricing.tiers.pppName')}
             <Info size={13} />
@@ -122,13 +104,8 @@ export function PppLabel({ className = '', tone = 'dark' }) {
             tone === 'light'
               ? 'w-[320px] max-w-[90vw] border border-foreground/10 bg-background p-16 text-foreground'
               : 'w-[320px] max-w-[90vw] border-0 bg-foreground p-16 text-background'
-          }
-        >
-          <p
-            className={`text-mono-sm m-0 flex items-center gap-8 ${
-              tone === 'light' ? 'text-foreground' : 'text-background'
-            }`}
-          >
+          }>
+          <p className={`text-mono-sm m-0 flex items-center gap-8 ${tone === 'light' ? 'text-foreground' : 'text-background'}`}>
             <CountryFlag code={geo?.country} size={16} />
             {getCountryName(geo?.country)
               ? t('pricing.tiers.pppTipTitle', {
@@ -144,8 +121,7 @@ export function PppLabel({ className = '', tone = 'dark' }) {
           <p
             className={`text-body-sm mt-8 font-sans normal-case leading-relaxed ${
               tone === 'light' ? 'text-foreground-muted' : 'text-background/75'
-            }`}
-          >
+            }`}>
             {noticeText}
           </p>
         </TooltipContent>
@@ -233,27 +209,17 @@ export function PppStrip() {
   const discountPercent = getPppDiscountPercent(geo.tier);
 
   return (
-    <div
-      ref={bannerRef}
-      data-testid="ppp-banner"
-      data-theme={theme}
-      className="relative z-[301] w-full bg-background text-foreground"
-    >
+    <div ref={bannerRef} data-testid="ppp-banner" data-theme={theme} className="relative z-[301] w-full bg-background text-foreground">
       <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-4 px-16 py-10 text-center">
         <p className="text-mono-sm m-0 inline-flex items-center gap-10">
           <CountryFlag code={geo.country} size={20} />
-          {countryName
-            ? t('pricing.tiers.pppBanner', { country: countryName })
-            : t('pricing.tiers.pppName')}
+          {countryName ? t('pricing.tiers.pppBanner', { country: countryName }) : t('pricing.tiers.pppName')}
         </p>
-        <p className="text-body-sm m-0 text-foreground-muted">
-          {t('pricing.tiers.pppBannerBody', { pct: discountPercent })}
-        </p>
+        <p className="text-body-sm m-0 text-foreground-muted">{t('pricing.tiers.pppBannerBody', { pct: discountPercent })}</p>
         <button
           type="button"
           onClick={() => scrollToPricing(pathname)}
-          className="text-mono-sm text-foreground underline underline-offset-4 transition-colors duration-(--duration-quick) hover:text-brand"
-        >
+          className="text-mono-sm text-foreground underline underline-offset-4 transition-colors duration-(--duration-quick) hover:text-brand">
           {t('pricing.tiers.pppBannerCta')}
         </button>
       </div>
@@ -270,9 +236,7 @@ export default function PppNotice({ className = '', align = 'center' }) {
   }
 
   return (
-    <aside
-      className={`flex ${align === 'start' ? 'justify-start' : 'justify-center'} ${className}`}
-    >
+    <aside className={`flex ${align === 'start' ? 'justify-start' : 'justify-center'} ${className}`}>
       <div className="flex max-w-[560px] flex-col gap-8 border border-foreground/10 bg-surface px-20 py-16">
         <p className="text-mono-sm flex items-center gap-8 text-brand">
           <span aria-hidden="true" className="inline-block size-8 bg-brand" />

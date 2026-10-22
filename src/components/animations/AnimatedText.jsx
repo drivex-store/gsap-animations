@@ -71,13 +71,18 @@ export default function AnimatedText({
     }
   };
 
-  usePageEnterAnimation(() => {
-    pageEnterTriggeredRef.current = true;
-    markAnimationStarted();
-    if (tweenRef.current) {
-      tweenRef.current.restart(true);
-    }
-  }, [], 'AnimatedText', triggerMode === 'pageEnter');
+  usePageEnterAnimation(
+    () => {
+      pageEnterTriggeredRef.current = true;
+      markAnimationStarted();
+      if (tweenRef.current) {
+        tweenRef.current.restart(true);
+      }
+    },
+    [],
+    'AnimatedText',
+    triggerMode === 'pageEnter',
+  );
 
   useEffect(() => {
     if (triggerMode === 'pageEnter' && fontsReady && tweenRef.current && getHasTriggered() && pageEnterTriggeredRef.current) {
@@ -91,106 +96,108 @@ export default function AnimatedText({
     }
   }, [triggerMode, fontsReady, getHasTriggered]);
 
-  useGSAP(() => {
-    if (!containerRef.current || !fontsReady) return;
+  useGSAP(
+    () => {
+      if (!containerRef.current || !fontsReady) return;
 
-    const splitConfig = {
-      type: splitType,
-      aria: aria,
-      deepSlice: deepSlice,
-      propIndex: propIndex,
-      autoSplit: autoSplit,
-      ...(resolvedMask && { mask: resolvedMask }),
-      ...(linesClass && { linesClass: linesClass }),
-      ...(wordsClass && { wordsClass: wordsClass }),
-      ...(charsClass && { charsClass: charsClass }),
-      onSplit: (splitInstance) => {
-        splitTextRef.current = splitInstance;
-        if (onSplitCallback) onSplitCallback(splitInstance);
+      const splitConfig = {
+        type: splitType,
+        aria: aria,
+        deepSlice: deepSlice,
+        propIndex: propIndex,
+        autoSplit: autoSplit,
+        ...(resolvedMask && { mask: resolvedMask }),
+        ...(linesClass && { linesClass: linesClass }),
+        ...(wordsClass && { wordsClass: wordsClass }),
+        ...(charsClass && { charsClass: charsClass }),
+        onSplit: (splitInstance) => {
+          splitTextRef.current = splitInstance;
+          if (onSplitCallback) onSplitCallback(splitInstance);
 
-        const typesArray = splitType.split(',').map((t) => t.trim());
-        let targetElements = [];
+          const typesArray = splitType.split(',').map((t) => t.trim());
+          let targetElements = [];
 
-        if (typesArray.includes('chars') && splitInstance.chars?.length > 0) {
-          targetElements = splitInstance.chars;
-        } else if (typesArray.includes('words') && splitInstance.words?.length > 0) {
-          targetElements = splitInstance.words;
-        } else if (typesArray.includes('lines') && splitInstance.lines?.length > 0) {
-          targetElements = splitInstance.lines;
-        }
+          if (typesArray.includes('chars') && splitInstance.chars?.length > 0) {
+            targetElements = splitInstance.chars;
+          } else if (typesArray.includes('words') && splitInstance.words?.length > 0) {
+            targetElements = splitInstance.words;
+          } else if (typesArray.includes('lines') && splitInstance.lines?.length > 0) {
+            targetElements = splitInstance.lines;
+          }
 
-        if (targetElements.length === 0) return;
+          if (targetElements.length === 0) return;
 
-        const tweenConfig = {
-          ...animationFromProps,
-          duration: duration,
-          delay: delay,
-          ease: ease,
-          stagger: stagger,
-          ...(onComplete && {
-            onComplete: () => {
-              onComplete();
-              if (revertOnComplete && splitInstance) {
-                splitInstance.revert();
-              }
-            }
-          })
-        };
-
-        if (triggerMode === 'scroll') {
-          const stConfig = {
-            trigger: containerRef.current,
-            start: start || 'top 80%',
-            ...(typeof scrollTrigger === 'object' && scrollTrigger)
+          const tweenConfig = {
+            ...animationFromProps,
+            duration: duration,
+            delay: delay,
+            ease: ease,
+            stagger: stagger,
+            ...(onComplete && {
+              onComplete: () => {
+                onComplete();
+                if (revertOnComplete && splitInstance) {
+                  splitInstance.revert();
+                }
+              },
+            }),
           };
-          if (toggleActions) {
-            stConfig.toggleActions = toggleActions;
-          }
-          tweenConfig.scrollTrigger = stConfig;
-          tweenRef.current = gsap.from(targetElements, tweenConfig);
-        } else if (triggerMode === 'immediate') {
-          tweenRef.current = gsap.from(targetElements, tweenConfig);
-        } else {
-          tweenRef.current = gsap.from(targetElements, { ...tweenConfig, paused: true });
 
-          if (triggerMode === 'pageEnter' && pageEnterTriggeredRef.current) {
-            markAnimationStarted();
-            tweenRef.current.restart(true);
-          }
+          if (triggerMode === 'scroll') {
+            const stConfig = {
+              trigger: containerRef.current,
+              start: start || 'top 80%',
+              ...(typeof scrollTrigger === 'object' && scrollTrigger),
+            };
+            if (toggleActions) {
+              stConfig.toggleActions = toggleActions;
+            }
+            tweenConfig.scrollTrigger = stConfig;
+            tweenRef.current = gsap.from(targetElements, tweenConfig);
+          } else if (triggerMode === 'immediate') {
+            tweenRef.current = gsap.from(targetElements, tweenConfig);
+          } else {
+            tweenRef.current = gsap.from(targetElements, { ...tweenConfig, paused: true });
 
-          if (triggerMode === 'manual' && onReady) {
-            onReady(() => {
-              if (tweenRef.current) {
-                tweenRef.current.restart(true);
-              }
-            });
+            if (triggerMode === 'pageEnter' && pageEnterTriggeredRef.current) {
+              markAnimationStarted();
+              tweenRef.current.restart(true);
+            }
+
+            if (triggerMode === 'manual' && onReady) {
+              onReady(() => {
+                if (tweenRef.current) {
+                  tweenRef.current.restart(true);
+                }
+              });
+            }
           }
+          return tweenRef.current;
+        },
+      };
+
+      splitTextRef.current = SplitText.create(containerRef.current, splitConfig);
+
+      return () => {
+        if (tweenRef.current) {
+          tweenRef.current.kill();
+          tweenRef.current = null;
         }
-        return tweenRef.current;
-      }
-    };
-
-    splitTextRef.current = SplitText.create(containerRef.current, splitConfig);
-
-    return () => {
-      if (tweenRef.current) {
-        tweenRef.current.kill();
-        tweenRef.current = null;
-      }
-      if (splitTextRef.current) {
-        splitTextRef.current.revert();
-        splitTextRef.current = null;
-      }
-    };
-  }, { scope: containerRef, dependencies: [triggerMode, fontsReady] });
+        if (splitTextRef.current) {
+          splitTextRef.current.revert();
+          splitTextRef.current = null;
+        }
+      };
+    },
+    { scope: containerRef, dependencies: [triggerMode, fontsReady] },
+  );
 
   return (
     <Component
       ref={containerRef}
       className={className}
       data-page-enter-animation={triggerMode === 'pageEnter' ? 'true' : undefined}
-      {...restProps}
-    >
+      {...restProps}>
       {children}
     </Component>
   );

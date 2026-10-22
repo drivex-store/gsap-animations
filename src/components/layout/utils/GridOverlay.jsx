@@ -35,11 +35,7 @@ export function GridOverlay() {
   const isHidden = !isVisible && transitionPhase !== 'out';
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 z-[9999]"
-      style={{ visibility: isHidden ? 'hidden' : 'visible' }}
-      aria-hidden="true"
-    >
+    <div className="pointer-events-none fixed inset-0 z-[9999]" style={{ visibility: isHidden ? 'hidden' : 'visible' }} aria-hidden="true">
       <div className="v2-container h-full">
         <div className="grid grid-cols-12 gap-16 h-full">
           {Array.from({ length: 12 }).map((_, columnIndex) => (

@@ -4,7 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import Provider from '@/app/providers';
 import TransitionLayout from '@/components/layout/TransitionLayout';
 import MarketingLayout from '@/components/layout/MarketingLayout';
-import '@/styles/clipboard.css';
+import '@/styles/style.css';
 
 const shadowsIntoLight = localFont({
   src: '../../public/fonts/ShadowsIntoLight_Regular.woff2',
@@ -40,26 +40,15 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={[
-        aktivGrotesk.variable,
-        GeistSans.variable,
-        GeistMono.variable,
-        shadowsIntoLight.variable,
-      ].join(' ')}
-      suppressHydrationWarning
-    >
+      className={[aktivGrotesk.variable, GeistSans.variable, GeistMono.variable, shadowsIntoLight.variable].join(' ')}
+      suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
       </head>
-      <body
-        className="bg-background text-foreground font-sans"
-        data-preloader-ready="true"
-      >
+      <body className="bg-background text-foreground font-sans" data-preloader-ready="true">
         <Provider categories={categories}>
           <TransitionLayout>
-            <MarketingLayout latestAnimation={latestAnimation}>
-              {children}
-            </MarketingLayout>
+            <MarketingLayout latestAnimation={latestAnimation}>{children}</MarketingLayout>
           </TransitionLayout>
         </Provider>
       </body>

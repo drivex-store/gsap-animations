@@ -7,13 +7,7 @@ import Script from 'next/script';
 const POSTHOG_KEY = 'phc_Yecr0Uo2VzDFAMckw6XdMeHxMC8JorR3xFeMYmtBm3v';
 const POSTHOG_HOST = '/relay-A8q3';
 const POSTHOG_UI_HOST = 'https://eu.posthog.com';
-const SENSITIVE_PARAMS = [
-  'token_hash',
-  'token',
-  'code',
-  'access_token',
-  'refresh_token',
-];
+const SENSITIVE_PARAMS = ['token_hash', 'token', 'code', 'access_token', 'refresh_token'];
 
 function scrubSearchParams(searchParams) {
   if (!searchParams || !searchParams.toString()) {
@@ -33,11 +27,7 @@ function PostHogPageviewTracker() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (
-      !pathname ||
-      !window.posthog ||
-      typeof window.posthog.capture !== 'function'
-    ) {
+    if (!pathname || !window.posthog || typeof window.posthog.capture !== 'function') {
       return;
     }
 
@@ -47,9 +37,7 @@ function PostHogPageviewTracker() {
       currentUrl = `${currentUrl}?${cleanSearch}`;
     }
 
-    window.posthog.capture('$pageview', {$current_url: currentUrl,
-      $pathname: pathname,$search_params: cleanSearch,
-    });
+    window.posthog.capture('$pageview', { $current_url: currentUrl, $pathname: pathname, $search_params: cleanSearch });
   }, [pathname, searchParams]);
 
   return null;
@@ -104,10 +92,7 @@ function PostHogConsentListener() {
 
     window.addEventListener('annnimate:consent-changed', handleConsentChange);
     return () => {
-      window.removeEventListener(
-        'annnimate:consent-changed',
-        handleConsentChange,
-      );
+      window.removeEventListener('annnimate:consent-changed', handleConsentChange);
     };
   }, []);
 

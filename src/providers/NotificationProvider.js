@@ -5,15 +5,11 @@ import React, { createContext, useContext } from 'react';
 const NotificationContext = createContext({
   banner: null,
   items: [],
-  latestDate: null
+  latestDate: null,
 });
 
 export function NotificationProvider({ value, children }) {
-  return (
-    <NotificationContext.Provider value={value}>
-      {children}
-    </NotificationContext.Provider>
-  );
+  return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 }
 
 export function useNotificationFeed() {

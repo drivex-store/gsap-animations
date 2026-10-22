@@ -11,14 +11,14 @@ import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
 
 gsap.registerPlugin(ScrambleTextPlugin);
 
-export const ASCII_CHARS = " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+export const ASCII_CHARS = ' .\'`^",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$';
 
 export function useScramble({
   duration = 0.5,
   speed = 1,
   chars = ASCII_CHARS,
   firstColorClass = 'scramble-brand',
-  secondColorClass = 'scramble-inherit'
+  secondColorClass = 'scramble-inherit',
 } = {}) {
   const textRef = useRef(null);
   const timelineRef = useRef(null);
@@ -74,7 +74,7 @@ export function useScramble({
         height: el.offsetHeight,
         display: 'inline-block',
         overflow: 'hidden',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
       });
 
       const generateScrambledText = (textStr, charsStr) => {
@@ -94,7 +94,7 @@ export function useScramble({
           isAnimatingRef.current = false;
           timelineRef.current = null;
           clearStyles();
-        }
+        },
       });
 
       timelineRef.current
@@ -106,9 +106,9 @@ export function useScramble({
             speed: speed,
             revealDelay: 0.1,
             oldClass: firstColorClass,
-            newClass: firstColorClass
+            newClass: firstColorClass,
           },
-          ease: 'none'
+          ease: 'none',
         })
         .to(
           el,
@@ -120,14 +120,14 @@ export function useScramble({
               speed: speed,
               revealDelay: 0.1,
               oldClass: firstColorClass,
-              newClass: secondColorClass
+              newClass: secondColorClass,
             },
-            ease: 'none'
+            ease: 'none',
           },
-          stepDuration
+          stepDuration,
         );
     },
-    [duration, speed, chars, firstColorClass, secondColorClass, killTimeline, clearStyles]
+    [duration, speed, chars, firstColorClass, secondColorClass, killTimeline, clearStyles],
   );
 
   useEffect(() => {

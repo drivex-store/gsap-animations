@@ -4,11 +4,7 @@ import { PppStrip } from '@/features/pricing/PppLabel'; // module id: 245647
 import Header from '@/components/layout/Header'; // module id: 76624
 import Footer from '@/components/layout/Footer'; // module id: 297428
 
-export default function MarketingLayout({
-  children,
-  animationCount,
-  latestAnimation,
-}) {
+export default function MarketingLayout({ children, animationCount, latestAnimation }) {
   return (
     <LenisProvider>
       <div className="v2-marketing flex flex-col min-h-screen">
@@ -18,17 +14,11 @@ export default function MarketingLayout({
           <Header latestAnimation={latestAnimation} />
         </Suspense>
 
-        <main
-          className="flex-1 relative z-[2] bg-background"
-          data-transition-content
-        >
+        <main className="flex-1 relative z-[2] bg-background" data-transition-content>
           {children}
         </main>
 
-        <Footer
-          animationCount={animationCount}
-          latestAnimation={latestAnimation}
-        />
+        <Footer animationCount={animationCount} latestAnimation={latestAnimation} />
       </div>
     </LenisProvider>
   );

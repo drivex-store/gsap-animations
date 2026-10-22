@@ -17,22 +17,22 @@ export default function AppToaster({ ...props }) {
             toast: cn(
               'flex w-fit min-h-48 max-w-[90vw] items-center gap-12',
               'border border-foreground/10 bg-surface px-16 py-12',
-              'text-foreground shadow-[0_8px_40px_rgba(0,0,0,0.45)]'
+              'text-foreground shadow-[0_8px_40px_rgba(0,0,0,0.45)]',
             ),
             title: 'text-body-sm font-medium text-foreground',
             description: 'text-body-sm mt-4 text-foreground-muted',
             actionButton: cn(
               'text-body-sm font-medium shrink-0 bg-foreground px-10 py-6 text-background',
-              'transition-opacity duration-(--duration-quick) ease-(--ease-expo-out) hover:opacity-90'
+              'transition-opacity duration-(--duration-quick) ease-(--ease-expo-out) hover:opacity-90',
             ),
             cancelButton: cn(
               'text-body-sm font-medium shrink-0 border border-foreground/15 px-10 py-6 text-foreground-muted',
-              'transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-foreground/5 hover:text-foreground'
+              'transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-foreground/5 hover:text-foreground',
             ),
             closeButton: cn(
               '!border-0 !bg-transparent !shadow-none text-foreground-muted',
               'transition-colors duration-(--duration-quick) ease-(--ease-expo-out)',
-              'hover:!bg-transparent hover:text-foreground'
+              'hover:!bg-transparent hover:text-foreground',
             ),
             icon: 'mr-2 shrink-0',
             success: '[&_[data-icon]]:text-brand',

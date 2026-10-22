@@ -1,5 +1,5 @@
-import { extendTailwindMerge } from 'tailwind-merge'
-import { clsx } from 'clsx'
+import { extendTailwindMerge } from 'tailwind-merge';
+import { clsx } from 'clsx';
 
 const twMerge = extendTailwindMerge({
   extend: {
@@ -27,9 +27,8 @@ const twMerge = extendTailwindMerge({
       ],
     },
   },
-})
-
+});
 
 export function cn(...inputs) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }

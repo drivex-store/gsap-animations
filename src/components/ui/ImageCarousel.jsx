@@ -17,36 +17,28 @@ const DEFAULT_LAYOUT = {
   gap: 48,
   cols: 6,
   rowCount: 6,
-  offsetX: 184
+  offsetX: 184,
 };
 
 const ImageCarousel = forwardRef(function ImageCarousel(
-  {
-    images,
-    className = '',
-    cursorRef = null,
-    layout = null,
-    entrance = null,
-    driftVx = -28,
-    driftVy = -14
-  },
-  ref
+  { images, className = '', cursorRef = null, layout = null, entrance = null, driftVx = -28, driftVy = -14 },
+  ref,
 ) {
   const resolvedLayout = useMemo(
     () => ({
       ...DEFAULT_LAYOUT,
-      ...(layout || {})
+      ...(layout || {}),
     }),
-    [layout]
+    [layout],
   );
 
   const containerRef = useRef(null);
   const wrapperRef = useRef(null);
   const cardsRef = useRef([]);
-  
+
   const positionRef = useRef({
     current: { x: 0, y: 0 },
-    target: { x: 0, y: 0 }
+    target: { x: 0, y: 0 },
   });
 
   const dragStateRef = useRef({
@@ -54,18 +46,18 @@ const ImageCarousel = forwardRef(function ImageCarousel(
     startX: 0,
     startY: 0,
     baseX: 0,
-    baseY: 0
+    baseY: 0,
   });
 
   const viewportSizeRef = useRef({
     w: 0,
-    h: 0
+    h: 0,
   });
 
   const autoScrollRef = useRef({
     enabled: true,
     vx: driftVx,
-    vy: driftVy
+    vy: driftVy,
   });
 
   autoScrollRef.current.vx = driftVx;
@@ -93,7 +85,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
         items.push({
           x: startX,
           y: startY,
-          src: bunnyImageUrl(currentImage, { width: 640 })
+          src: bunnyImageUrl(currentImage, { width: 640 }),
         });
         imageIndex++;
       }
@@ -107,7 +99,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
       if (!cardsRef.current[index]) {
         cardsRef.current[index] = {};
       }
-      
+
       const card = cardsRef.current[index];
       card.el = el;
       card.img = el.querySelector('img');
@@ -122,14 +114,14 @@ const ImageCarousel = forwardRef(function ImageCarousel(
         el.style.opacity = '0';
       }
     },
-    [gridItems, resolvedLayout, entrance]
+    [gridItems, resolvedLayout, entrance],
   );
 
   const revealAnimation = useCallback(() => {
     if (entrance !== 'center-out' || hasRevealedRef.current) return;
-    
+
     hasRevealedRef.current = true;
-    
+
     const viewport = viewportSizeRef.current;
     const centerX = viewport.w / 2;
     const centerY = viewport.h / 2;
@@ -137,25 +129,29 @@ const ImageCarousel = forwardRef(function ImageCarousel(
 
     cardsRef.current.forEach((card) => {
       if (!card?.el) return;
-      
+
       const currentX = card.x + pos.x + (card.extraX || 0) + card.w / 2;
       const currentY = card.y + pos.y + (card.extraY || 0) + card.h / 2;
-      
+
       const distance = Math.hypot(currentX - centerX, currentY - centerY);
-      
+
       gsap.to(card.el, {
         opacity: 1,
         duration: 0.6,
         ease: 'power2.out',
         delay: 0.0016 * distance,
-        overwrite: true
+        overwrite: true,
       });
     });
   }, [entrance]);
 
-  useImperativeHandle(ref, () => ({
-    reveal: revealAnimation
-  }), [revealAnimation]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      reveal: revealAnimation,
+    }),
+    [revealAnimation],
+  );
 
   useEffect(() => {
     if (entrance !== 'center-out') return;
@@ -181,7 +177,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
     };
 
     updateViewportSize();
-    
+
     positionRef.current.current.x = positionRef.current.target.x = -(0.1 * viewportSizeRef.current.w);
     positionRef.current.current.y = positionRef.current.target.y = -(0.1 * viewportSizeRef.current.h);
 
@@ -189,7 +185,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
       (entries) => {
         isVisibleRef.current = entries[0]?.isIntersecting ?? true;
       },
-      { rootMargin: '200px' }
+      { rootMargin: '200px' },
     );
     observer.observe(container);
     window.addEventListener('resize', updateViewportSize);
@@ -200,9 +196,9 @@ const ImageCarousel = forwardRef(function ImageCarousel(
       dragStateRef.current.startY = y;
       dragStateRef.current.baseX = positionRef.current.target.x;
       dragStateRef.current.baseY = positionRef.current.target.y;
-      
+
       wrapper.classList.add('is-dragging');
-      
+
       if (!prefersReducedMotion) {
         cardsRef.current.forEach((card) => {
           if (card?.img) {
@@ -210,7 +206,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
               scale: 0.95,
               duration: 0.3,
               ease: 'expo.out',
-              overwrite: true
+              overwrite: true,
             });
           }
         });
@@ -228,14 +224,14 @@ const ImageCarousel = forwardRef(function ImageCarousel(
       if (dragStateRef.current.active) {
         dragStateRef.current.active = false;
         wrapper.classList.remove('is-dragging');
-        
+
         cardsRef.current.forEach((card) => {
           if (card?.img) {
             gsap.to(card.img, {
               scale: 1,
               duration: 0.3,
               ease: 'expo.out',
-              overwrite: true
+              overwrite: true,
             });
           }
         });
@@ -281,32 +277,32 @@ const ImageCarousel = forwardRef(function ImageCarousel(
 
     const animate = (time) => {
       rafIdRef.current = requestAnimationFrame(animate);
-      
+
       if (!isVisibleRef.current) {
         lastTimeRef.current = time;
         return;
       }
-      
+
       const deltaTime = lastTimeRef.current ? (time - lastTimeRef.current) / 1000 : 0;
       lastTimeRef.current = time;
-      
+
       if (autoScrollRef.current.enabled && !dragStateRef.current.active && deltaTime > 0) {
         positionRef.current.target.x += autoScrollRef.current.vx * deltaTime;
         positionRef.current.target.y += autoScrollRef.current.vy * deltaTime;
       }
-      
+
       const pos = positionRef.current;
       pos.current.x += (pos.target.x - pos.current.x) * 0.08;
       pos.current.y += (pos.target.y - pos.current.y) * 0.08;
-      
+
       const viewport = viewportSizeRef.current;
-      
+
       cardsRef.current.forEach((card) => {
         if (!card?.el) return;
-        
+
         let targetX = card.x + pos.current.x + card.extraX;
         let targetY = card.y + pos.current.y + card.extraY;
-        
+
         while (targetX + card.w < 0) {
           card.extraX += totalWidth;
           targetX += totalWidth;
@@ -315,7 +311,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
           card.extraX -= totalWidth;
           targetX -= totalWidth;
         }
-        
+
         while (targetY + card.h < 0) {
           card.extraY += totalHeight;
           targetY += totalHeight;
@@ -324,7 +320,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
           card.extraY -= totalHeight;
           targetY -= totalHeight;
         }
-        
+
         card.el.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
       });
     };
@@ -335,19 +331,19 @@ const ImageCarousel = forwardRef(function ImageCarousel(
       cancelAnimationFrame(rafIdRef.current);
       observer.disconnect();
       window.removeEventListener('resize', updateViewportSize);
-      
+
       wrapper.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
-      
+
       wrapper.removeEventListener('touchstart', handleTouchStart);
       wrapper.removeEventListener('touchmove', handleTouchMove);
       wrapper.removeEventListener('touchend', handleTouchEnd);
-      
+
       wrapper.removeEventListener('pointerenter', handlePointerEnter);
       wrapper.removeEventListener('pointerleave', handlePointerLeave);
       cursorRef?.current?.clearLabel?.();
-      
+
       cardsRef.current.forEach((card) => {
         if (card?.img) {
           gsap.killTweensOf(card.img);
@@ -357,15 +353,8 @@ const ImageCarousel = forwardRef(function ImageCarousel(
   }, [resolvedLayout]);
 
   return (
-    <div
-      ref={containerRef}
-      className={`library-showcase relative h-full w-full overflow-hidden ${className}`.trim()}
-      aria-hidden="true"
-    >
-      <div
-        ref={wrapperRef}
-        className="library-showcase-wrap absolute inset-0 cursor-grab select-none [&.is-dragging]:cursor-grabbing"
-      >
+    <div ref={containerRef} className={`library-showcase relative h-full w-full overflow-hidden ${className}`.trim()} aria-hidden="true">
+      <div ref={wrapperRef} className="library-showcase-wrap absolute inset-0 cursor-grab select-none [&.is-dragging]:cursor-grabbing">
         {gridItems.map((item, index) => (
           <div
             key={index}
@@ -373,9 +362,8 @@ const ImageCarousel = forwardRef(function ImageCarousel(
             className="absolute left-0 top-0 will-change-transform"
             style={{
               width: `${resolvedLayout.cardW}px`,
-              height: `${resolvedLayout.cardH}px`
-            }}
-          >
+              height: `${resolvedLayout.cardH}px`,
+            }}>
             <img
               src={item.src}
               alt=""
@@ -384,7 +372,7 @@ const ImageCarousel = forwardRef(function ImageCarousel(
               className="block object-cover opacity-90 transition-opacity duration-300 hover:opacity-100"
               style={{
                 width: '100%',
-                height: '100%'
+                height: '100%',
               }}
             />
           </div>

@@ -1,6 +1,6 @@
 'use client';
-import { useEffect } from 'react'; 
-import { useAnimation } from '@/providers/AnimationProvider'; 
+import { useEffect } from 'react';
+import { useAnimation } from '@/providers/AnimationProvider';
 
 export default function PageReady() {
   const { revealPage } = useAnimation();

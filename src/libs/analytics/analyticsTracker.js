@@ -12,11 +12,11 @@ export default function AnalyticsTracker() {
     const pageName = (pathname && pathname !== '/' && pathname.split('/')[1]) || 'home';
     const startTime = Date.now();
     const reportedDepths = new Set();
-    
+
     let maxDepth = 0;
     let hasReportedTime = false;
     let rafId = 0;
-    
+
     const docEl = document.documentElement;
     let maxScrollableHeight = docEl.scrollHeight - window.innerHeight;
     const resizeObserver = new ResizeObserver(() => {
@@ -27,10 +27,8 @@ export default function AnalyticsTracker() {
     let currentScrollY = window.scrollY;
     const checkScroll = () => {
       rafId = 0;
-      const percentage = maxScrollableHeight > 0 
-        ? Math.min(100, Math.round((currentScrollY / maxScrollableHeight) * 100)) 
-        : 100;
-        
+      const percentage = maxScrollableHeight > 0 ? Math.min(100, Math.round((currentScrollY / maxScrollableHeight) * 100)) : 100;
+
       if (percentage > maxDepth) {
         maxDepth = percentage;
       }
@@ -39,7 +37,7 @@ export default function AnalyticsTracker() {
           reportedDepths.add(threshold);
           analytics.track('marketing_scroll_depth', {
             page: pageName,
-            depth: threshold
+            depth: threshold,
           });
         }
       }
@@ -52,15 +50,15 @@ export default function AnalyticsTracker() {
     };
     const reportTimeOnPage = () => {
       if (hasReportedTime) return;
-      
+
       const secondsOnPage = Math.round((Date.now() - startTime) / 1000);
       if (secondsOnPage < 1) return;
-      
+
       hasReportedTime = true;
       analytics.track(
         'marketing_time_on_page',
         { page: pageName, seconds: secondsOnPage, max_scroll_depth: maxDepth },
-        { transport: 'sendBeacon' }
+        { transport: 'sendBeacon' },
       );
     };
 
@@ -72,18 +70,18 @@ export default function AnalyticsTracker() {
     window.addEventListener('scroll', onScroll, { passive: true });
     document.addEventListener('visibilitychange', onVisibilityChange);
     window.addEventListener('pagehide', reportTimeOnPage);
-    
+
     checkScroll();
     return () => {
       window.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('pagehide', reportTimeOnPage);
-      
+
       if (rafId) {
         cancelAnimationFrame(rafId);
       }
       resizeObserver.disconnect();
-      
+
       reportTimeOnPage();
     };
   }, [pathname]);

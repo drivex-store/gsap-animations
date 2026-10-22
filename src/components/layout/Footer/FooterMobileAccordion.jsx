@@ -46,7 +46,7 @@ export default function FooterMobileAccordion({ label, links }) {
           duration: 0.25,
           ease: 'power2.inOut',
         },
-        0.1
+        0.1,
       );
     }
 
@@ -70,8 +70,7 @@ export default function FooterMobileAccordion({ label, links }) {
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
-        className="flex w-full items-center justify-between gap-16 py-20 text-left text-foreground transition-colors duration-300"
-      >
+        className="flex w-full items-center justify-between gap-16 py-20 text-left text-foreground transition-colors duration-300">
         <span className="text-mono-sm">{label}</span>
         <svg
           ref={iconRef}
@@ -79,21 +78,9 @@ export default function FooterMobileAccordion({ label, links }) {
           viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <path
-            ref={verticalLineRef}
-            d="M8 1V15"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="square"
-          />
-          <path
-            d="M1 8H15"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="square"
-          />
+          aria-hidden="true">
+          <path ref={verticalLineRef} d="M8 1V15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+          <path d="M1 8H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
         </svg>
       </button>
 
@@ -106,8 +93,7 @@ export default function FooterMobileAccordion({ label, links }) {
                 variant="nav"
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
-                className="text-body-sm -mx-12 text-foreground"
-              >
+                className="text-body-sm -mx-12 text-foreground">
                 {link.label}
               </NavLink>
             </li>

@@ -1,9 +1,7 @@
-// NOTE: module id: 943348
-// Variable Mapping: t -> eventQueue, r -> flushIntervalId, n -> queueExpirationTime, a -> flushQueue, o -> trackEvent, i -> analytics
-
 let eventQueue = [];
 let flushIntervalId = null;
 let queueExpirationTime = 0;
+let pendingProps = null;
 
 const flushQueue = () => {
   const posthog = window.posthog;
@@ -11,11 +9,19 @@ const flushQueue = () => {
   if (!posthog || typeof posthog.capture !== 'function') {
     if (Date.now() > queueExpirationTime) {
       eventQueue = [];
+      pendingProps = null;
       clearInterval(flushIntervalId);
       flushIntervalId = null;
     }
     return;
   }
+
+  if (pendingProps && typeof posthog.register === 'function') {
+    try {
+      posthog.register(pendingProps);
+    } catch (error) {}
+  }
+  pendingProps = null;
 
   const currentQueue = eventQueue;
   eventQueue = [];
@@ -26,11 +32,16 @@ const flushQueue = () => {
     try {
       posthog.capture(eventName, properties, {
         ...(options || {}),
-        timestamp: at
+        timestamp: at,
       });
-    } catch (error) {
-      // Ignore exception
-    }
+    } catch (error) {}
+  }
+};
+
+const startFlushTimer = () => {
+  if (!flushIntervalId) {
+    queueExpirationTime = Date.now() + 20000;
+    flushIntervalId = setInterval(flushQueue, 200);
   }
 };
 
@@ -38,14 +49,12 @@ const trackEvent = (eventName, properties = {}, options) => {
   const posthog = window.posthog;
 
   if (posthog && typeof posthog.capture === 'function') {
-    if (eventQueue.length) {
+    if (eventQueue.length || pendingProps) {
       flushQueue();
     }
     try {
       posthog.capture(eventName, properties, options);
-    } catch (error) {
-      // Ignore exception
-    }
+    } catch (error) {}
     return;
   }
 
@@ -54,29 +63,42 @@ const trackEvent = (eventName, properties = {}, options) => {
       eventName,
       properties,
       options,
-      at: new Date()
+      at: new Date(),
     });
-
-    if (!flushIntervalId) {
-      queueExpirationTime = Date.now() + 20000; // 20 seconds
-      flushIntervalId = setInterval(flushQueue, 200);
-    }
+    startFlushTimer();
   }
+};
+
+const identifyUser = (userId, properties = {}) => {
+  const posthog = window.posthog;
+  if (posthog && typeof posthog.identify === 'function') {
+    try {
+      posthog.identify(userId, properties);
+    } catch (error) {}
+  }
+};
+
+const registerProperties = (properties) => {
+  const posthog = window.posthog;
+  if (posthog && typeof posthog.capture === 'function' && typeof posthog.register === 'function') {
+    try {
+      posthog.register(properties);
+    } catch (error) {}
+    return;
+  }
+  pendingProps = {
+    ...(pendingProps || {}),
+    ...properties,
+  };
+  startFlushTimer();
 };
 
 export const analytics = {
   identify: (userId, properties = {}) => {
-    const posthog = window.posthog;
-    if (posthog && typeof posthog.identify === 'function') {
-      try {
-        posthog.identify(userId, {
-          ...properties,
-          identified_at: new Date().toISOString()
-        });
-      } catch (error) {
-        // Ignore exception
-      }
-    }
+    identifyUser(userId, {
+      ...properties,
+      identified_at: new Date().toISOString(),
+    });
   },
 
   reset: () => {
@@ -84,9 +106,7 @@ export const analytics = {
     if (posthog && typeof posthog.reset === 'function') {
       try {
         posthog.reset();
-      } catch (error) {
-        // Ignore exception
-      }
+      } catch (error) {}
     }
   },
 
@@ -97,7 +117,7 @@ export const analytics = {
         animation_name: animationName,
         category,
         tags,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     copied: (animationId, animationName, platform, category) => {
@@ -106,7 +126,7 @@ export const analytics = {
         animation_name: animationName,
         platform,
         category,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     saved: (animationId, animationName, category) => {
@@ -114,7 +134,7 @@ export const analytics = {
         animation_id: animationId,
         animation_name: animationName,
         category,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     unsaved: (animationId, animationName, category) => {
@@ -122,9 +142,9 @@ export const analytics = {
         animation_id: animationId,
         animation_name: animationName,
         category,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   features: {
@@ -134,7 +154,7 @@ export const analytics = {
         feature_title: featureTitle,
         vote_action: voteAction,
         feature_category: featureCategory,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     submitted: (featureId, featureTitle, featureCategory) => {
@@ -142,9 +162,9 @@ export const analytics = {
         feature_id: featureId,
         feature_title: featureTitle,
         feature_category: featureCategory,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   search: {
@@ -153,51 +173,51 @@ export const analytics = {
         query,
         results_count: resultsCount,
         filters,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     filtered: (filters, resultsCount) => {
       trackEvent('filters_applied', {
         filters,
         results_count: resultsCount,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   askAi: {
     clicked: (platform) => {
       trackEvent('ask_ai_clicked', {
         platform,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   user: {
     signedIn: (method = 'email') => {
       trackEvent('user_signed_in', {
         method,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     signedOut: () => {
       trackEvent('user_signed_out', {
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     profileUpdated: (updatedFields = []) => {
       trackEvent('profile_updated', {
         updated_fields: updatedFields,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     themeChanged: (theme) => {
       trackEvent('theme_changed', {
         theme,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   activation: {
@@ -205,9 +225,9 @@ export const analytics = {
       trackEvent('onboarding_completed', {
         total_time_ms: totalTimeMs,
         steps_completed: stepsCompleted,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   revenue: {
@@ -217,15 +237,15 @@ export const analytics = {
         price,
         billing_cycle: billingCycle,
         ...additionalData,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     checkoutAbandoned: (reason = 'user_canceled') => {
       trackEvent('checkout_abandoned', {
         reason,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   feature: {
@@ -233,15 +253,15 @@ export const analytics = {
       trackEvent('code_viewer_opened', {
         animation_id: animationId,
         platform,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     supportContacted: (method) => {
       trackEvent('support_contacted', {
         method,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
   error: {
@@ -250,7 +270,7 @@ export const analytics = {
         error_type: errorType,
         error_message: errorMessage,
         context,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     },
     exception: (error, context = {}) => {
@@ -261,26 +281,30 @@ export const analytics = {
             $exception_level: 'error',
             $exception_type: error?.name || 'Error',
             $exception_message: error?.message || String(error),
-            ...context
+            ...context,
           });
-        } catch (captureError) {
-          // Ignore exception
-        }
+        } catch (captureError) {}
       }
       trackEvent('error_occurred', {
         error_type: error?.name || 'Error',
         error_message: error?.message || String(error),
         context,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-    }
+    },
   },
 
+  register: (properties) => registerProperties(properties),
+
   track: (eventName, properties = {}, options) => {
-    trackEvent(eventName, {
-      ...properties,
-      timestamp: new Date().toISOString()
-    }, options);
+    trackEvent(
+      eventName,
+      {
+        ...properties,
+        timestamp: new Date().toISOString(),
+      },
+      options,
+    );
   },
 
   isFeatureEnabled: (featureFlagName) => {
@@ -288,9 +312,7 @@ export const analytics = {
     if (posthog && typeof posthog.isFeatureEnabled === 'function') {
       try {
         return posthog.isFeatureEnabled(featureFlagName);
-      } catch (error) {
-        // Ignore exception
-      }
+      } catch (error) {}
     }
     return false;
   },
@@ -300,31 +322,29 @@ export const analytics = {
     if (posthog && typeof posthog.getFeatureFlag === 'function') {
       try {
         return posthog.getFeatureFlag(featureFlagName);
-      } catch (error) {
-        // Ignore exception
-      }
+      } catch (error) {}
     }
     return null;
-  }
+  },
 };
 
 export const trackRetention = (userId, signupDateString) => {
-  const daysSinceSignup = Math.floor((new Date() - new Date(signupDateString)) / 86400000); // 864e5 ms = 1 day
+  const daysSinceSignup = Math.floor((new Date() - new Date(signupDateString)) / 86400000);
 
   if (daysSinceSignup === 7) {
     analytics.track('week_1_retention', {
       user_id: userId,
-      days_since_signup: daysSinceSignup
+      days_since_signup: daysSinceSignup,
     });
   } else if (daysSinceSignup === 14) {
     analytics.track('week_2_retention', {
       user_id: userId,
-      days_since_signup: daysSinceSignup
+      days_since_signup: daysSinceSignup,
     });
   } else if (daysSinceSignup === 30) {
     analytics.track('month_1_retention', {
       user_id: userId,
-      days_since_signup: daysSinceSignup
+      days_since_signup: daysSinceSignup,
     });
   }
 };

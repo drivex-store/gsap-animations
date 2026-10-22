@@ -10,16 +10,10 @@ export function CookieConsentProvider() {
   useEffect(() => {
     const handleOpenPreferences = () => setIsOpen(true);
 
-    window.addEventListener(
-      'annnimate:open-cookie-preferences',
-      handleOpenPreferences,
-    );
+    window.addEventListener('annnimate:open-cookie-preferences', handleOpenPreferences);
 
     return () => {
-      window.removeEventListener(
-        'annnimate:open-cookie-preferences',
-        handleOpenPreferences,
-      );
+      window.removeEventListener('annnimate:open-cookie-preferences', handleOpenPreferences);
     };
   }, []);
 

@@ -11,7 +11,7 @@ import {
   DeviceMobile,
   DownloadSimple,
   ArrowClockwise,
-  X
+  X,
 } from '@phosphor-icons/react';
 
 import Select from '@/features/common/Select';
@@ -19,14 +19,14 @@ import { analytics } from '@/libs/auth/analytics';
 import { useSandboxSrcdoc, parseDependencies } from '@/features/marketing/preview/inlinePreviewImages';
 
 const VIEWPORT_PRESETS = [
-  { id: "full", label: "Full", w: null, Icon: FrameCorners },
-  { id: "mobile", label: "Mobile", w: 375, Icon: DeviceMobile },
-  { id: "tablet", label: "Tablet", w: 768, Icon: DeviceTablet },
-  { id: "laptop", label: "Laptop", w: 1024, Icon: Laptop },
-  { id: "desktop", label: "Desktop", w: 1440, Icon: Desktop }
+  { id: 'full', label: 'Full', w: null, Icon: FrameCorners },
+  { id: 'mobile', label: 'Mobile', w: 375, Icon: DeviceMobile },
+  { id: 'tablet', label: 'Tablet', w: 768, Icon: DeviceTablet },
+  { id: 'laptop', label: 'Laptop', w: 1024, Icon: Laptop },
+  { id: 'desktop', label: 'Desktop', w: 1440, Icon: Desktop },
 ];
 
-const DEFAULT_DESKTOP_WIDTH = VIEWPORT_PRESETS.find((preset) => preset.id === "desktop")?.w ?? null;
+const DEFAULT_DESKTOP_WIDTH = VIEWPORT_PRESETS.find((preset) => preset.id === 'desktop')?.w ?? null;
 
 function PreviewStage({ srcdoc, src, reloadKey, title, renderWidth, scale, stageHeight }) {
   return (
@@ -34,27 +34,25 @@ function PreviewStage({ srcdoc, src, reloadKey, title, renderWidth, scale, stage
       style={{
         width: renderWidth * scale,
         height: stageHeight,
-        flexShrink: 0
-      }}
-    >
+        flexShrink: 0,
+      }}>
       <div
         style={{
           width: renderWidth,
           height: stageHeight / scale,
           transform: `scale(${scale})`,
-          transformOrigin: "top left"
-        }}
-      >
+          transformOrigin: 'top left',
+        }}>
         <iframe
           key={reloadKey}
           {...(src ? { src } : { srcDoc: srcdoc })}
           title={title}
           sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
           style={{
-            width: "100%",
-            height: "100%",
+            width: '100%',
+            height: '100%',
             border: 0,
-            display: "block"
+            display: 'block',
           }}
         />
       </div>
@@ -68,7 +66,7 @@ export default function AnimationPreview({
   previewSrcOverride = null,
   customize = null,
   bare = false,
-  fill = false
+  fill = false,
 }) {
   const [viewportWidth, setViewportWidth] = useState(DEFAULT_DESKTOP_WIDTH);
   const [reloadKey, setReloadKey] = useState(0);
@@ -96,9 +94,9 @@ export default function AnimationPreview({
     return () => observer.disconnect();
   }, []);
 
-  const htmlCode = codeState?.html ?? animation.html_code ?? "";
-  const cssCode = codeState?.css ?? animation.css_code ?? "";
-  const jsCode = codeState?.js ?? animation.js_code ?? animation.gsap_code ?? "";
+  const htmlCode = codeState?.html ?? animation.html_code ?? '';
+  const cssCode = codeState?.css ?? animation.css_code ?? '';
+  const jsCode = codeState?.js ?? animation.js_code ?? animation.gsap_code ?? '';
   const hasInlineCode = !previewSrcOverride && !!(htmlCode || cssCode || jsCode);
   const committedAttrs = customize?.committed;
 
@@ -121,7 +119,7 @@ export default function AnimationPreview({
     cssCode,
     jsCode,
     dependencies: parseDependencies(animation.dependencies),
-    metadata: animation.metadata
+    metadata: animation.metadata,
   });
 
   const isPreviewLoading = !!hasInlineCode && isLoading;
@@ -130,15 +128,15 @@ export default function AnimationPreview({
   useEffect(() => {
     if (hasInlineCode || !customize || !customizeValues || Object.keys(customizeValues).length === 0) return;
     const timer = setTimeout(() => {
-      const iframe = stageContainerRef.current?.querySelector("iframe");
+      const iframe = stageContainerRef.current?.querySelector('iframe');
       iframe?.contentWindow?.postMessage(
         {
-          type: "anm:customize",
+          type: 'anm:customize',
           selector: customize.selector,
           attrs: customizeValues,
-          api: customize.api
+          api: customize.api,
         },
-        "*"
+        '*',
       );
     }, 200);
     return () => clearTimeout(timer);
@@ -158,18 +156,18 @@ export default function AnimationPreview({
   const handleDownloadClip = useCallback(async () => {
     if (!previewVideoUrl || isDownloading) return;
     setIsDownloading(true);
-    analytics.track("detail_clip_downloaded", { slug: animation.slug });
+    analytics.track('detail_clip_downloaded', { slug: animation.slug });
     try {
       const response = await fetch(previewVideoUrl);
       if (!response.ok) throw new Error(String(response.status));
       const objectUrl = URL.createObjectURL(await response.blob());
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = objectUrl;
       link.download = `annnimate-${animation.slug}.mp4`;
       link.click();
       setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
     } catch {
-      window.open(previewVideoUrl, "_blank", "noopener");
+      window.open(previewVideoUrl, '_blank', 'noopener');
     } finally {
       setIsDownloading(false);
     }
@@ -180,40 +178,35 @@ export default function AnimationPreview({
     function onKeyDown(e) {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const target = e.target;
-      if (
-        target?.tagName === "INPUT" ||
-        target?.tagName === "TEXTAREA" ||
-        target?.isContentEditable ||
-        target?.closest?.(".cm-editor")
-      ) {
+      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable || target?.closest?.('.cm-editor')) {
         return;
       }
-      if (e.key === "f" || e.key === "F") {
+      if (e.key === 'f' || e.key === 'F') {
         e.preventDefault();
         setIsFullscreen((prev) => !prev);
-      } else if (e.key === "r" || e.key === "R") {
+      } else if (e.key === 'r' || e.key === 'R') {
         e.preventDefault();
         handleReplay();
-      } else if (e.key === "Escape" && isFullscreen) {
+      } else if (e.key === 'Escape' && isFullscreen) {
         e.preventDefault();
         handleExitFullscreen();
       }
     }
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [isFullscreen, handleReplay, handleExitFullscreen, bare]);
 
   useEffect(() => {
     if (bare) return;
     function onMessage(e) {
-      if (e?.data?.type !== "annnimate-shortcut") return;
+      if (e?.data?.type !== 'annnimate-shortcut') return;
       const key = e.data.key;
-      if (key === "f") setIsFullscreen((prev) => !prev);
-      else if (key === "r") handleReplay();
-      else if (key === "Escape") setIsFullscreen(false);
+      if (key === 'f') setIsFullscreen((prev) => !prev);
+      else if (key === 'r') handleReplay();
+      else if (key === 'Escape') setIsFullscreen(false);
     }
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
   }, [handleReplay, bare]);
 
   const renderWidth = viewportWidth ?? (containerWidth || 0);
@@ -227,9 +220,8 @@ export default function AnimationPreview({
     return (
       <div
         ref={stageContainerRef}
-        className={`relative flex w-full justify-center overflow-hidden bg-background ${fill ? "h-full" : ""}`}
-        style={fill ? undefined : { height: stageHeight }}
-      >
+        className={`relative flex w-full justify-center overflow-hidden bg-background ${fill ? 'h-full' : ''}`}
+        style={fill ? undefined : { height: stageHeight }}>
         {!isPreviewLoading && renderWidth && stageHeight ? (
           <PreviewStage
             srcdoc={hasInlineCode ? srcdoc : undefined}
@@ -251,8 +243,7 @@ export default function AnimationPreview({
         <div
           ref={stageContainerRef}
           className="relative flex w-full justify-center overflow-hidden bg-background"
-          style={{ height: stageHeight }}
-        >
+          style={{ height: stageHeight }}>
           {isPreviewLoading || !renderWidth ? (
             <div className="flex h-full items-center justify-center">
               <p className="text-body-sm text-foreground-muted">Loading preview...</p>
@@ -282,7 +273,7 @@ export default function AnimationPreview({
             options={VIEWPORT_PRESETS.map((preset) => ({
               value: preset.id,
               label: preset.label,
-              icon: preset.Icon
+              icon: preset.Icon,
             }))}
             size="sm"
             labelSize="xs"
@@ -294,8 +285,7 @@ export default function AnimationPreview({
           {isScaledDown && (
             <span
               className="text-accent-2xs flex h-32 items-center bg-foreground/[0.06] px-8 text-foreground-muted"
-              title={`Rendering at ${renderWidth}px, scaled to fit ${containerWidth}px container`}
-            >
+              title={`Rendering at ${renderWidth}px, scaled to fit ${containerWidth}px container`}>
               {scalePercent}% scale
             </span>
           )}
@@ -307,10 +297,9 @@ export default function AnimationPreview({
               disabled={isDownloading}
               aria-label="Download clip"
               title="Download a short clip of this component as an mp4"
-              className="text-accent-2xs flex h-32 items-center gap-6 bg-foreground/[0.06] px-10 text-foreground-muted transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-foreground/[0.1] hover:text-foreground disabled:opacity-60"
-            >
+              className="text-accent-2xs flex h-32 items-center gap-6 bg-foreground/[0.06] px-10 text-foreground-muted transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-foreground/[0.1] hover:text-foreground disabled:opacity-60">
               <DownloadSimple size={14} />
-              <span className="hidden lg:inline">{isDownloading ? "Downloading" : "Download clip"}</span>
+              <span className="hidden lg:inline">{isDownloading ? 'Downloading' : 'Download clip'}</span>
             </button>
           )}
 
@@ -319,13 +308,10 @@ export default function AnimationPreview({
             onClick={handleReplay}
             aria-label="Replay"
             className="text-accent-2xs flex h-32 items-center gap-6 bg-foreground px-10 text-background transition-opacity duration-(--duration-quick) ease-(--ease-expo-out) hover:opacity-90"
-            title="Replay (R)"
-          >
+            title="Replay (R)">
             <ArrowClockwise size={14} />
             <span className="hidden lg:inline">Replay</span>
-            <kbd className="text-[9px] ml-4 hidden bg-background/15 px-4 py-1 font-mono text-background/80 lg:inline-block">
-              R
-            </kbd>
+            <kbd className="text-[9px] ml-4 hidden bg-background/15 px-4 py-1 font-mono text-background/80 lg:inline-block">R</kbd>
           </button>
 
           <button
@@ -333,8 +319,7 @@ export default function AnimationPreview({
             onClick={() => setIsFullscreen(true)}
             aria-label="Fullscreen"
             className="text-accent-2xs flex h-32 items-center gap-6 border border-foreground/15 px-10 text-foreground-muted transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:border-foreground/40 hover:text-foreground"
-            title="Fullscreen (F)"
-          >
+            title="Fullscreen (F)">
             <ArrowsOut size={14} />
             <span className="hidden lg:inline">Fullscreen</span>
             <kbd className="text-[9px] ml-4 hidden border border-foreground/15 px-4 py-1 font-mono text-foreground-muted lg:inline-block">
@@ -344,60 +329,55 @@ export default function AnimationPreview({
         </div>
       </div>
 
-      {isFullscreen && isMounted && createPortal(
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${animation.title} fullscreen preview`}
-          className="fixed inset-0 z-[400] bg-background"
-        >
-          <div className="absolute bottom-16 right-16 z-10 flex items-center gap-8">
-            <button
-              type="button"
-              onClick={handleReplay}
-              aria-label="Replay"
-              title="Replay (R)"
-              className="text-accent-2xs flex h-32 items-center gap-6 border border-white/20 bg-[#0a0a0a]/85 px-10 text-white backdrop-blur-md transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-[#0a0a0a]"
-            >
-              <ArrowClockwise size={14} />
-              <span>Replay</span>
-              <kbd className="text-[9px] ml-4 border border-white/20 px-4 py-1 font-mono text-white/80">
-                R
-              </kbd>
-            </button>
+      {isFullscreen &&
+        isMounted &&
+        createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${animation.title} fullscreen preview`}
+            className="fixed inset-0 z-[400] bg-background">
+            <div className="absolute bottom-16 right-16 z-10 flex items-center gap-8">
+              <button
+                type="button"
+                onClick={handleReplay}
+                aria-label="Replay"
+                title="Replay (R)"
+                className="text-accent-2xs flex h-32 items-center gap-6 border border-white/20 bg-[#0a0a0a]/85 px-10 text-white backdrop-blur-md transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-[#0a0a0a]">
+                <ArrowClockwise size={14} />
+                <span>Replay</span>
+                <kbd className="text-[9px] ml-4 border border-white/20 px-4 py-1 font-mono text-white/80">R</kbd>
+              </button>
 
-            <button
-              type="button"
-              onClick={handleExitFullscreen}
-              aria-label="Exit fullscreen"
-              title="Close (Esc)"
-              className="text-accent-2xs flex h-32 items-center gap-6 border border-white/20 bg-[#0a0a0a]/85 px-10 text-white backdrop-blur-md transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-[#0a0a0a]"
-            >
-              <X size={14} />
-              <span>Close</span>
-              <kbd className="text-[9px] ml-4 border border-white/20 px-4 py-1 font-mono text-white/80">
-                Esc
-              </kbd>
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={handleExitFullscreen}
+                aria-label="Exit fullscreen"
+                title="Close (Esc)"
+                className="text-accent-2xs flex h-32 items-center gap-6 border border-white/20 bg-[#0a0a0a]/85 px-10 text-white backdrop-blur-md transition-colors duration-(--duration-quick) ease-(--ease-expo-out) hover:bg-[#0a0a0a]">
+                <X size={14} />
+                <span>Close</span>
+                <kbd className="text-[9px] ml-4 border border-white/20 px-4 py-1 font-mono text-white/80">Esc</kbd>
+              </button>
+            </div>
 
-          {!isPreviewLoading && (
-            <iframe
-              key={`fs-${reloadKey}`}
-              {...(hasInlineCode ? { srcDoc: srcdoc } : { src: iframeSrc })}
-              title={`${animation.title} fullscreen preview`}
-              sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
-              style={{
-                width: "100%",
-                height: "100%",
-                border: 0,
-                display: "block"
-              }}
-            />
-          )}
-        </div>,
-        document.body
-      )}
+            {!isPreviewLoading && (
+              <iframe
+                key={`fs-${reloadKey}`}
+                {...(hasInlineCode ? { srcDoc: srcdoc } : { src: iframeSrc })}
+                title={`${animation.title} fullscreen preview`}
+                sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 0,
+                  display: 'block',
+                }}
+              />
+            )}
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }

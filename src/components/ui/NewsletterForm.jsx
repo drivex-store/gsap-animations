@@ -1,7 +1,7 @@
 'use client';
 
 // NOTE: module id: 42242
-// Variable Mapping: 
+// Variable Mapping:
 // d -> EMAIL_REGEX, m -> PACK_SOURCES
 // NewsletterEyebrow: e -> primary, t -> secondary, D -> listSize, a -> secondaryText
 // NewsletterForm Props: e -> source, l -> eyebrow, s -> buttonLabel, o -> buttonSize, p -> inputSize, F -> emailPlaceholder, h -> idPrefix, C -> className, E -> wantedComponent, f -> onSuccess, g -> compact, A -> buttonFullWidth, x -> consent, v -> consentCopy, b -> askName, w -> successPanel, y -> fieldStyle, B -> fieldLabel
@@ -19,15 +19,24 @@ import { suppressStarterPrompt } from '@/libs/utils/starterPromptUtils'; // NOTE
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PACK_SOURCES = new Set([
-  'starter-pack', 'animations-library', 'animations-detail', 'animations-list-modal',
-  'mobile-detail', 'paywall-block', 'kit-reveal-ad', 'kit-reveal-page', 'homepage',
-  'pricing', 'alternatives', 'alternatives-top', 'compare', 'compare-top', 'reference-rail'
+  'starter-pack',
+  'animations-library',
+  'animations-detail',
+  'animations-list-modal',
+  'mobile-detail',
+  'paywall-block',
+  'kit-reveal-ad',
+  'kit-reveal-page',
+  'homepage',
+  'pricing',
+  'alternatives',
+  'alternatives-top',
+  'compare',
+  'compare-top',
+  'reference-rail',
 ]);
 
-export function NewsletterEyebrow({
-  primary = 'Weekly drop',
-  secondary
-}) {
+export function NewsletterEyebrow({ primary = 'Weekly drop', secondary }) {
   const listSize = useListSize();
   const secondaryText = secondary ?? (listSize ? `Join ${listSize} developers and designers` : null);
 
@@ -62,7 +71,7 @@ export default function NewsletterForm({
   askName = true,
   successPanel = null,
   fieldStyle = 'underline',
-  fieldLabel = 'Your email address'
+  fieldLabel = 'Your email address',
 }) {
   const [email, setEmail] = useState('');
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
@@ -83,7 +92,7 @@ export default function NewsletterForm({
 
   const getTrackingData = () => ({
     source: source || 'unknown',
-    page_url: window.location.href
+    page_url: window.location.href,
   });
 
   useEffect(() => {
@@ -92,19 +101,22 @@ export default function NewsletterForm({
       return;
     }
 
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting && !hasTrackedViewRef.current) {
-          hasTrackedViewRef.current = true;
-          analytics.track('newsletter_form_viewed', getTrackingData());
-          observer.disconnect();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !hasTrackedViewRef.current) {
+            hasTrackedViewRef.current = true;
+            analytics.track('newsletter_form_viewed', getTrackingData());
+            observer.disconnect();
+          }
         }
-      }
-    }, { threshold: 0.4 });
+      },
+      { threshold: 0.4 },
+    );
 
     observer.observe(formElement);
     return () => observer.disconnect();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [source]);
 
   const validateForm = (currentEmail, policyChecked, consentType) => {
@@ -134,9 +146,9 @@ export default function NewsletterForm({
       setErrors(validationErrors);
       analytics.track('newsletter_form_validation_failed', {
         ...getTrackingData(),
-        errors: Object.keys(validationErrors)
+        errors: Object.keys(validationErrors),
       });
-      
+
       if (validationErrors.email) {
         emailInputRef.current?.focus();
       } else if (validationErrors.policy) {
@@ -152,7 +164,7 @@ export default function NewsletterForm({
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: email.trim(),
@@ -161,9 +173,9 @@ export default function NewsletterForm({
           website: honeypotRef.current?.value || undefined,
           metadata: {
             page_url: window.location.href,
-            referrer: typeof document !== 'undefined' && document.referrer ? document.referrer : null
-          }
-        })
+            referrer: typeof document !== 'undefined' && document.referrer ? document.referrer : null,
+          },
+        }),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -174,13 +186,13 @@ export default function NewsletterForm({
 
       analytics.track('newsletter_subscribed', {
         source: source || 'unknown',
-        page_url: window.location.href
+        page_url: window.location.href,
       });
 
       toast.success(
-        PACK_SOURCES.has(source) 
-          ? 'Almost there. Open the email from julian@annnimate.com and confirm. Your Starter Pack lands right after.' 
-          : 'Almost there. Open the email from julian@annnimate.com and click confirm.'
+        PACK_SOURCES.has(source)
+          ? 'Almost there. Open the email from julian@annnimate.com and confirm. Your Starter Pack lands right after.'
+          : 'Almost there. Open the email from julian@annnimate.com and click confirm.',
       );
 
       suppressStarterPrompt();
@@ -218,12 +230,12 @@ export default function NewsletterForm({
       await fetch('/api/newsletter/profile', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: submittedEmail,
-          firstName: trimmedFirstName
-        })
+          firstName: trimmedFirstName,
+        }),
       });
 
       analytics.track('newsletter_profile_completed', getTrackingData());
@@ -250,24 +262,31 @@ export default function NewsletterForm({
   const policyErrorId = `${policyId}-error`;
 
   const isBoxed = fieldStyle === 'boxed';
-  
+
   const inputBaseClasses = `${
-    inputSize === 'lg' 
-      ? (isBoxed ? 'text-body-lg py-14' : 'text-body-lg pt-10 pb-20') 
-      : (isBoxed ? 'text-body-sm py-10' : 'text-body-sm pt-8 pb-16')
+    inputSize === 'lg'
+      ? isBoxed
+        ? 'text-body-lg py-14'
+        : 'text-body-lg pt-10 pb-20'
+      : isBoxed
+        ? 'text-body-sm py-10'
+        : 'text-body-sm pt-8 pb-16'
   } flex-1 min-w-0 rounded-none bg-transparent px-0 text-foreground placeholder:text-foreground-muted/60 focus:outline-none disabled:opacity-50 transition-colors duration-(--duration-quick) ease-(--ease-expo-out)`;
 
-  const inputStateClasses = isBoxed 
-    ? (errors.email ? 'border border-brand bg-surface px-16' : 'border border-foreground/25 bg-surface px-16 focus:border-foreground') 
-    : (errors.email ? 'border-b border-brand' : 'border-b border-foreground/20 focus:border-foreground');
+  const inputStateClasses = isBoxed
+    ? errors.email
+      ? 'border border-brand bg-surface px-16'
+      : 'border border-foreground/25 bg-surface px-16 focus:border-foreground'
+    : errors.email
+      ? 'border-b border-brand'
+      : 'border-b border-foreground/20 focus:border-foreground';
 
   return (
     <form
       ref={formRef}
       onSubmit={isSuccessStep ? handleSubmitName : handleSubscribe}
       noValidate
-      className={`flex flex-col gap-16 ${className}`}
-    >
+      className={`flex flex-col gap-16 ${className}`}>
       {eyebrow || null}
 
       {isSuccessStep ? (
@@ -288,13 +307,11 @@ export default function NewsletterForm({
           <Fragment>
             <div className="flex flex-col gap-6">
               <p className="text-body-sm text-foreground">
-                {PACK_SOURCES.has(source) 
-                  ? 'Almost there - open the email from julian@annnimate.com and confirm. Your Starter Pack lands right after.' 
+                {PACK_SOURCES.has(source)
+                  ? 'Almost there - open the email from julian@annnimate.com and confirm. Your Starter Pack lands right after.'
                   : 'Almost there - open the email from julian@annnimate.com and click confirm.'}
               </p>
-              <p className="text-body-sm text-foreground/70">
-                One quick thing: what should we call you?
-              </p>
+              <p className="text-body-sm text-foreground/70">One quick thing: what should we call you?</p>
             </div>
             <div className="relative flex flex-col">
               <label htmlFor={firstNameId} className="sr-only">
@@ -317,17 +334,10 @@ export default function NewsletterForm({
                 type="button"
                 onClick={handleSkipName}
                 disabled={isSubmittingName}
-                className="text-mono-sm text-foreground-muted transition-colors hover:text-foreground disabled:opacity-50"
-              >
+                className="text-mono-sm text-foreground-muted transition-colors hover:text-foreground disabled:opacity-50">
                 Skip
               </button>
-              <AnimatedButton
-                type="submit"
-                theme="brand"
-                size={buttonSize}
-                loading={isSubmittingName}
-                disabled={!firstName.trim()}
-              >
+              <AnimatedButton type="submit" theme="brand" size={buttonSize} loading={isSubmittingName} disabled={!firstName.trim()}>
                 Save
               </AnimatedButton>
             </div>
@@ -336,18 +346,16 @@ export default function NewsletterForm({
       ) : (
         <Fragment>
           <div className="relative flex flex-col">
-            <label
-              htmlFor={emailId}
-              className={isBoxed ? 'text-mono-sm mb-8 text-foreground' : 'sr-only'}
-            >
+            <label htmlFor={emailId} className={isBoxed ? 'text-mono-sm mb-8 text-foreground' : 'sr-only'}>
               {isBoxed ? fieldLabel : 'Your email'}
             </label>
             {errors.email ? (
               <p
                 id={emailErrorId}
                 role="alert"
-                className={isBoxed ? 'text-mono-sm order-last mt-6 text-brand' : 'text-mono-sm absolute bottom-full left-0 right-0 mb-6 text-brand'}
-              >
+                className={
+                  isBoxed ? 'text-mono-sm order-last mt-6 text-brand' : 'text-mono-sm absolute bottom-full left-0 right-0 mb-6 text-brand'
+                }>
                 {errors.email}
               </p>
             ) : null}
@@ -395,7 +403,7 @@ export default function NewsletterForm({
             <div className={compact ? 'flex flex-col gap-12' : 'flex flex-wrap items-start justify-between gap-16'}>
               {consent === 'notice' ? (
                 <p className="text-mono-sm m-0 max-w-[36ch] self-center text-foreground-muted">
-                  {consentCopy?.before || 'By signing up you agree to the'} {' '}
+                  {consentCopy?.before || 'By signing up you agree to the'}{' '}
                   <Link href="/privacy" className="text-foreground">
                     {consentCopy?.link || 'privacy policy'}
                   </Link>
@@ -404,8 +412,7 @@ export default function NewsletterForm({
               ) : (
                 <label
                   htmlFor={policyId}
-                  className={`flex cursor-pointer items-center gap-8 self-start text-foreground-muted ${compact ? 'text-body-sm' : 'text-mono-sm'}`}
-                >
+                  className={`flex cursor-pointer items-center gap-8 self-start text-foreground-muted ${compact ? 'text-body-sm' : 'text-mono-sm'}`}>
                   <input
                     ref={policyCheckboxRef}
                     id={policyId}
@@ -439,18 +446,13 @@ export default function NewsletterForm({
                 theme="brand"
                 size={buttonSize}
                 loading={isSubmitting}
-                className={buttonFullWidth ? 'w-full' : (compact ? 'self-end' : undefined)}
-              >
+                className={buttonFullWidth ? 'w-full' : compact ? 'self-end' : undefined}>
                 {buttonLabel}
               </AnimatedButton>
             </div>
-            
+
             {errors.policy ? (
-              <p
-                id={policyErrorId}
-                role="alert"
-                className="text-mono-sm absolute left-0 right-0 top-full mt-8 text-brand"
-              >
+              <p id={policyErrorId} role="alert" className="text-mono-sm absolute left-0 right-0 top-full mt-8 text-brand">
                 {errors.policy}
               </p>
             ) : null}

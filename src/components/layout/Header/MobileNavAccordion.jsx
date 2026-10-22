@@ -44,31 +44,11 @@ export default function MobileNavAccordion({ item, expanded, onToggle }) {
         type="button"
         aria-expanded={expanded}
         onClick={onToggle}
-        className={cn(
-          'text-h4 flex w-full items-center justify-between py-16 text-foreground transition-colors duration-200'
-        )}
-      >
+        className={cn('text-h4 flex w-full items-center justify-between py-16 text-foreground transition-colors duration-200')}>
         <span ref={scrambleRef}>{item.label}</span>
-        <svg
-          ref={iconRef}
-          className="size-14 shrink-0"
-          viewBox="0 0 16 16"
-          fill="none"
-          aria-hidden="true"
-        >
-          <path
-            ref={verticalLineRef}
-            d="M8 1V15"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="square"
-          />
-          <path
-            d="M1 8H15"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="square"
-          />
+        <svg ref={iconRef} className="size-14 shrink-0" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path ref={verticalLineRef} d="M8 1V15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
+          <path d="M1 8H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" />
         </svg>
       </button>
 
@@ -77,19 +57,13 @@ export default function MobileNavAccordion({ item, expanded, onToggle }) {
           <div className="flex flex-col pb-16">
             {item.mega.columns.flatMap((column) =>
               column.links.map((link) => (
-                <TransitionLink
-                  key={link.label}
-                  href={link.href}
-                  className="text-body py-8 text-foreground-muted hover:text-foreground"
-                >
+                <TransitionLink key={link.label} href={link.href} className="text-body py-8 text-foreground-muted hover:text-foreground">
                   {link.label}
                   {link.badge ? (
-                    <span className="text-accent-2xs ml-8 inline-block bg-brand px-6 py-2 align-middle text-black">
-                      {link.badge}
-                    </span>
+                    <span className="text-accent-2xs ml-8 inline-block bg-brand px-6 py-2 align-middle text-black">{link.badge}</span>
                   ) : null}
                 </TransitionLink>
-              ))
+              )),
             )}
           </div>
         </div>

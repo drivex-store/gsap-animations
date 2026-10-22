@@ -34,11 +34,7 @@ export default function CrispChat() {
     }
 
     const timerId = setTimeout(() => {
-      if (
-        window.$crisp &&
-        config.crisp.onlyShowOnRoutes &&
-        !config.crisp.onlyShowOnRoutes.includes(pathname)
-      ) {
+      if (window.$crisp && config.crisp.onlyShowOnRoutes && !config.crisp.onlyShowOnRoutes.includes(pathname)) {
         window.$crisp.push(['do', 'chat:hide']);
       }
     }, 2000);
@@ -61,13 +57,7 @@ export default function CrispChat() {
           `,
         }}
       />
-      <Script
-        id="crisp-loader"
-        strategy="afterInteractive"
-        type="text/partytown"
-        src="https://client.crisp.chat/l.js"
-        async={true}
-      />
+      <Script id="crisp-loader" strategy="afterInteractive" type="text/partytown" src="https://client.crisp.chat/l.js" async={true} />
     </>
   );
 }

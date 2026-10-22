@@ -13,11 +13,7 @@ export default function StatusIndicator({ className = 'size-8' }) {
   usePauseOffscreen(containerRef);
 
   return (
-    <span
-      ref={containerRef}
-      aria-hidden="true"
-      className={cn('relative inline-flex', className)}
-    >
+    <span ref={containerRef} aria-hidden="true" className={cn('relative inline-flex', className)}>
       <span className="absolute inset-0 animate-ping bg-brand opacity-60" />
       <span className="relative block size-full bg-brand" />
     </span>

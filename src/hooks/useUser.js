@@ -25,20 +25,12 @@ export function useUser() {
           return;
         }
 
-        const { data: profile } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', authUser.id)
-          .single();
+        const { data: profile } = await supabase.from('users').select('*').eq('id', authUser.id).single();
 
         setUser({
           id: authUser.id,
           email: authUser.email,
-          name:
-            profile?.name ||
-            profile?.display_name ||
-            authUser.email?.split('@')[0] ||
-            'User',
+          name: profile?.name || profile?.display_name || authUser.email?.split('@')[0] || 'User',
           avatarUrl: profile?.avatar_url,
           avatarIndex: profile?.avatar_index || 0,
           subscriptionStatus: profile?.subscription_status || 'free',

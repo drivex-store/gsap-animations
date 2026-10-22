@@ -26,7 +26,7 @@ export function useTransitionClick(href, { replace = false, onClick } = {}) {
     ) {
       event.preventDefault();
       setTransitionTarget(href);
-      
+
       if (replace) {
         router.replace(href);
       } else {

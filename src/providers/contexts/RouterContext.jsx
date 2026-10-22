@@ -5,16 +5,7 @@
 // Variable Mapping (getTransitionTarget): i -> transitionTarget, u -> setTransitionTarget
 // Variable Mapping (TransitionRouterProvider): s -> RouterContext, c -> extractPathname, l -> isSamePathname, a -> router, i -> pathname, f -> transition, d -> startRouteTransition, p -> push, g -> replace, m -> contextValue
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useTransition,
-  useRef,
-  useEffect,
-  useCallback,
-  useMemo
-} from 'react';
+import React, { createContext, useContext, useState, useTransition, useRef, useEffect, useCallback, useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 
 // Helper representing the stripped out logger `((...e) => 0)` from the minified build
@@ -66,7 +57,7 @@ export function RouterTransition({ children, leave, enter }) {
         hasRunEnterRef.current = true;
         debugLog('Running enter animation');
         setStage('entering');
-        
+
         startReactTransition(async () => {
           await enter().then((cleanup) => cleanup?.());
           setStage(undefined);
@@ -89,12 +80,12 @@ export function RouterTransition({ children, leave, enter }) {
     {
       isPending: !!stage,
       stage,
-      pendingPath
+      pendingPath,
     },
     (callback, targetPath) => {
       debugLog('startRouteTransition called:', {
         targetPath,
-        currentStage: stage
+        currentStage: stage,
       });
 
       if (stage) {
@@ -115,14 +106,10 @@ export function RouterTransition({ children, leave, enter }) {
         await callback();
         debugLog('Navigation callback executed');
       });
-    }
+    },
   ];
 
-  return (
-    <RouterTransitionContext.Provider value={contextValue}>
-      {children}
-    </RouterTransitionContext.Provider>
-  );
+  return <RouterTransitionContext.Provider value={contextValue}>{children}</RouterTransitionContext.Provider>;
 }
 
 // ==========================================
@@ -135,9 +122,9 @@ export default RouterContext;
 function extractPathname(href) {
   if (!href) return null;
   if (typeof href === 'object' && href.pathname) return href.pathname;
-  
+
   const hrefString = typeof href === 'object' ? href.toString() : href;
-  
+
   try {
     if (hrefString.startsWith('http://') || hrefString.startsWith('https://')) {
       return new URL(hrefString).pathname;
@@ -151,11 +138,7 @@ function extractPathname(href) {
 
 function isSamePathname(currentPath, href) {
   const targetPathname = extractPathname(href);
-  return !!(
-    !targetPathname ||
-    currentPath === targetPathname ||
-    (typeof href === 'string' && href.startsWith('#'))
-  );
+  return !!(!targetPathname || currentPath === targetPathname || (typeof href === 'string' && href.startsWith('#')));
 }
 
 export function TransitionRouterProvider({ children }) {
@@ -170,7 +153,7 @@ export function TransitionRouterProvider({ children }) {
       debugLog('push() called:', {
         href,
         pathname,
-        options
+        options,
       });
 
       if (isSamePathname(pathname, href)) {
@@ -180,7 +163,7 @@ export function TransitionRouterProvider({ children }) {
 
       const targetPathname = extractPathname(href);
       debugLog('push() - starting transition to:', targetPathname);
-      
+
       setTransitionTarget(targetPathname);
       router.prefetch?.(href);
 
@@ -189,7 +172,7 @@ export function TransitionRouterProvider({ children }) {
         router.push(href, options);
       }, targetPathname);
     },
-    [router, pathname, startRouteTransition]
+    [router, pathname, startRouteTransition],
   );
 
   const replace = useCallback(
@@ -197,7 +180,7 @@ export function TransitionRouterProvider({ children }) {
       debugLog('replace() called:', {
         href,
         pathname,
-        options
+        options,
       });
 
       if (isSamePathname(pathname, href)) {
@@ -207,7 +190,7 @@ export function TransitionRouterProvider({ children }) {
 
       const targetPathname = extractPathname(href);
       debugLog('replace() - starting transition to:', targetPathname);
-      
+
       setTransitionTarget(targetPathname);
       router.prefetch?.(href);
 
@@ -216,7 +199,7 @@ export function TransitionRouterProvider({ children }) {
         router.replace(href, options);
       }, targetPathname);
     },
-    [router, pathname, startRouteTransition]
+    [router, pathname, startRouteTransition],
   );
 
   const contextValue = useMemo(
@@ -224,23 +207,19 @@ export function TransitionRouterProvider({ children }) {
       ...router,
       push,
       replace,
-      transition
+      transition,
     }),
-    [router, push, replace, transition]
+    [router, push, replace, transition],
   );
 
-  return (
-    <RouterContext.Provider value={contextValue}>
-      {children}
-    </RouterContext.Provider>
-  );
+  return <RouterContext.Provider value={contextValue}>{children}</RouterContext.Provider>;
 }
 
 export function useTransitionRouter() {
   const context = useContext(RouterContext);
   if (!context) {
     throw new Error(
-      'useTransitionRouter must be used within TransitionRouterProvider. Make sure TransitionRouterProvider wraps your component.'
+      'useTransitionRouter must be used within TransitionRouterProvider. Make sure TransitionRouterProvider wraps your component.',
     );
   }
   return context;

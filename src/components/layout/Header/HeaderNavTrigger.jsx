@@ -9,16 +9,7 @@ import { NAV_SURFACE } from '@/components/navigation/NavLink'; // NOTE: module i
 import { useTransitionClick } from '@/hooks/useTransitionClick'; // NOTE: module id: 995289
 
 // NOTE: module id: 76624
-export default function HeaderNavTrigger({
-  item,
-  href,
-  badge,
-  active,
-  expanded,
-  setRef,
-  onMouseEnter,
-  onClick,
-}) {
+export default function HeaderNavTrigger({ item, href, badge, active, expanded, setRef, onMouseEnter, onClick }) {
   const handleTransitionClick = useTransitionClick(href || '', {
     onClick,
   });
@@ -36,16 +27,14 @@ export default function HeaderNavTrigger({
         'group text-mono relative flex h-full cursor-pointer items-center justify-center text-center',
         'transition-[transform,color] duration-(--duration-quick) ease-(--ease-back-out)',
         'hover:scale-[0.95] data-[active=true]:scale-[0.95]',
-        active || expanded ? 'text-foreground' : 'text-foreground-muted hover:text-foreground'
-      )}
-    >
+        active || expanded ? 'text-foreground' : 'text-foreground-muted hover:text-foreground',
+      )}>
       <span className={NAV_SURFACE}>
         <SlideText>{item.label}</SlideText>
         {badge ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute top-6 left-[calc(100%-12px)] -translate-y-full text-accent-2xs text-brand whitespace-nowrap"
-          >
+            className="pointer-events-none absolute top-6 left-[calc(100%-12px)] -translate-y-full text-accent-2xs text-brand whitespace-nowrap">
             {badge}
           </span>
         ) : null}

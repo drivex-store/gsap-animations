@@ -3,13 +3,7 @@
 
 export default function LogoGraphic({ width, height, ...restProps }) {
   return (
-    <svg
-      width={width}
-      height={height}
-      viewBox="0 0 254 127"
-      fill="none"
-      {...restProps}
-    >
+    <svg width={width} height={height} viewBox="0 0 254 127" fill="none" {...restProps}>
       <path
         d="M126.713 0C196.695 0 253.426 56.7307 253.426 126.713H229.859C229.858 69.7466 183.68 23.5674 126.713 23.5674C69.7469 23.5679 23.5679 69.7469 23.5674 126.713H0C0.000493986 56.731 56.731 0.000493953 126.713 0Z"
         fill="currentColor"

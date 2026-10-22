@@ -9,12 +9,12 @@ export const EXPOSURE_KEY = 'anm_exp';
 
 const TEST_VARIANTS = {
   hero: ['grid', 'slider'],
-  headline: ['award', 'client']
+  headline: ['award', 'client'],
 };
 
 export function exposureProps(currentExposure, testsEnabled = true) {
   const props = {};
-  
+
   if (!testsEnabled || !currentExposure || typeof currentExposure !== 'object') {
     return props;
   }

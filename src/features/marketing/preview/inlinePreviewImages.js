@@ -3,16 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { buildRunnerScript, SHORTCUT_FORWARDER_SCRIPT } from '@/features/marketing/preview/sandboxScripts';
 
-const VALID_TEMPLATES = new Set([
-  "instant",
-  "compact",
-  "scroll-text",
-  "scroll-cover",
-  "menu",
-  "shader",
-  "shader-scroll",
-  "full-page"
-]);
+const VALID_TEMPLATES = new Set(['instant', 'compact', 'scroll-text', 'scroll-cover', 'menu', 'shader', 'shader-scroll', 'full-page']);
 
 const FALLBACK_TEMPLATE = `<!DOCTYPE html>
 <html lang="en">
@@ -39,7 +30,7 @@ export async function inlinePreviewImages(html) {
   for (const match of matches) {
     const assetUrl = match[1];
     const fullAttr = match[0];
-    const attrName = fullAttr.split("=")[0];
+    const attrName = fullAttr.split('=')[0];
     try {
       const response = await fetch(assetUrl);
       if (!response.ok) continue;
@@ -60,48 +51,51 @@ export async function inlinePreviewImages(html) {
 export function parseDependencies(deps) {
   if (!deps) return [];
   if (Array.isArray(deps)) return deps;
-  if (typeof deps === "object" && deps !== null) {
+  if (typeof deps === 'object' && deps !== null) {
     const keys = Object.keys(deps);
     return keys.length > 0 ? keys : [];
   }
-  if (typeof deps === "string") {
+  if (typeof deps === 'string') {
     try {
       const parsed = JSON.parse(deps);
       if (Array.isArray(parsed)) return parsed;
-      if (typeof parsed === "object" && parsed !== null) {
+      if (typeof parsed === 'object' && parsed !== null) {
         const keys = Object.keys(parsed);
         return keys.length > 0 ? keys : [];
       }
     } catch {
-      return deps.split(",").map((item) => item.trim()).filter(Boolean);
+      return deps
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
     }
   }
   return [];
 }
 
-function resolveTemplateName({ metadata, category, animationName = "", compact = false } = {}) {
+function resolveTemplateName({ metadata, category, animationName = '', compact = false } = {}) {
   const customTemplate = metadata?.previewTemplate || metadata?.sandbox_template;
   if (customTemplate && VALID_TEMPLATES.has(customTemplate)) {
     return customTemplate;
   }
-  const lowerName = (animationName || "").toLowerCase();
-  if (category === "shader") {
-    return lowerName.includes("scroll") ? "shader-scroll" : "shader";
+  const lowerName = (animationName || '').toLowerCase();
+  if (category === 'shader') {
+    return lowerName.includes('scroll') ? 'shader-scroll' : 'shader';
   }
-  if (category === "scroll") {
-    return lowerName.includes("text") ? "scroll-text" : "scroll-cover";
+  if (category === 'scroll') {
+    return lowerName.includes('text') ? 'scroll-text' : 'scroll-cover';
   }
-  if (lowerName.includes("menu") || metadata?.type === "menu") {
-    return "menu";
+  if (lowerName.includes('menu') || metadata?.type === 'menu') {
+    return 'menu';
   }
-  return compact ? "compact" : "instant";
+  return compact ? 'compact' : 'instant';
 }
 
 function isPreviewFullWidth({ metadata, category } = {}) {
-  if (typeof metadata?.previewFullWidth === "boolean") {
+  if (typeof metadata?.previewFullWidth === 'boolean') {
     return metadata.previewFullWidth;
   }
-  return category !== "button";
+  return category !== 'button';
 }
 
 function assembleSrcdoc({
@@ -113,7 +107,7 @@ function assembleSrcdoc({
   animationName,
   animationDescription,
   category,
-  metadata
+  metadata,
 }) {
   const fullWidth = isPreviewFullWidth({ metadata, category });
   let doc = templateHtml;
@@ -125,37 +119,38 @@ function assembleSrcdoc({
       .replace('class="preview-animation"', 'class="preview-animation is-fullwidth"');
   }
 
-  const scriptsBlock = jsCode && jsCode.trim() !== ""
-    ? buildRunnerScript({
-        jsCode,
-        dependencies,
-        category,
-        forwardKeysScript: SHORTCUT_FORWARDER_SCRIPT
-      })
-    : `<script>console.log('[preview] CSS-only animation loaded');</script>${SHORTCUT_FORWARDER_SCRIPT}`;
+  const scriptsBlock =
+    jsCode && jsCode.trim() !== ''
+      ? buildRunnerScript({
+          jsCode,
+          dependencies,
+          category,
+          forwardKeysScript: SHORTCUT_FORWARDER_SCRIPT,
+        })
+      : `<script>console.log('[preview] CSS-only animation loaded');</script>${SHORTCUT_FORWARDER_SCRIPT}`;
 
   return doc
     .replace(/\{\{ANIMATION_NAME\}\}/g, () => animationName)
     .replace(/\{\{ANIMATION_DESCRIPTION\}\}/g, () => animationDescription)
     .replace(/\{\{ANIMATION_HTML\}\}/g, () => processedHtmlCode || '<div class="demo-text">No preview available</div>')
-    .replace(/\{\{ANIMATION_CSS\}\}/g, () => cssCode || "")
+    .replace(/\{\{ANIMATION_CSS\}\}/g, () => cssCode || '')
     .replace(/\{\{ANIMATION_SCRIPTS\}\}/g, () => scriptsBlock);
 }
 
 export function useSandboxSrcdoc({
-  animationName = "Animation Preview",
-  animationDescription = "",
-  category = "instant",
+  animationName = 'Animation Preview',
+  animationDescription = '',
+  category = 'instant',
   layout,
-  htmlCode = "",
-  cssCode = "",
-  jsCode = "",
+  htmlCode = '',
+  cssCode = '',
+  jsCode = '',
   dependencies = [],
   compact = false,
-  metadata = null
+  metadata = null,
 }) {
-  const [templateHtml, setTemplateHtml] = useState("");
-  const [processedHtmlCode, setProcessedHtmlCode] = useState("");
+  const [templateHtml, setTemplateHtml] = useState('');
+  const [processedHtmlCode, setProcessedHtmlCode] = useState('');
   const [isTemplateLoading, setIsTemplateLoading] = useState(true);
   const [isHtmlLoading, setIsHtmlLoading] = useState(true);
 
@@ -168,16 +163,16 @@ export function useSandboxSrcdoc({
           metadata,
           category,
           animationName,
-          compact
+          compact,
         });
 
         if (
           !metadata?.previewTemplate &&
           !metadata?.sandbox_template &&
-          layout === "full-viewport" &&
-          (templateName === "instant" || templateName === "compact")
+          layout === 'full-viewport' &&
+          (templateName === 'instant' || templateName === 'compact')
         ) {
-          templateName = "menu";
+          templateName = 'menu';
         }
 
         const response = await fetch(`/animations/templates/${templateName}.html`);
@@ -186,7 +181,7 @@ export function useSandboxSrcdoc({
           setTemplateHtml(text);
         }
       } catch (err) {
-        console.error("Failed to load template:", err);
+        console.error('Failed to load template:', err);
         if (!isCancelled) {
           setTemplateHtml(FALLBACK_TEMPLATE);
         }
@@ -218,7 +213,7 @@ export function useSandboxSrcdoc({
     if (htmlCode) {
       processHtml();
     } else {
-      setProcessedHtmlCode("");
+      setProcessedHtmlCode('');
       setIsHtmlLoading(false);
     }
 
@@ -228,7 +223,7 @@ export function useSandboxSrcdoc({
   }, [htmlCode]);
 
   const srcdoc = useMemo(() => {
-    if (!templateHtml) return "";
+    if (!templateHtml) return '';
     return assembleSrcdoc({
       templateHtml,
       processedHtmlCode,
@@ -238,12 +233,12 @@ export function useSandboxSrcdoc({
       animationName,
       animationDescription,
       category,
-      metadata
+      metadata,
     });
   }, [templateHtml, processedHtmlCode, cssCode, jsCode, animationName, animationDescription, dependencies, category, metadata]);
 
   return {
     srcdoc,
-    isLoading: isTemplateLoading || isHtmlLoading
+    isLoading: isTemplateLoading || isHtmlLoading,
   };
 }

@@ -554,8 +554,8 @@ const RAW_TIMELINE_SCRIPT = `
 })();
 </script>`;
 
-export const TIMELINE_SHAPE_SCRIPT = RAW_TIMELINE_SCRIPT.replace("__ANM_TL_MODE__", "shape");
-export const TIMELINE_FULL_SCRIPT = RAW_TIMELINE_SCRIPT.replace("__ANM_TL_MODE__", "full");
+export const TIMELINE_SHAPE_SCRIPT = RAW_TIMELINE_SCRIPT.replace('__ANM_TL_MODE__', 'shape');
+export const TIMELINE_FULL_SCRIPT = RAW_TIMELINE_SCRIPT.replace('__ANM_TL_MODE__', 'full');
 
 export const SHORTCUT_FORWARDER_SCRIPT = `
 <script>
@@ -579,29 +579,32 @@ export const SHORTCUT_FORWARDER_SCRIPT = `
 `;
 
 const DEPENDENCY_MAP = {
-  gsap: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js",
-  ScrollTrigger: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js",
-  three: "https://cdn.jsdelivr.net/npm/three@0.169.0/+esm",
-  ScrollSmoother: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollSmoother.min.js",
-  SplitText: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js",
-  Flip: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Flip.min.js",
-  Draggable: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Draggable.min.js",
-  InertiaPlugin: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/InertiaPlugin.min.js",
-  Observer: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Observer.min.js",
-  MotionPathPlugin: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MotionPathPlugin.min.js",
-  ScrollToPlugin: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollToPlugin.min.js",
-  DrawSVGPlugin: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js",
-  MorphSVGPlugin: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MorphSVGPlugin.min.js",
-  ScrambleTextPlugin: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js",
-  CustomEase: "https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"
+  gsap: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js',
+  ScrollTrigger: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js',
+  three: 'https://cdn.jsdelivr.net/npm/three@0.169.0/+esm',
+  ScrollSmoother: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollSmoother.min.js',
+  SplitText: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js',
+  Flip: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Flip.min.js',
+  Draggable: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Draggable.min.js',
+  InertiaPlugin: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/InertiaPlugin.min.js',
+  Observer: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Observer.min.js',
+  MotionPathPlugin: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MotionPathPlugin.min.js',
+  ScrollToPlugin: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollToPlugin.min.js',
+  DrawSVGPlugin: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js',
+  MorphSVGPlugin: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MorphSVGPlugin.min.js',
+  ScrambleTextPlugin: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js',
+  CustomEase: 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js',
 };
 
 export function buildRunnerScript({ jsCode, dependencies, category, forwardKeysScript = SHORTCUT_FORWARDER_SCRIPT }) {
-  const scrollIntoViewCode = category === "scroll" ? `  window.addEventListener('load', function () {
+  const scrollIntoViewCode =
+    category === 'scroll'
+      ? `  window.addEventListener('load', function () {
     var section = document.getElementById('animation-section');
     if (!section) return;
     setTimeout(function () { section.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 600);
-  });` : "";
+  });`
+      : '';
 
   return `
 <script>

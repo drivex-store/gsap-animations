@@ -8,13 +8,16 @@ import { analytics } from '@/libs/auth/analytics'; // NOTE: module id: 943348
 const SENDER_EMAIL = 'julian@annnimate.com';
 
 export function inboxFor(email) {
-  const domain = String(email || '').split('@')[1]?.toLowerCase() || '';
+  const domain =
+    String(email || '')
+      .split('@')[1]
+      ?.toLowerCase() || '';
 
   if (domain === 'gmail.com' || domain === 'googlemail.com') {
     return {
       provider: 'gmail',
       label: 'Open Gmail',
-      href: `https://mail.google.com/mail/u/0/#search/from%3A${encodeURIComponent(SENDER_EMAIL)}+in%3Aanywhere`
+      href: `https://mail.google.com/mail/u/0/#search/from%3A${encodeURIComponent(SENDER_EMAIL)}+in%3Aanywhere`,
     };
   }
 
@@ -22,7 +25,7 @@ export function inboxFor(email) {
     return {
       provider: 'outlook',
       label: 'Open Outlook',
-      href: 'https://outlook.live.com/mail/0/'
+      href: 'https://outlook.live.com/mail/0/',
     };
   }
 
@@ -30,7 +33,7 @@ export function inboxFor(email) {
     return {
       provider: 'icloud',
       label: 'Open iCloud Mail',
-      href: 'https://www.icloud.com/mail/'
+      href: 'https://www.icloud.com/mail/',
     };
   }
 
@@ -38,19 +41,14 @@ export function inboxFor(email) {
     return {
       provider: 'yahoo',
       label: 'Open Yahoo Mail',
-      href: 'https://mail.yahoo.com/'
+      href: 'https://mail.yahoo.com/',
     };
   }
 
   return null;
 }
 
-export default function SuccessPanel({
-  email,
-  wantsPack = false,
-  source = 'unknown',
-  onChangeAddress = null
-}) {
+export default function SuccessPanel({ email, wantsPack = false, source = 'unknown', onChangeAddress = null }) {
   const inboxData = inboxFor(email);
 
   return (
@@ -60,10 +58,7 @@ export default function SuccessPanel({
         {wantsPack ? ' Your Starter Pack lands right after.' : ''}
       </p>
 
-      <SentToDetail
-        to={email}
-        subject={wantsPack ? 'Confirm and grab your Starter Pack' : 'Confirm your Annnimate subscription'}
-      />
+      <SentToDetail to={email} subject={wantsPack ? 'Confirm and grab your Starter Pack' : 'Confirm your Annnimate subscription'} />
 
       <div className="flex flex-wrap items-center justify-between gap-12">
         {inboxData ? (
@@ -76,10 +71,9 @@ export default function SuccessPanel({
             onClick={() =>
               analytics.track('confirm_inbox_opened', {
                 source: source,
-                provider: inboxData.provider
+                provider: inboxData.provider,
               })
-            }
-          >
+            }>
             {inboxData.label}
           </AnimatedButton>
         ) : (
@@ -90,8 +84,7 @@ export default function SuccessPanel({
           <button
             type="button"
             onClick={onChangeAddress}
-            className="text-body-sm text-foreground-muted underline underline-offset-4 transition-colors duration-(--duration-quick) hover:text-foreground"
-          >
+            className="text-body-sm text-foreground-muted underline underline-offset-4 transition-colors duration-(--duration-quick) hover:text-foreground">
             Wrong address?
           </button>
         ) : null}

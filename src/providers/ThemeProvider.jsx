@@ -1,4 +1,3 @@
-
 'use client';
 
 // Variable Mapping:
@@ -13,14 +12,7 @@
 // p -> setTheme
 // y -> contextValue
 
-import {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useContext
-} from 'react'; // NOTE: module id: 271645
+import { createContext, useState, useEffect, useCallback, useMemo, useContext } from 'react'; // NOTE: module id: 271645
 
 const THEME_STORAGE_KEY = 'theme';
 const DEFAULT_THEME = 'dark';
@@ -41,9 +33,7 @@ export function ThemeProvider({ children }) {
       }
     });
 
-    setSystemTheme(
-      window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    );
+    setSystemTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     setIsMounted(true);
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -63,14 +53,14 @@ export function ThemeProvider({ children }) {
       const style = document.createElement('style');
       style.appendChild(
         document.createTextNode(
-          '*,*::before,*::after{transition:none !important;animation-duration:0s !important;animation-delay:0s !important;}'
-        )
+          '*,*::before,*::after{transition:none !important;animation-duration:0s !important;animation-delay:0s !important;}',
+        ),
       );
       document.head.appendChild(style);
-      
+
       // Force reflow
-      window.getComputedStyle(document.body).opacity; 
-      
+      window.getComputedStyle(document.body).opacity;
+
       requestAnimationFrame(() => {
         document.head.removeChild(style);
       });
@@ -92,17 +82,16 @@ export function ThemeProvider({ children }) {
     } catch (e) {}
   }, []);
 
-  const contextValue = useMemo(() => ({
-    theme,
-    resolvedTheme,
-    setTheme
-  }), [theme, resolvedTheme, setTheme]);
-
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
+  const contextValue = useMemo(
+    () => ({
+      theme,
+      resolvedTheme,
+      setTheme,
+    }),
+    [theme, resolvedTheme, setTheme],
   );
+
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme() {

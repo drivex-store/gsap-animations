@@ -3,43 +3,64 @@
 
 const LAYOUT_ROUTE_MAP = {
   marketing: [
-    '/', '/pricing', '/faq', '/blog', '/privacy-policy', '/tos', '/built-with', 
-    '/platform', '/starter-pack', '/vue', '/learn', '/patterns', '/tools', 
-    '/compare', '/alternatives', '/docs', '/developers', '/affiliate', '/packs/landing'
+    '/',
+    '/pricing',
+    '/faq',
+    '/blog',
+    '/privacy-policy',
+    '/tos',
+    '/built-with',
+    '/platform',
+    '/starter-pack',
+    '/vue',
+    '/learn',
+    '/patterns',
+    '/tools',
+    '/compare',
+    '/alternatives',
+    '/docs',
+    '/developers',
+    '/affiliate',
+    '/packs/landing',
   ],
   auth: [
-    '/login', '/auth', '/welcome', '/checkout', '/checkout-success', '/checkout-canceled', 
-    '/forgot-password', '/oauth/consent', '/confirmed', '/unsubscribe'
+    '/login',
+    '/auth',
+    '/welcome',
+    '/checkout',
+    '/checkout-success',
+    '/checkout-canceled',
+    '/forgot-password',
+    '/oauth/consent',
+    '/confirmed',
+    '/unsubscribe',
   ],
-  app: [
-    '/animations', '/roadmap', '/settings', '/help', '/onboarding', 
-    '/discord', '/changelog', '/account/kits'
-  ],
+  app: ['/animations', '/roadmap', '/settings', '/help', '/onboarding', '/discord', '/changelog', '/account/kits'],
   admin: ['/admin'],
-  standalone: ['/newsletter']
+  standalone: ['/newsletter'],
 };
 
 const APP_CHROME_CONFIG = {
   '/animations': {
     public: true,
     edgeToEdge: (subpath) => subpath === null || subpath.split('/').length === 1,
-    movesTransitionContent: (subpath) => subpath !== null && subpath !== 'saved' && subpath.split('/').length === 1
+    movesTransitionContent: (subpath) => subpath !== null && subpath !== 'saved' && subpath.split('/').length === 1,
   },
   '/roadmap': {
     public: true,
-    edgeToEdge: 'exact'
+    edgeToEdge: 'exact',
   },
   '/changelog': {
     public: true,
     edgeToEdge: 'exact',
-    sidebar: true
+    sidebar: true,
   },
   '/help': {
-    edgeToEdge: 'exact'
+    edgeToEdge: 'exact',
   },
   '/account/kits': {
-    edgeToEdge: 'subtree'
-  }
+    edgeToEdge: 'subtree',
+  },
 };
 
 export function getAppChrome(pathname) {
@@ -48,9 +69,7 @@ export function getAppChrome(pathname) {
       continue;
     }
 
-    const subpath = pathname === routePrefix 
-      ? null 
-      : pathname.slice(routePrefix.length + 1).replace(/\/$/, '');
+    const subpath = pathname === routePrefix ? null : pathname.slice(routePrefix.length + 1).replace(/\/$/, '');
 
     let isEdgeToEdge = false;
     if (typeof config.edgeToEdge === 'function') {
@@ -63,7 +82,7 @@ export function getAppChrome(pathname) {
       public: !!config.public,
       edgeToEdge: isEdgeToEdge,
       sidebar: !!config.sidebar && subpath === null,
-      movesTransitionContent: typeof config.movesTransitionContent === 'function' && !!config.movesTransitionContent(subpath)
+      movesTransitionContent: typeof config.movesTransitionContent === 'function' && !!config.movesTransitionContent(subpath),
     };
   }
 
@@ -71,7 +90,7 @@ export function getAppChrome(pathname) {
     public: false,
     edgeToEdge: false,
     sidebar: false,
-    movesTransitionContent: false
+    movesTransitionContent: false,
   };
 }
 

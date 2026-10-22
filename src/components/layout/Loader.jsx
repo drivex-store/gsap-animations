@@ -4,11 +4,7 @@ export { InlineLoader } from '@/components/layout/Loader/InlineLoader'; // NOTE:
 export { QuantumLoader } from '@/components/layout/Loader/QuantumLoader'; // NOTE: module id: 461376
 
 // NOTE: module id: 461376
-export default function Loader({
-  size = '40',
-  speed = '0.9',
-  className,
-}) {
+export default function Loader({ size = '40', speed = '0.9', className }) {
   return (
     <div className={cn('flex items-center justify-center', className)}>
       <SpinnerSvg size={size} speed={speed} />

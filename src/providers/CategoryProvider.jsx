@@ -8,11 +8,7 @@ import { createContext, useContext } from 'react'; // NOTE: module id: 271645
 const CategoryContext = createContext([]);
 
 export function CategoryProvider({ value, children }) {
-  return (
-    <CategoryContext.Provider value={value || []}>
-      {children}
-    </CategoryContext.Provider>
-  );
+  return <CategoryContext.Provider value={value || []}>{children}</CategoryContext.Provider>;
 }
 
 export function useCategories() {
@@ -23,7 +19,7 @@ export function useCategoryOptions() {
   const categories = useContext(CategoryContext);
   return categories.map((category) => ({
     value: category.slug,
-    label: category.name
+    label: category.name,
   }));
 }
 

@@ -4,14 +4,7 @@
 // Variable Mapping (perfLog): a -> isPerfLoggingEnabledCache, o -> checkPerfLogging, i -> getCurrentTime, u -> perfLog, s -> perfMeasure
 // Variable Mapping (AnimationProvider): c -> AnimationContext, l -> DEFAULT_CONTEXT_VALUE, f -> useAnimation, a -> pathname, o -> currentPathRef, i -> revealedPathRef, l -> revealed, f -> setRevealed, d -> subscribersRef, p -> gatesRef, g -> onGatesClearCbRef, m -> isPendingRevealRef, h -> revealPage, y -> whenRevealed, v -> addReadyGate, b -> onGatesClear, _ -> triggerPageEnter, x -> getHasTriggered
 
-import React, {
-  createContext,
-  useContext,
-  useRef,
-  useState,
-  useCallback,
-  useEffect
-} from 'react';
+import React, { createContext, useContext, useRef, useState, useCallback, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
 // ==========================================
@@ -23,23 +16,17 @@ let isPerfLoggingEnabledCache = null;
 function checkPerfLogging() {
   if (isPerfLoggingEnabledCache !== null) return isPerfLoggingEnabledCache;
   try {
-    isPerfLoggingEnabledCache =
-      new URLSearchParams(window.location.search).has('perf') ||
-      window.localStorage?.getItem('anm-perf') === '1';
+    isPerfLoggingEnabledCache = new URLSearchParams(window.location.search).has('perf') || window.localStorage?.getItem('anm-perf') === '1';
   } catch {
     isPerfLoggingEnabledCache = false;
   }
   if (isPerfLoggingEnabledCache) {
-    console.log(
-      '%c[perf] debug logging ON (remove ?perf=1 to silence)',
-      'color:#fd551d;font-weight:bold'
-    );
+    console.log('%c[perf] debug logging ON (remove ?perf=1 to silence)', 'color:#fd551d;font-weight:bold');
   }
   return isPerfLoggingEnabledCache;
 }
 
-const getCurrentTime = () =>
-  typeof performance !== 'undefined' ? performance.now() : 0;
+const getCurrentTime = () => (typeof performance !== 'undefined' ? performance.now() : 0);
 
 export function perfLog(message, data) {
   if (!checkPerfLogging()) return;
@@ -72,7 +59,7 @@ const DEFAULT_CONTEXT_VALUE = {
   addReadyGate: () => () => {},
   onGatesClear: () => () => {},
   triggerPageEnter: () => {},
-  getHasTriggered: () => false
+  getHasTriggered: () => false,
 };
 
 export function useAnimation() {
@@ -85,13 +72,13 @@ const debugLog = (...args) => 0;
 
 export function AnimationProvider({ children }) {
   const pathname = usePathname();
-  
+
   const currentPathRef = useRef(pathname);
   currentPathRef.current = pathname;
 
   const revealedPathRef = useRef(null);
   const [revealed, setRevealed] = useState(false);
-  
+
   const subscribersRef = useRef(new Set());
   const gatesRef = useRef(new Set());
   const onGatesClearCbRef = useRef(null);
@@ -109,7 +96,7 @@ export function AnimationProvider({ children }) {
 
     perfLog('revealPage() fired', {
       path: currentPathRef.current,
-      subscribers: subscribersRef.current.size
+      subscribers: subscribersRef.current.size,
     });
 
     if (typeof document !== 'undefined') {
@@ -138,7 +125,7 @@ export function AnimationProvider({ children }) {
       }
       return () => {};
     }
-    
+
     subscribersRef.current.add(callback);
     return () => subscribersRef.current.delete(callback);
   }, []);
@@ -149,27 +136,30 @@ export function AnimationProvider({ children }) {
     }
   }, [pathname]);
 
-  const addReadyGate = useCallback((gateId) => {
-    gatesRef.current.add(gateId);
-    debugLog(`addReadyGate: ${gateId}, open: ${[...gatesRef.current].join(', ')}`);
+  const addReadyGate = useCallback(
+    (gateId) => {
+      gatesRef.current.add(gateId);
+      debugLog(`addReadyGate: ${gateId}, open: ${[...gatesRef.current].join(', ')}`);
 
-    let hasReleased = false;
-    return () => {
-      if (!hasReleased) {
-        hasReleased = true;
-        gatesRef.current.delete(gateId);
-        debugLog(`gate released: ${gateId}, remaining: ${[...gatesRef.current].join(', ') || '(none)'}`);
+      let hasReleased = false;
+      return () => {
+        if (!hasReleased) {
+          hasReleased = true;
+          gatesRef.current.delete(gateId);
+          debugLog(`gate released: ${gateId}, remaining: ${[...gatesRef.current].join(', ') || '(none)'}`);
 
-        if (gatesRef.current.size === 0) {
-          onGatesClearCbRef.current?.();
-          if (isPendingRevealRef.current) {
-            isPendingRevealRef.current = false;
-            revealPage();
+          if (gatesRef.current.size === 0) {
+            onGatesClearCbRef.current?.();
+            if (isPendingRevealRef.current) {
+              isPendingRevealRef.current = false;
+              revealPage();
+            }
           }
         }
-      }
-    };
-  }, [revealPage]);
+      };
+    },
+    [revealPage],
+  );
 
   const onGatesClear = useCallback((callback) => {
     onGatesClearCbRef.current = callback;
@@ -204,9 +194,8 @@ export function AnimationProvider({ children }) {
         addReadyGate,
         onGatesClear,
         triggerPageEnter,
-        getHasTriggered
-      }}
-    >
+        getHasTriggered,
+      }}>
       {children}
     </AnimationContext.Provider>
   );
@@ -215,13 +204,13 @@ export function AnimationProvider({ children }) {
 export function usePageEnterAnimation(callback, dependencies = [], name = '', isEnabled = true) {
   const { whenRevealed } = useAnimation();
   const callbackRef = useRef(callback);
-  
+
   callbackRef.current = callback;
 
   useEffect(() => {
     if (isEnabled) {
       return whenRevealed(() => callbackRef.current());
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [whenRevealed, isEnabled, ...dependencies]);
 }

@@ -41,7 +41,7 @@ const dictionary = {
   'students-v3': studentsV3,
   'kits-v3': kitsV3,
   'affiliate-v3': affiliateV3,
-  'frameworks-v3': frameworksV3
+  'frameworks-v3': frameworksV3,
 };
 
 export function t(key, variables) {

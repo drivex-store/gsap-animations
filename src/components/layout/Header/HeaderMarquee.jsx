@@ -50,10 +50,7 @@ export default function HeaderMarquee({ scrolled = false, shiftY = 0 }) {
     const track = trackRef.current;
     if (!track || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
 
-    const getKeyframes = () => [
-      { transform: 'translateX(0px)' },
-      { transform: `translateX(${-track.scrollWidth / 2}px)` },
-    ];
+    const getKeyframes = () => [{ transform: 'translateX(0px)' }, { transform: `translateX(${-track.scrollWidth / 2}px)` }];
 
     const anim = track.animate(getKeyframes(), {
       duration: 150000,
@@ -130,48 +127,34 @@ export default function HeaderMarquee({ scrolled = false, shiftY = 0 }) {
     <div
       data-visible={scrolled}
       aria-hidden={!scrolled}
-      className="invisible absolute inset-x-0 top-full z-[290] hidden opacity-0 transition-[opacity,visibility] duration-(--duration-quick) ease-(--ease-power3-out) data-[visible=true]:visible data-[visible=true]:opacity-100 lg:block"
-    >
+      className="invisible absolute inset-x-0 top-full z-[290] hidden opacity-0 transition-[opacity,visibility] duration-(--duration-quick) ease-(--ease-power3-out) data-[visible=true]:visible data-[visible=true]:opacity-100 lg:block">
       <div
         style={{ transform: `translateY(${shiftY}px)` }}
-        className="transition-transform duration-(--duration-snap) ease-(--ease-expo-out)"
-      >
+        className="transition-transform duration-(--duration-snap) ease-(--ease-expo-out)">
         <div className="mx-auto w-[calc(100%-2*var(--v2-header-pad,0px))] max-w-[calc(var(--v2-max,1920px)-2*var(--v2-header-pad,0px))] transition-[width,max-width] duration-(--duration-quick) ease-(--ease-power3-out)">
           <div
             ref={containerRef}
             onMouseEnter={() => tweenPlaybackRate(0)}
             onMouseLeave={() => tweenPlaybackRate(1)}
-            className="overflow-hidden border-y border-foreground/10 bg-background-muted text-foreground"
-          >
+            className="overflow-hidden border-y border-foreground/10 bg-background-muted text-foreground">
             <div ref={trackRef} className="flex w-max items-center">
               {Array.from({ length: 20 }).map((_, repeatIndex) => {
                 const isFirstCopy = repeatIndex === 0;
                 return (
                   <Fragment key={repeatIndex}>
-                    {MARQUEE_ITEMS.filter((item) => !item.offer || isOfferActive()).map(
-                      (item, itemIndex) => (
-                        <Fragment key={itemIndex}>
-                          <TransitionLink
-                            href={item.href}
-                            aria-hidden={!isFirstCopy || undefined}
-                            tabIndex={isFirstCopy ? undefined : -1}
-                            className="text-mono-sm inline-flex items-center gap-10 whitespace-nowrap px-32 py-8 transition-colors duration-(--duration-quick) hover:text-brand"
-                          >
-                            {item.square ? (
-                              <span
-                                aria-hidden="true"
-                                className="size-8 shrink-0 bg-brand"
-                              />
-                            ) : null}
-                            {item.label}
-                          </TransitionLink>
-                          <span
-                            aria-hidden="true"
-                            className="size-3 shrink-0 rounded-full bg-foreground/30"
-                          />
-                        </Fragment>
-                      )
-                    )}
+                    {MARQUEE_ITEMS.filter((item) => !item.offer || isOfferActive()).map((item, itemIndex) => (
+                      <Fragment key={itemIndex}>
+                        <TransitionLink
+                          href={item.href}
+                          aria-hidden={!isFirstCopy || undefined}
+                          tabIndex={isFirstCopy ? undefined : -1}
+                          className="text-mono-sm inline-flex items-center gap-10 whitespace-nowrap px-32 py-8 transition-colors duration-(--duration-quick) hover:text-brand">
+                          {item.square ? <span aria-hidden="true" className="size-8 shrink-0 bg-brand" /> : null}
+                          {item.label}
+                        </TransitionLink>
+                        <span aria-hidden="true" className="size-3 shrink-0 rounded-full bg-foreground/30" />
+                      </Fragment>
+                    ))}
                   </Fragment>
                 );
               })}

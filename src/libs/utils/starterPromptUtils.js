@@ -19,7 +19,7 @@ export function readSubscriberId() {
   if (typeof document === 'undefined') return null;
 
   const urlTouch = buildKitTouch({
-    getParam: (param) => new URLSearchParams(window.location.search).get(param)
+    getParam: (param) => new URLSearchParams(window.location.search).get(param),
   });
 
   if (urlTouch?.id) {

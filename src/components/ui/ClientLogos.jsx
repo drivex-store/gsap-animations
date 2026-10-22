@@ -4,7 +4,6 @@ import React, { useRef, Children } from 'react';
 import { gsap } from '@/libs/utils/vendor';
 import { useReveal } from '@/hooks/useReveal';
 
-
 import CocaColaLogo from '@/assets/logos/CocaColaLogo'; // mapped from 687225
 import BodyArmorLogo from '@/assets/logos/BodyArmorLogo'; // mapped from 846075
 import WkndhrsLogo from '@/assets/logos/WkndhrsLogo'; // mapped from 139469
@@ -21,7 +20,7 @@ function AnimatedList({
   delay = 0,
   ease = 'power2.out',
   start = 'top 80%',
-  trigger = 'scroll'
+  trigger = 'scroll',
 }) {
   const listRef = useRef(null);
 
@@ -36,13 +35,13 @@ function AnimatedList({
           duration: duration,
           stagger: stagger,
           delay: delay,
-          ease: ease
+          ease: ease,
         });
       }
       return tl;
     },
     start: start,
-    deps: [duration, stagger, delay, ease, trigger]
+    deps: [duration, stagger, delay, ease, trigger],
   });
 
   const validChildren = Children.toArray(children).filter(Boolean);
@@ -60,7 +59,7 @@ function AnimatedList({
   );
 }
 
-const GoodFellaLogo = ({ className = "" }) => (
+const GoodFellaLogo = ({ className = '' }) => (
   <svg className={className} viewBox="0 0 1616.59 1500" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <path d="M976.42,762.91h-76.36c-55.23,0-80.53,24.42-80.53,77.15v304.09c0,8.45,4.51,12.95,12.95,12.95h143.94c8.45,0,12.95-4.51,12.95-12.95v-368.29c0-8.45-4.51-12.95-12.95-12.95Z" />
     <path d="M1170.15,762.91h-144.09c-8.45,0-12.95,4.51-12.95,12.95v368.29c0,8.45,4.51,12.95,12.95,12.95h76.52c55.23,0,80.53-24.42,80.53-77.15v-304.09c0-8.45-4.51-12.95-12.95-12.95Z" />
@@ -75,22 +74,21 @@ const GoodFellaLogo = ({ className = "" }) => (
 );
 
 const LOGOS = [
-  { name: "Coca-Cola", Logo: CocaColaLogo, className: "h-24" },
-  { name: "BodyArmor", Logo: BodyArmorLogo, className: "h-14" },
-  { name: "WKNDHRS", Logo: WkndhrsLogo, className: "h-12" },
-  { name: "Powerade", Logo: PoweradeLogo, className: "h-28" },
-  { name: "Good Fella", Logo: GoodFellaLogo, className: "h-40" }
+  { name: 'Coca-Cola', Logo: CocaColaLogo, className: 'h-24' },
+  { name: 'BodyArmor', Logo: BodyArmorLogo, className: 'h-14' },
+  { name: 'WKNDHRS', Logo: WkndhrsLogo, className: 'h-12' },
+  { name: 'Powerade', Logo: PoweradeLogo, className: 'h-28' },
+  { name: 'Good Fella', Logo: GoodFellaLogo, className: 'h-40' },
 ];
 
-export default function ClientLogos({ className = "", trigger = "scroll", delay = 0, tone = "muted" }) {
+export default function ClientLogos({ className = '', trigger = 'scroll', delay = 0, tone = 'muted' }) {
   return (
     <AnimatedList
       tag="ul"
       className={`flex flex-wrap items-center gap-x-24 gap-y-24 ${className}`}
       itemClassName={`${tone === 'light' ? 'text-foreground-reading opacity-90' : 'text-foreground-muted opacity-60'} transition-opacity duration-300 hover:opacity-100`}
       trigger={trigger}
-      delay={delay}
-    >
+      delay={delay}>
       {LOGOS.map(({ name, Logo, className: logoClassName }) => (
         <span key={name} className="block">
           <Logo className={`${logoClassName} w-auto`} />

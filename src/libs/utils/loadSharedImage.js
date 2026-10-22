@@ -12,7 +12,7 @@ export function loadSharedImage(url, options = {}) {
   const fetchPromise = (async () => {
     try {
       const response = await fetch(url, { mode: 'cors', credentials: 'omit' });
-      
+
       if (!response.ok) {
         throw new Error(`fetch failed ${response.status} for ${url}`);
       }
