@@ -1,0 +1,128 @@
+{
+  "home": {
+    "title": "GSAP Motion Components for React & Vue | Annnimate",
+    "description": "Production GSAP motion components for React and Vue. Every component is built to the standard we ship for real brands. By Good Fella.",
+    "og": {
+      "title": "Annnimate by Good Fella — GSAP motion for React and Vue",
+      "description": "The motion components behind real landmark sites. Copy production-grade GSAP into your React or Vue project."
+    }
+  },
+  "pricing": {
+    "title": "Pricing | Annnimate — GSAP Motion for React & Vue",
+    "description": "Annnimate pricing. The Library from €29/month billed quarterly, or €240/year. Landmark Kits one-time. 14-day money-back guarantee on the Library. No lifetime tiers, no add-ons.",
+    "og": {
+      "title": "Annnimate Pricing — Library and Landmark Kits",
+      "description": "Library subscription from €29/month billed quarterly, or €240/year. Landmark Kits one-time. 14-day refund on the Library. No lifetime tiers."
+    }
+  },
+  "kits": {
+    "title": "Landmark Kits | Stand-Alone GSAP Animation Collections for React & Vue",
+    "description": "Landmark Kits are deep, stand-alone GSAP animation collections, built around one system at a time. Two Kits so far: Reveal, preloaders and hero sections as one mixable system, and Menu, ten site navigation menus. React, Vue, HTML / CSS / JS. Not for Webflow. Out now, one-time purchase, yours forever.",
+    "og": {
+      "title": "Landmark Kits by Annnimate — Stand-Alone Animation Collections",
+      "description": "Deep, stand-alone GSAP animation collections. Reveal for preloaders and hero sections, Menu for site navigation. For React, Vue, HTML / CSS / JS. Not for Webflow. Out now, one-time purchase, yours forever."
+    }
+  },
+  "platform": {
+    "title": "The Annnimate Platform | GSAP Motion for React & Vue",
+    "description": "Inside Annnimate: a curated GSAP component library, Landmark Kits, real React and Vue code, and documentation written by the studio that built the originals.",
+    "og": {
+      "title": "The Annnimate Platform | GSAP Motion for React & Vue",
+      "description": "Inside Annnimate: a curated GSAP component library, Landmark Kits, real React and Vue code, and documentation written by the studio that built the originals."
+    }
+  },
+  "built-with": {
+    "title": "Built with Annnimate",
+    "description": "Real websites built with Annnimate GSAP animations. See how developers and agencies use production-grade motion components.",
+    "og": {
+      "title": "Built with Annnimate",
+      "description": "Real websites built with Annnimate GSAP animations. See what developers and agencies have shipped."
+    }
+  },
+  "faq": {
+    "title": "FAQ | Annnimate - GSAP Motion for React & Vue",
+    "description": "Answers on the Annnimate library, Landmark Kits, React and Vue formats, pricing, licensing, and accounts. Every component is GSAP, built by Good Fella from real client work.",
+    "og": {
+      "title": "FAQ | Annnimate - GSAP Motion for React & Vue",
+      "description": "Answers on the Annnimate library, Landmark Kits, React and Vue formats, pricing, licensing, and accounts."
+    }
+  },
+  "starter-pack": {
+    "title": "Free GSAP components — a new drop every week",
+    "description": "Free GSAP components, production-grade — a new one every week. React, Vue, and HTML/CSS/JS for each. No expiration, no attribution. Delivered as a ZIP by email.",
+    "og": {
+      "title": "Free GSAP components — a new drop every week",
+      "description": "Free GSAP components, production-grade — a new one every week. React, Vue, and HTML/CSS/JS."
+    }
+  },
+  "contact": {
+    "title": "Contact | Annnimate",
+    "description": "Contact Annnimate. A real person reads every message and replies, usually the same day. Built by Good Fella, a two-person studio.",
+    "og": {
+      "title": "Contact | Annnimate",
+      "description": "Reach a real person at Annnimate. Send a message or self-serve the answers most questions already have."
+    }
+  },
+  "students": {
+    "title": "Student discount: 50% off Annnimate",
+    "description": "Students get 50% off the Annnimate Solo plan for 12 months, or any Landmark Kit. Send your university email and we reply within a couple of days.",
+    "og": {
+      "title": "Student discount: 50% off Annnimate",
+      "description": "Half off the Solo plan for a year, or any Landmark Kit. Ask with your university email."
+    }
+  },
+  "nextjs": {
+    "title": "Next.js Animation Library | GSAP Components for the App Router | Annnimate",
+    "description": "Annnimate is a Next.js animation library built on GSAP: production scroll reveals, text effects, and menus you copy into an App Router project. useGSAP under the hood, cleanup on route change handled, your pages stay Server Components.",
+    "keywords": [
+      "nextjs animation library",
+      "next.js animation library",
+      "nextjs gsap",
+      "gsap nextjs",
+      "nextjs page transitions",
+      "app router animations",
+      "nextjs scroll animation",
+      "react animation components"
+    ],
+    "og": {
+      "title": "Next.js Animation Library - GSAP Components for the App Router",
+      "description": "Production GSAP components built for Next.js. Copy scroll reveals, text effects, and menus into your App Router project - cleanup and 'use client' boundaries handled."
+    }
+  },
+  "nuxt": {
+    "title": "Nuxt Animation Library | GSAP Components for Nuxt and Vue | Annnimate",
+    "description": "Annnimate is a Nuxt animation library built on GSAP: production scroll reveals, menus, and text effects you copy into a Nuxt app as real Vue components. SSR-safe, cleanup handled, no module wiring.",
+    "keywords": [
+      "nuxt animation library",
+      "nuxt gsap",
+      "gsap nuxt",
+      "nuxt 3 animations",
+      "nuxt page transitions",
+      "nuxt scroll animation",
+      "vue animation components",
+      "gsap vue 3"
+    ],
+    "og": {
+      "title": "Nuxt Animation Library - GSAP Components for Nuxt and Vue",
+      "description": "Production GSAP components for Nuxt. Copy scroll reveals, menus, and text effects as real Vue components - SSR-safe, no module wiring."
+    }
+  },
+  "vue": {
+    "title": "Vue Animation Library | GSAP Components for Vue 3 | Annnimate",
+    "description": "Annnimate is a Vue animation library built on GSAP: production scroll reveals, magnetic buttons, and text effects you copy into a Vue 3 app. First-class Vue support, real GSAP, no wiring from scratch.",
+    "keywords": [
+      "vue animation library",
+      "vue 3 animation library",
+      "gsap vue",
+      "vue animation components",
+      "vue scroll animation",
+      "vue gsap components",
+      "gsap vue 3",
+      "vue motion library"
+    ],
+    "og": {
+      "title": "Vue Animation Library - GSAP Components for Vue 3",
+      "description": "Production GSAP components with first-class Vue 3 support. Copy scroll reveals, magnetic buttons, and text effects into your Vue app."
+    }
+  }
+}

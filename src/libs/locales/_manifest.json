@@ -1,0 +1,287 @@
+[
+  {
+    "id": 955670,
+    "name": "common",
+    "file": "common.json",
+    "topLevelKeys": [
+      "endCta",
+      "faq",
+      "header",
+      "footer",
+      "starterPack",
+      "docCapture",
+      "testimonials",
+      "valueMath"
+    ]
+  },
+  {
+    "id": 10914,
+    "name": "landing",
+    "file": "landing.json",
+    "topLevelKeys": [
+      "hero",
+      "provenance",
+      "problem",
+      "howItWorks",
+      "twoWays",
+      "oneComponent",
+      "kitSpotlight",
+      "pricingSection"
+    ]
+  },
+  {
+    "id": 883350,
+    "name": "pricing",
+    "file": "pricing.json",
+    "topLevelKeys": [
+      "hero",
+      "tiers",
+      "cycle",
+      "kits",
+      "whatYouGet",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 43469,
+    "name": "kits",
+    "file": "kits.json",
+    "topLevelKeys": [
+      "hero",
+      "feature",
+      "system",
+      "vsLibrary",
+      "provenance",
+      "capture",
+      "endCta"
+    ]
+  },
+  {
+    "id": 557113,
+    "name": "platform",
+    "file": "platform.json",
+    "topLevelKeys": [
+      "hero",
+      "mockup",
+      "library",
+      "provenance",
+      "formats",
+      "kits",
+      "docs",
+      "endCta"
+    ]
+  },
+  {
+    "id": 889675,
+    "name": "built-with",
+    "file": "built-with.json",
+    "topLevelKeys": [
+      "hero",
+      "filters",
+      "empty",
+      "endCta",
+      "modal",
+      "form",
+      "detail"
+    ]
+  },
+  {
+    "id": 774175,
+    "name": "faq",
+    "file": "faq.json",
+    "topLevelKeys": [
+      "hero",
+      "group",
+      "endCta"
+    ]
+  },
+  {
+    "id": 689651,
+    "name": "starter-pack",
+    "file": "starter-pack.json",
+    "topLevelKeys": [
+      "hero",
+      "variants",
+      "form",
+      "proof",
+      "strip",
+      "tiles",
+      "sticky",
+      "inbox",
+      "packUpsell",
+      "endCta",
+      "v3"
+    ]
+  },
+  {
+    "id": 581030,
+    "name": "contact",
+    "file": "contact.json",
+    "topLevelKeys": [
+      "hero",
+      "channels",
+      "form",
+      "endCta"
+    ]
+  },
+  {
+    "id": 495814,
+    "name": "seo",
+    "file": "seo.json",
+    "topLevelKeys": [
+      "home",
+      "pricing",
+      "kits",
+      "platform",
+      "built-with",
+      "faq",
+      "starter-pack",
+      "contact",
+      "students",
+      "nextjs",
+      "nuxt",
+      "vue"
+    ]
+  },
+  {
+    "id": 242037,
+    "name": "affiliate",
+    "file": "affiliate.json",
+    "topLevelKeys": [
+      "hero",
+      "calculator",
+      "rates",
+      "why",
+      "steps",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 218296,
+    "name": "packs",
+    "file": "packs.json",
+    "topLevelKeys": [
+      "landing"
+    ]
+  },
+  {
+    "id": 704394,
+    "name": "students",
+    "file": "students.json",
+    "topLevelKeys": [
+      "hero",
+      "steps",
+      "request",
+      "form",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 750131,
+    "name": "home-v3",
+    "file": "home-v3.json",
+    "topLevelKeys": [
+      "hero",
+      "spotlight",
+      "bento",
+      "shipped",
+      "showcase",
+      "pricing",
+      "starterPack",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 550723,
+    "name": "pricing-v3",
+    "file": "pricing-v3.json",
+    "topLevelKeys": [
+      "plans",
+      "shipped",
+      "buildCost",
+      "quotes",
+      "libraryOrKit",
+      "students",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 589900,
+    "name": "packs-v3",
+    "file": "packs-v3.json",
+    "topLevelKeys": [
+      "hero",
+      "grid",
+      "why",
+      "packOrLibrary",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 268262,
+    "name": "platform-v3",
+    "file": "platform-v3.json",
+    "topLevelKeys": [
+      "hero",
+      "steps",
+      "code",
+      "docs"
+    ]
+  },
+  {
+    "id": 77431,
+    "name": "students-v3",
+    "file": "students-v3.json",
+    "topLevelKeys": [
+      "hero",
+      "visual",
+      "steps",
+      "covers",
+      "faq"
+    ]
+  },
+  {
+    "id": 812705,
+    "name": "kits-v3",
+    "file": "kits-v3.json",
+    "topLevelKeys": [
+      "hero",
+      "inside",
+      "why",
+      "faq",
+      "endCta",
+      "menu",
+      "reveal"
+    ]
+  },
+  {
+    "id": 670180,
+    "name": "affiliate-v3",
+    "file": "affiliate-v3.json",
+    "topLevelKeys": [
+      "hero",
+      "earnings",
+      "why",
+      "how",
+      "faq",
+      "endCta"
+    ]
+  },
+  {
+    "id": 944554,
+    "name": "frameworks-v3",
+    "file": "frameworks-v3.json",
+    "topLevelKeys": [
+      "common",
+      "nextjs",
+      "nuxt",
+      "vue"
+    ]
+  }
+]
